@@ -51,7 +51,6 @@ namespace AseIsthmusAPI.Controllers
                 {
                     conn.Close();
                     return Ok(person.PersonId);
-                    //return Ok("Data inserted successfully");
                 }
                 else
                 {
