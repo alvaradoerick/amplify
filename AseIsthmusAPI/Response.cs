@@ -1,4 +1,4 @@
-﻿namespace AseIsthmusAPI.Models
+﻿namespace AseIsthmusAPI
 {
     public class Response
     {

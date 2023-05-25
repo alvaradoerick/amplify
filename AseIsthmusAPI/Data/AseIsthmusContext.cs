@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AseIsthmusAPI.Data.AseIsthmusModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace AseIsthmusAPI.Data;
@@ -15,35 +14,35 @@ public partial class AseIsthmusContext : DbContext
     {
     }
 
-    public virtual DbSet<Agreement> Agreements { get; set; } 
+    public virtual DbSet<Agreement> Agreements { get; set; }
 
-    public virtual DbSet<Beneficiary> Beneficiaries { get; set; } 
+    public virtual DbSet<Beneficiary> Beneficiaries { get; set; }
 
-    public virtual DbSet<CategoryAgreement> CategoryAgreements { get; set; } 
+    public virtual DbSet<CategoryAgreement> CategoryAgreements { get; set; }
 
     public virtual DbSet<ContributionBalance> ContributionBalances { get; set; }
 
-    public virtual DbSet<ContributionUsage> ContributionUsages { get; set; } 
+    public virtual DbSet<ContributionUsage> ContributionUsages { get; set; }
 
-    public virtual DbSet<LoanBalance> LoanBalances { get; set; } 
+    public virtual DbSet<LoanBalance> LoanBalances { get; set; }
 
-    public virtual DbSet<LoanRequest> LoanRequests { get; set; } 
+    public virtual DbSet<LoanRequest> LoanRequests { get; set; }
 
-    public virtual DbSet<LoansType> LoansTypes { get; set; } 
+    public virtual DbSet<LoansType> LoansTypes { get; set; }
 
     public virtual DbSet<Login> Logins { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; } 
+    public virtual DbSet<Role> Roles { get; set; }
 
-    public virtual DbSet<SavingsBalance> SavingsBalances { get; set; } 
+    public virtual DbSet<SavingsBalance> SavingsBalances { get; set; }
 
-    public virtual DbSet<SavingsRequest> SavingsRequests { get; set; } 
+    public virtual DbSet<SavingsRequest> SavingsRequests { get; set; }
 
-    public virtual DbSet<SavingsType> SavingsTypes { get; set; } 
+    public virtual DbSet<SavingsType> SavingsTypes { get; set; }
 
-    public virtual DbSet<TransactionLog> TransactionLogs { get; set; } 
+    public virtual DbSet<TransactionLog> TransactionLogs { get; set; }
 
-    public virtual DbSet<User> Users { get; set; } 
+    public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -242,6 +241,7 @@ public partial class AseIsthmusContext : DbContext
             entity.Property(e => e.PersonId).HasMaxLength(12);
             entity.Property(e => e.Address1).HasMaxLength(150);
             entity.Property(e => e.Address2).HasMaxLength(150);
+            entity.Property(e => e.ApprovedDate).HasColumnType("date");
             entity.Property(e => e.BankAccount).HasMaxLength(25);
             entity.Property(e => e.DateBirth).HasColumnType("date");
             entity.Property(e => e.EmailAddress).HasMaxLength(35);
