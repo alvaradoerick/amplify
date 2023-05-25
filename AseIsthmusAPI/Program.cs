@@ -1,3 +1,4 @@
+using AseIsthmusAPI.Data;
 using Newtonsoft.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+//DB Context
+builder.Services.AddSqlServer<AseIsthmusContext>(builder.Configuration.GetConnectionString("AseIsthmusConn"));
 
 var app = builder.Build();
 
