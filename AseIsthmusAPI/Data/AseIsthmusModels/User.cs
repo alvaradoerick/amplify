@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
@@ -58,9 +59,12 @@ public partial class User
 
     public virtual Role Role { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual ICollection<SavingsBalance> SavingsBalances { get; set; } = new List<SavingsBalance>();
 
+    [JsonIgnore]
     public virtual ICollection<SavingsRequest> SavingsRequests { get; set; } = new List<SavingsRequest>();
 
+    [JsonIgnore]
     public virtual ICollection<TransactionLog> TransactionLogs { get; set; } = new List<TransactionLog>();
 }

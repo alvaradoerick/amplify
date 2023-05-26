@@ -28,10 +28,11 @@ namespace AseIsthmusAPI.Data.DTOs
 
         public DateTime? EnrollmentDate { get; set; }
 
-        [MaxLength(12, ErrorMessage = "El número de teléfono debe ser menor a 20 caracteres.")]
+        [MaxLength(20, ErrorMessage = "El número de teléfono debe ser menor a 20 caracteres.")]
         public string PhoneNumber { get; set; }
 
-        [MaxLength(12, ErrorMessage = "El correo electrónico debe ser menor a 35 caracteres.")]
+        [MaxLength(50, ErrorMessage = "El correo electrónico debe ser menor a 50 caracteres.")]
+        [EmailAddress(ErrorMessage = "El formato del correo es incorrecto.")]
         public string EmailAddress { get; set; }
 
         [MaxLength(25, ErrorMessage = "La cuenta bancaria debe ser menor a 25 caracteres.")]

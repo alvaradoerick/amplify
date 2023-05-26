@@ -2,6 +2,7 @@
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace AseIsthmusAPI.Controllers
 {
@@ -32,24 +33,34 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Insert(UserDTO user)
+        public async Task<IActionResult> Insert(UserDTO user)
         {
+            string validationResult = await ValidateAccount(user);
+
+            if (!validationResult.Equals("Valid"))
+                return BadRequest(new { message = validationResult });
+
             var newUser = await _service.Create(user);
 
             return CreatedAtAction(nameof(GetById), new { id = newUser.PersonId }, newUser);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Update(string id, UserDTO user)
+        public async Task<IActionResult> Update(string id, UserDTO user)
         {
+            string validationResult = await ValidateAccount(user);
+
+            if (!validationResult.Equals("Valid"))
+                return BadRequest(new { message = validationResult });
+
             if (id != user.PersonId)
-                return BadRequest(new { message = $"El  ID={id} de la URL no coincide con el ID({user.PersonId}) de la solicitud" });
+                return BadRequest(new { message = $"El código({id}) de la URL no coincide con el código({user.PersonId}) de los datos" });
 
             var existingClient = await _service.GetById(id);
 
             if (existingClient is not null)
             {
-                await _service.UpdateUser(id, existingClient);
+                await _service.UpdateUser(user);
                 return NoContent();
             }
             else
@@ -59,7 +70,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             var existingClient = await _service.GetById(id);
 
@@ -74,9 +85,21 @@ namespace AseIsthmusAPI.Controllers
             }
         }
 
+        [NonAction]
         public NotFoundObjectResult UserNotFound(string id)
         {
-            return NotFound(new { message = $"El usuario con ID={id} no existe." });
+            return NotFound(new { message = $"El usuario con código={id} no existe." });
+        }
+
+        [NonAction]
+        public async Task<string> ValidateAccount(UserDTO user)
+        {
+            string result = "Valid";
+            var userExist = await _service.GetById(user.PersonId);
+            if (userExist is null)
+                result = $"El usuario con código {user.PersonId} no existe.";
+
+            return result;
         }
 
     }

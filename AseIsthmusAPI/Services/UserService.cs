@@ -54,9 +54,9 @@ namespace AseIsthmusAPI.Services
 
             return newUser;
         }
-        public async Task UpdateUser(string id, UserDTO user)
+        public async Task UpdateUser(UserDTO user)
         {
-            var existingClient = await GetById(id);
+            var existingClient = await GetById(user.PersonId);
 
             if (existingClient is not null)
             {
@@ -72,7 +72,7 @@ namespace AseIsthmusAPI.Services
                 existingClient.PhoneNumber = user.PhoneNumber;
                 existingClient.EmailAddress = user.EmailAddress;
                 existingClient.BankAccount = user.BankAccount;
-                existingClient.IsActive = user.IsActive;
+                existingClient.IsActive = existingClient.IsActive;
                 existingClient.RoleId = user.RoleId;
                 existingClient.Address1 = user.Address1;
                 existingClient.Address2 = user.Address2;
@@ -80,12 +80,12 @@ namespace AseIsthmusAPI.Services
                 existingClient.Canton = user.Canton;
                 existingClient.District = user.District;
                 existingClient.PostalCode = user.PostalCode;
-                existingClient.ApprovedDate = user.ApprovedDate;
+                existingClient.ApprovedDate = existingClient.ApprovedDate;
 
                await _context.SaveChangesAsync();
             }
         }
-
+    
         public async Task DeleteUser(string id)
         {
             var existingClient = await GetById(id);

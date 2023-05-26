@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
@@ -17,5 +18,6 @@ public partial class Beneficiary
 
     public string PersonId { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual User Person { get; set; } = null!;
 }
