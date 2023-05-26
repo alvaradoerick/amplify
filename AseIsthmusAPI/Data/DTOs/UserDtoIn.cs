@@ -2,7 +2,7 @@
 
 namespace AseIsthmusAPI.Data.DTOs
 {
-    public class UserDTO
+    public class UserDtoIn
     {
         [MaxLength(12, ErrorMessage ="El código de empleado debe ser menor a 12 caracteres.")]
         public string PersonId { get; set; }

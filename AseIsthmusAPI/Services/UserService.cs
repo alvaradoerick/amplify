@@ -14,9 +14,59 @@ namespace AseIsthmusAPI.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<User>> GetAll()
+        public async Task<IEnumerable<UserDtoOut>> GetAll()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Select(a => new UserDtoOut 
+            {
+                 PersonId = a.PersonId,
+                NumberId = a.NumberId,
+                FirstName = a.FirstName,
+                LastName1 = a.LastName1,
+                LastName2 = a.LastName2,
+                Nationality = a.Nationality,
+                DateBirth = a.DateBirth,
+                WorkStartDate = a.WorkStartDate,
+                PhoneNumber = a.PhoneNumber,
+                EmailAddress = a.EmailAddress,
+                BankAccount = a.BankAccount,
+                IsActive = a.IsActive,
+                RoleId = a.Role.RoleDescription,
+                Address1 = a.Address1,
+                Address2 = a.Address2,
+                Province = a.Province,
+                Canton = a.Canton,
+                District = a.District,
+                PostalCode = a.PostalCode,
+                ApprovedDate = a.ApprovedDate
+            }).ToListAsync();
+        }
+
+        public async Task<UserDtoOut?> GetDtoById(string id)
+        {
+            return await _context.Users.Where(a => a.PersonId == id).
+                Select(a => new UserDtoOut
+            {
+                PersonId = a.PersonId,
+                NumberId = a.NumberId,
+                FirstName = a.FirstName,
+                LastName1 = a.LastName1,
+                LastName2 = a.LastName2,
+                Nationality = a.Nationality,
+                DateBirth = a.DateBirth,
+                WorkStartDate = a.WorkStartDate,
+                PhoneNumber = a.PhoneNumber,
+                EmailAddress = a.EmailAddress,
+                BankAccount = a.BankAccount,
+                IsActive = a.IsActive,
+                RoleId = a.Role.RoleDescription,
+                Address1 = a.Address1,
+                Address2 = a.Address2,
+                Province = a.Province,
+                Canton = a.Canton,
+                District = a.District,
+                PostalCode = a.PostalCode,
+                ApprovedDate = a.ApprovedDate
+            }).SingleOrDefaultAsync();
         }
 
         public async Task<User?> GetById(string Id)
@@ -24,7 +74,7 @@ namespace AseIsthmusAPI.Services
             return await _context.Users.FindAsync(Id);
         }
 
-        public async Task<User> Create(UserDTO user)
+        public async Task<User> Create(UserDtoIn user)
         {
             var newUser = new User
             {
@@ -54,7 +104,7 @@ namespace AseIsthmusAPI.Services
 
             return newUser;
         }
-        public async Task UpdateUser(UserDTO user)
+        public async Task UpdateUser(UserDtoIn user)
         {
             var existingClient = await GetById(user.PersonId);
 

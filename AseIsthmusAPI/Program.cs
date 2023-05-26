@@ -17,6 +17,7 @@ builder.Services.AddSqlServer<AseIsthmusContext>(builder.Configuration.GetConnec
 
 //Service Layer 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<LoginService>();
 
 var app = builder.Build();
 

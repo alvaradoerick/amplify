@@ -47,16 +47,22 @@ public partial class User
     public string PostalCode { get; set; } = null!;
     public DateTime? ApprovedDate { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Beneficiary> Beneficiaries { get; set; } = new List<Beneficiary>();
 
+    [JsonIgnore]
     public virtual ICollection<ContributionBalance> ContributionBalances { get; set; } = new List<ContributionBalance>();
 
+    [JsonIgnore]
     public virtual ICollection<LoanBalance> LoanBalances { get; set; } = new List<LoanBalance>();
 
+    [JsonIgnore]
     public virtual ICollection<LoanRequest> LoanRequests { get; set; } = new List<LoanRequest>();
 
+    [JsonIgnore]
     public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
 
+    [JsonIgnore]
     public virtual Role Role { get; set; } = null!;
 
     [JsonIgnore]

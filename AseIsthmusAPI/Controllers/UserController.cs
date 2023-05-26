@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AseIsthmusAPI.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -18,22 +18,22 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<User>> Get()
+        public async Task<IEnumerable<UserDtoOut>> Get()
         {
             return await _service.GetAll();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetById(string id)
+        public async Task<ActionResult<UserDtoOut>> GetById(string id)
         {
-            var user = await _service.GetById(id);
+            var user = await _service.GetDtoById(id);
             if (user is null) return UserNotFound(id);
 
             return user;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Insert(UserDTO user)
+        public async Task<IActionResult> Insert(UserDtoIn user)
         {
             string validationResult = await ValidateAccount(user);
 
@@ -46,7 +46,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, UserDTO user)
+        public async Task<IActionResult> Update(string id, UserDtoIn user)
         {
             string validationResult = await ValidateAccount(user);
 
@@ -92,7 +92,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [NonAction]
-        public async Task<string> ValidateAccount(UserDTO user)
+        public async Task<string> ValidateAccount(UserDtoIn user)
         {
             string result = "Valid";
             var userExist = await _service.GetById(user.PersonId);
