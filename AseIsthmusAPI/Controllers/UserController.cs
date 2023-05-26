@@ -37,7 +37,7 @@ namespace AseIsthmusAPI.Controllers
         {
             string validationResult = await ValidateAccount(user);
 
-            if (!validationResult.Equals("Valid"))
+            if (validationResult.Equals("Valid"))
                 return BadRequest(new { message = validationResult });
 
             var newUser = await _service.Create(user);

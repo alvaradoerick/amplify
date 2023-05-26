@@ -2,6 +2,7 @@
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AseIsthmusAPI.Controllers
 {
@@ -19,8 +20,7 @@ namespace AseIsthmusAPI.Controllers
 
         [HttpPost("authenticate")]
         public async Task<IActionResult> Login(LoginDto loginDto)
-        {
-            
+        {  
             var login = await _service.GetLogin(loginDto);
             if (login is null)
             return   BadRequest(new { message = "Credenciales inválidas" });
