@@ -19,7 +19,9 @@ builder.Services.AddSwaggerGen();
 
 
 //DB Context
-builder.Services.AddSqlServer<AseIsthmusContext>(builder.Configuration.GetConnectionString("AseIsthmusConn"));
+builder.Services.AddSqlServer<AseItshmusContext>(builder.Configuration.GetConnectionString("AseIsthmusConn"));
+
+
 
 //Service Layer 
 builder.Services.AddScoped<UserService>();

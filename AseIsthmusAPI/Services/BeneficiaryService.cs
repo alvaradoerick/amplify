@@ -1,13 +1,13 @@
-﻿using AseIsthmusAPI.Data.AseIsthmusModels;
+﻿using AseIsthmusAPI.Data;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
-using AseIsthmusAPI.Data;
 
 namespace AseIsthmusAPI.Services
 {
     public class BeneficiaryService
     {
-        private readonly AseIsthmusContext _context;
-        public BeneficiaryService(AseIsthmusContext context)
+        private readonly AseItshmusContext _context;
+        public BeneficiaryService(AseItshmusContext context)
         {
             _context = context;
         }

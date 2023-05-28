@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
-namespace AseIsthmusAPI.Data.AseIsthmusModels;
+namespace AseIsthmusAPI.Data;
 
 public partial class Login
 {
@@ -12,6 +11,5 @@ public partial class Login
 
     public string? Pw { get; set; }
 
-    [JsonIgnore]
     public virtual User Person { get; set; } = null!;
 }

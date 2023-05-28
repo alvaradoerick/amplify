@@ -48,11 +48,7 @@ namespace AseIsthmusAPI.Data.DTOs
         [MaxLength(150, ErrorMessage = "La dirección 2 debe ser menor a 150 caracteres.")]
         public string? Address2 { get; set; }
 
-        public int Province { get; set; }
-
-        public int Canton { get; set; }
-
-        public int District { get; set; }
+        public int DistrictId { get; set; }
 
         [MaxLength(10, ErrorMessage = "El código postal debe ser menor a 10 caracteres.")]
         public string PostalCode { get; set; }

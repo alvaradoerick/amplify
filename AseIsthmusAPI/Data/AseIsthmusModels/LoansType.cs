@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AseIsthmusAPI.Data.AseIsthmusModels;
+namespace AseIsthmusAPI.Data;
 
 public partial class LoansType
 {
@@ -13,7 +13,7 @@ public partial class LoansType
 
     public decimal PercentageEmployeeCont { get; set; }
 
-    public decimal PercentageEmployerCont { get; set; }
+    public decimal? PercentageEmployerCont { get; set; }
 
     public int Term { get; set; }
 

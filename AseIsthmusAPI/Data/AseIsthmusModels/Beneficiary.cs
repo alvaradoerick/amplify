@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace AseIsthmusAPI.Data.AseIsthmusModels;
+namespace AseIsthmusAPI.Data;
 
 public partial class Beneficiary
 {

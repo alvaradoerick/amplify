@@ -7,8 +7,8 @@ namespace AseIsthmusAPI.Services
 {
     public class LoginService
     {
-        private readonly AseIsthmusContext _context;
-        public LoginService(AseIsthmusContext context)
+        private readonly AseItshmusContext _context;
+        public LoginService(AseItshmusContext context)
         {
             _context = context;
         }

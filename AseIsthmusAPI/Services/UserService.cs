@@ -8,8 +8,8 @@ namespace AseIsthmusAPI.Services
 {
     public class UserService
     {
-        private readonly AseIsthmusContext _context;
-        public UserService(AseIsthmusContext context)
+        private readonly AseItshmusContext _context;
+        public UserService(AseItshmusContext context)
         {
             _context = context;
         }
@@ -33,9 +33,7 @@ namespace AseIsthmusAPI.Services
                 RoleId = a.Role.RoleDescription,
                 Address1 = a.Address1,
                 Address2 = a.Address2,
-                Province = a.Province,
-                Canton = a.Canton,
-                District = a.District,
+                DistrictId = a.DistrictId,
                 PostalCode = a.PostalCode,
                 ApprovedDate = a.ApprovedDate
             }).ToListAsync();
@@ -61,9 +59,7 @@ namespace AseIsthmusAPI.Services
                 RoleId = a.Role.RoleDescription,
                 Address1 = a.Address1,
                 Address2 = a.Address2,
-                Province = a.Province,
-                Canton = a.Canton,
-                District = a.District,
+                    DistrictId = a.DistrictId,
                 PostalCode = a.PostalCode,
                 ApprovedDate = a.ApprovedDate
             }).SingleOrDefaultAsync();
@@ -93,9 +89,7 @@ namespace AseIsthmusAPI.Services
                 RoleId = 4,
                 Address1 = user.Address1,
                 Address2 = user.Address2,
-                Province = user.Province,
-                Canton = user.Canton,
-                District = user.District,
+                DistrictId = user.DistrictId,
                 PostalCode = user.PostalCode,
                 ApprovedDate = user.ApprovedDate
             };
@@ -126,9 +120,7 @@ namespace AseIsthmusAPI.Services
                 existingClient.RoleId = user.RoleId;
                 existingClient.Address1 = user.Address1;
                 existingClient.Address2 = user.Address2;
-                existingClient.Province = user.Province;
-                existingClient.Canton = user.Canton;
-                existingClient.District = user.District;
+                existingClient.DistrictId = user.DistrictId;
                 existingClient.PostalCode = user.PostalCode;
                 existingClient.ApprovedDate = existingClient.ApprovedDate;
 

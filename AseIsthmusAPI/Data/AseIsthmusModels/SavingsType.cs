@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AseIsthmusAPI.Data.AseIsthmusModels;
+namespace AseIsthmusAPI.Data;
 
 public partial class SavingsType
 {

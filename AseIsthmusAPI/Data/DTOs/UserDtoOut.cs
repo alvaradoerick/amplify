@@ -34,11 +34,7 @@
 
         public string? Address2 { get; set; }
 
-        public int Province { get; set; }
-
-        public int Canton { get; set; }
-
-        public int District { get; set; }
+        public int DistrictId { get; set; }
 
         public string PostalCode { get; set; } 
         public DateTime? ApprovedDate { get; set; }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 
-namespace AseIsthmusAPI.Data.AseIsthmusModels;
+namespace AseIsthmusAPI.Data;
 
 public partial class LoanRequest
 {
