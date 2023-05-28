@@ -1,148 +1,106 @@
-﻿using AseIsthmusAPI.Data;
+﻿using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
+using AseIsthmusAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-
-
+using System.ComponentModel.DataAnnotations;
 
 namespace AseIsthmusAPI.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly AseIsthmusContext _context;
-        public UserController(AseIsthmusContext context)
+        private readonly UserService _service;
+
+        public UserController(UserService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
-        public IEnumerable<User> Get()
+        public async Task<IEnumerable<UserDtoOut>> Get()
         {
-            return _context.Users.ToList();
+            return await _service.GetAll();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<User> GetById(string Id)
+        public async Task<ActionResult<UserDtoOut>> GetById(string id)
         {
-            var user = _context.Users.Find(Id);
-            if (user is null) return NotFound();
+            var user = await _service.GetDtoById(id);
+            if (user is null) return UserNotFound(id);
 
             return user;
         }
 
-
         [HttpPost]
-        public IActionResult InsertUser(UserDTO user)
+        public async Task<IActionResult> Insert(UserDtoIn user)
         {
-            var newUser = new User();
+            string validationResult = await ValidateAccount(user);
 
-            newUser.PersonId = user.PersonId;
-            newUser.NumberId = user.NumberId;
-            newUser.FirstName = user.FirstName;
-            newUser.LastName1 = user.LastName1;
-            newUser.LastName2 = user.LastName2;
-            newUser.Nationality = user.Nationality;
-            newUser.DateBirth = user.DateBirth; 
-            newUser.WorkStartDate = user.WorkStartDate;
-            newUser.PhoneNumber = user.PhoneNumber;
-            newUser.EmailAddress = user.EmailAddress;
-            newUser.BankAccount = user.BankAccount;
-            newUser.IsActive = false;
-            newUser.RoleId = 4;          
-            newUser.Address1 = user.Address1; 
-            newUser.Address2 = user.Address2;
-            newUser.Province = user.Province;
-            newUser.Canton = user.Canton;
-            newUser.District = user.District;
-            newUser.PostalCode = user.PostalCode;
-         
-             _context.Users.Add(newUser);
-                _context.SaveChanges();
-            
-            return CreatedAtAction(nameof(GetById), new { id = user.PersonId }, user);
+            if (validationResult.Equals("Valid"))
+                return BadRequest(new { message = validationResult });
+
+            var newUser = await _service.Create(user);
+
+            return CreatedAtAction(nameof(GetById), new { id = newUser.PersonId }, newUser);
         }
 
-      
-        //    [HttpPost]
-        //    [Route("{id}/beneficiary")]
-        //    public IActionResult InsertBeneficiary(List<Beneficiary> beneficiaries, string id)
-        //    {
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, UserDtoIn user)
+        {
+            string validationResult = await ValidateAccount(user);
 
-        //        using SqlConnection conn = new(_configuration.GetConnectionString("AseIsthmusConn").ToString());
-        //        if (conn.State == ConnectionState.Closed)
-        //            conn.Open();
+            if (!validationResult.Equals("Valid"))
+                return BadRequest(new { message = validationResult });
 
-        //        if (beneficiaries == null || beneficiaries.Count == 0)
-        //        {
-        //            return BadRequest("No beneficiaries provided.");
-        //        }
-        //        try
-        //        {
-        //            foreach (var beneficiary in beneficiaries)
-        //            {
-        //                using (var command = new SqlCommand("sp_InsertBeneficiary", conn))
-        //                {
-        //                    command.CommandType = CommandType.StoredProcedure;
-        //                    command.Parameters.AddWithValue("@beneficiaryName", beneficiary.BeneficiaryName);
-        //                    command.Parameters.AddWithValue("@beneficiaryNumberId", beneficiary.BeneficiaryNumberId);
-        //                    command.Parameters.AddWithValue("@beneficiaryRelation", beneficiary.BeneficiaryRelation);
-        //                    command.Parameters.AddWithValue("@beneficiaryPercentage", beneficiary.BeneficiaryPercentage);
-        //                    command.Parameters.AddWithValue("@userId", id);
+            if (id != user.PersonId)
+                return BadRequest(new { message = $"El código({id}) de la URL no coincide con el código({user.PersonId}) de los datos" });
 
-        //                    command.ExecuteNonQuery();
-        //                }
-        //            }
+            var existingClient = await _service.GetById(id);
 
-        //            conn.Close();
+            if (existingClient is not null)
+            {
+                await _service.UpdateUser(user);
+                return NoContent();
+            }
+            else
+            {
+                return UserNotFound(id);
+            }
+        }
 
-        //            return Ok("Beneficiaries added successfully.");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var existingClient = await _service.GetById(id);
 
-        //    }
+            if (existingClient is not null)
+            {
+                await _service.DeleteUser(id);
+                return NoContent();
+            }
+            else
+            {
+                return UserNotFound(id);
+            }
+        }
 
-        //    [HttpGet]
-        //    [Route("login")]
-        //    public ActionResult Login(Login login)
-        //    {
+        [NonAction]
+        public NotFoundObjectResult UserNotFound(string id)
+        {
+            return NotFound(new { message = $"El usuario con código={id} no existe." });
+        }
 
-        //        using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("AseIsthmusConn").ToString()))
-        //        {
-        //            try
-        //            {
+        [NonAction]
+        public async Task<string> ValidateAccount(UserDtoIn user)
+        {
+            string result = "Valid";
+            var userExist = await _service.GetById(user.PersonId);
+            if (userExist is null)
+                result = $"El usuario con código {user.PersonId} no existe.";
 
+            return result;
+        }
 
-        //                if (conn.State == ConnectionState.Closed)
-        //                    conn.Open();
-        //                using SqlCommand cmd = new SqlCommand("sp_Login", conn);
-        //                cmd.CommandType = CommandType.StoredProcedure;
-        //                cmd.Parameters.Add(new SqlParameter("@email", login.EmailAddress));
-        //                cmd.Parameters.Add(new SqlParameter("@password", login.Pw));
-        //                using (SqlDataReader reader = cmd.ExecuteReader())
-        //                {
-        //                    if (reader.HasRows)
-        //                    {
-        //                        reader.Read();
-        //                        conn.Close();
-        //                        return StatusCode(StatusCodes.Status200OK);
-        //                    }
-        //                    else
-        //                    {
-        //                        conn.Close();
-        //                        return StatusCode(StatusCodes.Status404NotFound);
-        //                    }
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //            }
-        //        }
-
-        //    }
     }
 }

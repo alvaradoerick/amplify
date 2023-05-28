@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AseIsthmusAPI.Data;
+namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
-public partial class CategoryAgreement
+public partial class CateryAgreement
 {
-    public int CategoryAgreementId { get; set; }
+    public int CateryAgreementId { get; set; }
 
     public string Description { get; set; } = null!;
 

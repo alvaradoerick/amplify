@@ -1,61 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace AseIsthmusAPI.Data;
 
-public partial class AseIsthmusContext : DbContext
+public partial class AseItshmusContext : DbContext
 {
-    public AseIsthmusContext()
+    public AseItshmusContext()
     {
     }
 
-    public AseIsthmusContext(DbContextOptions<AseIsthmusContext> options)
+    public AseItshmusContext(DbContextOptions<AseItshmusContext> options)
         : base(options)
     {
     }
 
-    public virtual DbSet<Agreement> Agreements { get; set; } 
+    public virtual DbSet<Agreement> Agreements { get; set; }
 
-    public virtual DbSet<Beneficiary> Beneficiaries { get; set; } 
+    public virtual DbSet<Beneficiary> Beneficiaries { get; set; }
 
-    public virtual DbSet<CategoryAgreement> CategoryAgreements { get; set; } 
+    public virtual DbSet<Canton> Cantons { get; set; }
+
+    public virtual DbSet<CategoryAgreement> CategoryAgreements { get; set; }
 
     public virtual DbSet<ContributionBalance> ContributionBalances { get; set; }
 
-    public virtual DbSet<ContributionUsage> ContributionUsages { get; set; } 
+    public virtual DbSet<ContributionUsage> ContributionUsages { get; set; }
 
-    public virtual DbSet<LoanBalance> LoanBalances { get; set; } 
+    public virtual DbSet<District> Districts { get; set; }
 
-    public virtual DbSet<LoanRequest> LoanRequests { get; set; } 
+    public virtual DbSet<LoanBalance> LoanBalances { get; set; }
 
-    public virtual DbSet<LoansType> LoansTypes { get; set; } 
+    public virtual DbSet<LoanRequest> LoanRequests { get; set; }
+
+    public virtual DbSet<LoansType> LoansTypes { get; set; }
 
     public virtual DbSet<Login> Logins { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; } 
+    public virtual DbSet<Province> Provinces { get; set; }
 
-    public virtual DbSet<SavingsBalance> SavingsBalances { get; set; } 
+    public virtual DbSet<Role> Roles { get; set; }
 
-    public virtual DbSet<SavingsRequest> SavingsRequests { get; set; } 
+    public virtual DbSet<SavingsBalance> SavingsBalances { get; set; }
 
-    public virtual DbSet<SavingsType> SavingsTypes { get; set; } 
+    public virtual DbSet<SavingsRequest> SavingsRequests { get; set; }
 
-    public virtual DbSet<TransactionLog> TransactionLogs { get; set; } 
+    public virtual DbSet<SavingsType> SavingsTypes { get; set; }
 
-    public virtual DbSet<User> Users { get; set; } 
+    public virtual DbSet<TransactionLog> TransactionLogs { get; set; }
+
+    public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Agreement>(entity =>
         {
             entity.Property(e => e.Image).HasColumnType("image");
+            entity.Property(e => e.PersonId).HasMaxLength(12);
             entity.Property(e => e.Title).HasMaxLength(50);
 
             entity.HasOne(d => d.CategoryAgreement).WithMany(p => p.Agreements)
                 .HasForeignKey(d => d.CategoryAgreementId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Agreement_CategoryAgreement");
+                .HasConstraintName("FK_Agreements_CategoryAgreements");
+
+            entity.HasOne(d => d.Person).WithMany(p => p.Agreements)
+                .HasForeignKey(d => d.PersonId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Agreement_Users");
         });
 
         modelBuilder.Entity<Beneficiary>(entity =>
@@ -72,8 +85,23 @@ public partial class AseIsthmusContext : DbContext
                 .HasConstraintName("FK_Beneficiary_Person");
         });
 
+        modelBuilder.Entity<Canton>(entity =>
+        {
+            entity.ToTable("Canton");
+
+            entity.Property(e => e.CantonId).ValueGeneratedNever();
+            entity.Property(e => e.CantonName).HasMaxLength(50);
+
+            entity.HasOne(d => d.Province).WithMany(p => p.Cantons)
+                .HasForeignKey(d => d.ProvinceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Canton_Province");
+        });
+
         modelBuilder.Entity<CategoryAgreement>(entity =>
         {
+            entity.HasKey(e => e.CategoryAgreementId).HasName("PK_CateryAgreements");
+
             entity.Property(e => e.Description).HasMaxLength(100);
         });
 
@@ -95,6 +123,19 @@ public partial class AseIsthmusContext : DbContext
             entity.ToTable("ContributionUsage");
 
             entity.Property(e => e.Description).HasMaxLength(40);
+        });
+
+        modelBuilder.Entity<District>(entity =>
+        {
+            entity.ToTable("District");
+
+            entity.Property(e => e.DistrictId).ValueGeneratedNever();
+            entity.Property(e => e.DistrictName).HasMaxLength(50);
+
+            entity.HasOne(d => d.Canton).WithMany(p => p.Districts)
+                .HasForeignKey(d => d.CantonId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_District_Canton");
         });
 
         modelBuilder.Entity<LoanBalance>(entity =>
@@ -166,12 +207,18 @@ public partial class AseIsthmusContext : DbContext
             entity.ToTable("Login");
 
             entity.Property(e => e.PersonId).HasMaxLength(12);
-            entity.Property(e => e.Pw).HasMaxLength(300);
 
             entity.HasOne(d => d.Person).WithMany(p => p.Logins)
                 .HasForeignKey(d => d.PersonId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Login_Person");
+        });
+
+        modelBuilder.Entity<Province>(entity =>
+        {
+            entity.ToTable("Province");
+
+            entity.Property(e => e.ProvinceName).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Role>(entity =>
@@ -181,8 +228,6 @@ public partial class AseIsthmusContext : DbContext
 
         modelBuilder.Entity<SavingsBalance>(entity =>
         {
-            entity.ToTable(tb => tb.HasTrigger("history"));
-
             entity.Property(e => e.LastAmountDeducted).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.LastDeductedDate).HasColumnType("date");
             entity.Property(e => e.PersonId).HasMaxLength(12);
@@ -239,12 +284,15 @@ public partial class AseIsthmusContext : DbContext
         {
             entity.HasKey(e => e.PersonId);
 
+            entity.ToTable(tb => tb.HasTrigger("AddUserLogin"));
+
             entity.Property(e => e.PersonId).HasMaxLength(12);
             entity.Property(e => e.Address1).HasMaxLength(150);
             entity.Property(e => e.Address2).HasMaxLength(150);
+            entity.Property(e => e.ApprovedDate).HasColumnType("date");
             entity.Property(e => e.BankAccount).HasMaxLength(25);
             entity.Property(e => e.DateBirth).HasColumnType("date");
-            entity.Property(e => e.EmailAddress).HasMaxLength(35);
+            entity.Property(e => e.EmailAddress).HasMaxLength(50);
             entity.Property(e => e.EnrollmentDate).HasColumnType("date");
             entity.Property(e => e.FirstName).HasMaxLength(20);
             entity.Property(e => e.LastName1).HasMaxLength(20);
@@ -254,6 +302,11 @@ public partial class AseIsthmusContext : DbContext
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             entity.Property(e => e.PostalCode).HasMaxLength(10);
             entity.Property(e => e.WorkStartDate).HasColumnType("date");
+
+            entity.HasOne(d => d.District).WithMany(p => p.Users)
+                .HasForeignKey(d => d.DistrictId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Users_District");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
