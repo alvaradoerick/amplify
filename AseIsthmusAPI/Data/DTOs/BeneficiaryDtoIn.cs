@@ -1,5 +1,8 @@
-﻿namespace AseIsthmusAPI.Data.DTOs
+﻿using Newtonsoft.Json;
+
+namespace AseIsthmusAPI.Data.DTOs
 {
+    
     public class BeneficiaryDtoIn
     {
         public string BeneficiaryName { get; set; } 

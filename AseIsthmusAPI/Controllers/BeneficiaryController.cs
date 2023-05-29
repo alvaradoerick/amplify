@@ -16,7 +16,7 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
 
-        [HttpPost()]
+        [HttpPost]
         public async Task<IActionResult> Insert([FromRoute] string id, List<BeneficiaryDtoIn> beneficiaries)
         {
 

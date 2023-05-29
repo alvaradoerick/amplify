@@ -2,6 +2,7 @@
 using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,13 +18,14 @@ namespace AseIsthmusAPI.Controllers
         {
             _service = service;
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<UserDtoOut>> Get()
         {
            return await _service.GetAll();
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDtoOut>> GetById(string id)
         {
@@ -46,12 +48,13 @@ namespace AseIsthmusAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newUser.PersonId }, newUser);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, UserDtoIn user)
         {
             string validationResult = await ValidateAccount(user);
 
-            if (!validationResult.Equals("Valid"))
+            if (!validationResult.Equals("Usuario existe en la BD"))
                 return BadRequest(new { message = validationResult });
 
             if (id != user.PersonId)
@@ -70,6 +73,7 @@ namespace AseIsthmusAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -95,7 +99,7 @@ namespace AseIsthmusAPI.Controllers
         [NonAction]
         public async Task<string> ValidateAccount(UserDtoIn user)
         {
-            string result = "Valid";
+            string result = "Usuario existe en la BD";
             var userExist = await _service.GetById(user.PersonId);
             if (userExist is null)
                 result = $"El usuario con código {user.PersonId} no existe.";

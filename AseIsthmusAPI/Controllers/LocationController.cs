@@ -23,8 +23,6 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAllProvinces();
         }
 
-
-
         [HttpGet("province/{provinceId}/cantons")]
         public async Task<ActionResult<List<Canton>>> GetCantonsByProvince(int provinceId)
         {

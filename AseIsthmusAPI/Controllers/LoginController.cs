@@ -45,7 +45,7 @@ namespace AseIsthmusAPI.Controllers
                      {
             new Claim(ClaimTypes.Name, user.FirstName),
             new Claim(ClaimTypes.Email, user.EmailAddress),
-            new Claim("RoleType", user.Role.RoleDescription)
+            //new Claim("RoleType", user.Role.RoleDescription)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value));
