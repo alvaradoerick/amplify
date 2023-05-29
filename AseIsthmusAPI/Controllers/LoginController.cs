@@ -2,6 +2,7 @@
 using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -44,6 +45,7 @@ namespace AseIsthmusAPI.Controllers
                      {
             new Claim(ClaimTypes.Name, user.FirstName),
             new Claim(ClaimTypes.Email, user.EmailAddress),
+            new Claim("RoleType", user.Role.RoleDescription)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value));
@@ -58,6 +60,6 @@ namespace AseIsthmusAPI.Controllers
 
             return token;
 
-        }
+        }      
     }
 }
