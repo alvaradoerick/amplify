@@ -3,6 +3,7 @@ using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
 
 namespace AseIsthmusAPI.Controllers
 {
@@ -15,6 +16,14 @@ namespace AseIsthmusAPI.Controllers
         {
             _service = service;
         }
+
+        [HttpGet("provinces")]
+        public async Task<IEnumerable> GetAllProvinces()
+        {
+            return await _service.GetAllProvinces();
+        }
+
+
 
         [HttpGet("province/{provinceId}/cantons")]
         public async Task<ActionResult<List<Canton>>> GetCantonsByProvince(int provinceId)

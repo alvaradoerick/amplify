@@ -15,6 +15,15 @@ namespace AseIsthmusAPI.Services
             _context = context;
         }
 
+        public async Task<IEnumerable<LocationDtoOut>> GetAllProvinces()
+        {
+            return await _context.Provinces.Select(a => new LocationDtoOut
+            {
+                ProvinceId = a.ProvinceId,
+                ProvinceName = a.ProvinceName
+            }).ToListAsync();
+        }
+
         public async Task<IEnumerable<LocationDtoOut>> GetCantonsByProvince(int provinceId)
         {
             return await _context.Cantons.Where(c => c.ProvinceId == provinceId).Select(a => new LocationDtoOut
