@@ -1,4 +1,5 @@
-﻿using AseIsthmusAPI.Data.AseIsthmusModels;
+﻿using AseIsthmusAPI.Data;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace AseIsthmusAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<UserDtoOut>> Get()
         {
-            return await _service.GetAll();
+           return await _service.GetAll();
         }
 
         [HttpGet("{id}")]

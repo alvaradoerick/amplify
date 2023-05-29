@@ -1,6 +1,9 @@
 using AseIsthmusAPI.Data;
 using AseIsthmusAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +30,27 @@ builder.Services.AddSqlServer<AseItshmusContext>(builder.Configuration.GetConnec
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<BeneficiaryService>();
+builder.Services.AddScoped<LocationService>();
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("administrator", policy => policy.RequireClaim("RoleType", "Administrador"));
+
+    //para agregar la politica al metodo solo se pone
+    //[Authorize(Policy = "nombre de la politica, puede ser administrator")]
+});
 
 var app = builder.Build();
 
@@ -39,6 +63,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

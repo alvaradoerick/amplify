@@ -13,19 +13,13 @@ namespace AseIsthmusAPI.Services
             _context = context;
         }
 
-        public async Task<Login?> GetLogin(LoginDto login) {
-
-            var user = await _context.Users
-        .FirstOrDefaultAsync(u => u.EmailAddress == login.EmailAddress);
-
-            if (user != null)
-            {
-                return await _context.Logins.SingleOrDefaultAsync(x => x.Pw == login.Pw && user.EmailAddress == login.EmailAddress);
-            }
-            else {
-                return null;
-            }
-
+        public async Task<Login?> GetLogin(LoginDto login)
+        {
+            var loginEntity = await _context.Logins
+           .Include(l => l.Person)
+           .FirstOrDefaultAsync(x => x.Pw == login.Pw && x.Person.EmailAddress == login.EmailAddress);
+               
+            return loginEntity;           
         }
     }
 }
