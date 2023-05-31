@@ -16,13 +16,14 @@ namespace AseIsthmusAPI.Controllers
     [ApiController]
     public class LoginController : Controller
     {
-
         private readonly LoginService _service;
+        private readonly RoleService _roleService;
         private IConfiguration config;
 
-        public LoginController(LoginService service, IConfiguration config)
+        public LoginController(LoginService service, RoleService roleService, IConfiguration config)
         {
             _service = service;
+            _roleService = roleService;
             this.config = config;
         }
 
@@ -33,20 +34,20 @@ namespace AseIsthmusAPI.Controllers
             if (login is null)
             return   BadRequest(new { message = "Credenciales inválidas" });
 
-            string jwtToken = GenerateToken(login.Person);
+            string jwtToken = await GenerateToken(login.Person);
             return Ok( new {token = jwtToken });
         }
 
-        private string GenerateToken(User user)
+        private async Task<string> GenerateToken(User user)
         {
+            var roleDescription = await _roleService.GetRoleDescriptionById(user.RoleId);
 
-            
             var claims = new[]
-                     {
-            new Claim(ClaimTypes.Name, user.FirstName),
-            new Claim(ClaimTypes.Email, user.EmailAddress),
-            //new Claim("RoleType", user.Role.RoleDescription)
-            };
+            {
+        new Claim(ClaimTypes.Name, user.FirstName),
+        new Claim(ClaimTypes.Email, user.EmailAddress),
+       // new Claim("RoleType", await roleDescription)
+    };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

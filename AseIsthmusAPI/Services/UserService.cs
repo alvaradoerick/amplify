@@ -65,9 +65,9 @@ namespace AseIsthmusAPI.Services
             }).SingleOrDefaultAsync();
         }
 
-        public async Task<User?> GetById(string Id)
+        public async Task<User?> GetById(string id)
         {
-            return await _context.Users.FindAsync(Id);
+            return await _context.Users.FindAsync(id);
         }
 
         public async Task<User> Create(UserDtoIn user)
