@@ -39,8 +39,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
-            ValidateIssuer = false,
-            ValidateAudience = false
+            //ValidIssuer = true,
+            ValidAudience = "" // aqui hay que poner el api de donde se puede consumir
         };
     });
 

@@ -15,11 +15,12 @@ namespace AseIsthmusAPI.Services
 
         public async Task<Login?> GetLogin(LoginDto login)
         {
+
             var loginEntity = await _context.Logins
-           .Include(l => l.Person)
-           .FirstOrDefaultAsync(x => x.Pw == login.Pw && x.Person.EmailAddress == login.EmailAddress);
-               
-            return loginEntity;           
+       .Include(l => l.Person)
+       .FirstOrDefaultAsync(x => x.Pw == login.Pw && x.Person.EmailAddress == login.EmailAddress);
+
+            return loginEntity;
         }
     }
 }
