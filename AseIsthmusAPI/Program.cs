@@ -31,6 +31,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<BeneficiaryService>();
 builder.Services.AddScoped<LocationService>();
+builder.Services.AddScoped<RoleService>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -39,14 +40,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
-            //ValidIssuer = true,
-            ValidAudience = "" // aqui hay que poner el api de donde se puede consumir
+            ValidateIssuer = false,
+            ValidateAudience = false
         };
     });
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("administrator", policy => policy.RequireClaim("RoleType", "Administrador"));
+   // options.AddPolicy("administrator", policy => policy.RequireClaim("RoleType", "Administrador"));
 
     //para agregar la politica al metodo solo se pone
     //[Authorize(Policy = "nombre de la politica, puede ser administrator")]

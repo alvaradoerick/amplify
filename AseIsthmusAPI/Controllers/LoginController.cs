@@ -17,13 +17,11 @@ namespace AseIsthmusAPI.Controllers
     public class LoginController : Controller
     {
         private readonly LoginService _service;
-        private readonly RoleService _roleService;
         private IConfiguration config;
 
-        public LoginController(LoginService service, RoleService roleService, IConfiguration config)
+        public LoginController(LoginService service, IConfiguration config)
         {
-            _service = service;
-            _roleService = roleService;
+            _service = service;         
             this.config = config;
         }
 
@@ -40,7 +38,7 @@ namespace AseIsthmusAPI.Controllers
 
         private async Task<string> GenerateToken(User user)
         {
-            var roleDescription = await _roleService.GetRoleDescriptionById(user.RoleId);
+            //var roleDescription = await _roleService.GetRoleDescriptionById(user.RoleId);
 
             var claims = new[]
             {
