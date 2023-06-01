@@ -27,7 +27,7 @@ namespace AseIsthmusAPI.Controllers
 
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDtoOut>> GetById(string id)
+        public async Task<ActionResult<UserDtoOut>> GetById([FromRoute] string id)
         {
             var user = await _service.GetDtoById(id);
             if (user is null) return UserNotFound(id);
@@ -50,7 +50,7 @@ namespace AseIsthmusAPI.Controllers
 
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, UserDtoIn user)
+        public async Task<IActionResult> Update([FromRoute] string id, UserDtoIn user)
         {
             string validationResult = await ValidateAccount(user);
 
