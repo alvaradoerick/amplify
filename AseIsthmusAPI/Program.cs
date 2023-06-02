@@ -25,13 +25,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSqlServer<AseItshmusContext>(builder.Configuration.GetConnectionString("AseIsthmusConn"));
 
 
-
 //Service Layer 
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<BeneficiaryService>();
 builder.Services.AddScoped<LocationService>();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<CategoryAgreementService>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
