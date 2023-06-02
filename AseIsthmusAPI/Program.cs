@@ -30,6 +30,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<BeneficiaryService>();
 builder.Services.AddScoped<LocationService>();
+builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<CategoryAgreementService>();
 
 
@@ -46,7 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("administrator", policy => policy.RequireClaim("RoleType", "Administrador"));
+   // options.AddPolicy("administrator", policy => policy.RequireClaim("RoleType", "Administrador"));
 
     //para agregar la politica al metodo solo se pone
     //[Authorize(Policy = "nombre de la politica, puede ser administrator")]
