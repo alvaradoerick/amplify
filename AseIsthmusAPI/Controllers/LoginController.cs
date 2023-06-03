@@ -34,10 +34,15 @@ namespace AseIsthmusAPI.Controllers
         {
             var login = await _service.GetLogin(loginDto);
             if (login is null)
-                return BadRequest(new { message = "Credenciales inválidas" });
+                return BadRequest(new { message = "Credenciales inválidas." });
 
             string jwtToken = await GenerateToken(login.Person);
-            return Ok(new { token = jwtToken });
+            var responseDto = new AuthenticationResponseDto
+            {
+                Token = jwtToken,
+                User = login.Person 
+            };
+            return Ok(responseDto);
         }
 
         private async Task<string> GenerateToken(User user)
