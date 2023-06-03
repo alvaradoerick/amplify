@@ -40,7 +40,8 @@ namespace AseIsthmusAPI.Controllers
             var responseDto = new AuthenticationResponseDto
             {
                 Token = jwtToken,
-                User = login.Person 
+                PersonId = login.Person.PersonId,
+                RoleId = login.Person.RoleId
             };
             return Ok(responseDto);
         }
