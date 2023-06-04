@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using AseIsthmusAPI.Data.AseIsthmusModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace AseIsthmusAPI.Data;
@@ -52,6 +51,7 @@ public partial class AseItshmusContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Agreement>(entity =>
@@ -285,6 +285,10 @@ public partial class AseItshmusContext : DbContext
             entity.HasKey(e => e.PersonId);
 
             entity.ToTable(tb => tb.HasTrigger("AddUserLogin"));
+
+            entity.HasIndex(e => e.EmailAddress, "IX_Email").IsUnique();
+
+            entity.HasIndex(e => e.NumberId, "IX_NumberId").IsUnique();
 
             entity.Property(e => e.PersonId).HasMaxLength(12);
             entity.Property(e => e.Address1).HasMaxLength(150);
