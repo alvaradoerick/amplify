@@ -10,8 +10,8 @@
     const personalInfo = ref({
         PersonId: null,
         NumberId: null,
-        firstName: null,
-        lastName1: null,
+        FirstName: null,
+        LastName1: null,
         LastName2: null,
         Nationality: null,
         DateBirth: null,
@@ -44,11 +44,11 @@
                 type="text" id="employee-dimex" v-model="personalInfo.NumberId" />
 
             <input-text class="input-text" placeholder="Nombre" id="employee-name" type="text"
-                v-model="personalInfo.firstName" />
+                v-model="personalInfo.FirstName" />
         </div>
         <div class="form-row">
             <input-text class="input-text form-margin-right" placeholder="Primer apellido" id="employee-lastname1"
-                type="text" v-model="personalInfo.lastName1" />
+                type="text" v-model="personalInfo.LastName1" />
 
             <input-text class="input-text" placeholder="Segundo apellido" id="employee-lastname2" type="text"
                 v-model="personalInfo.LastName2" />

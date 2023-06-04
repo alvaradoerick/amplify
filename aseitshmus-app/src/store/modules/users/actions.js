@@ -16,16 +16,17 @@ export default {
         rootGetters
     }) {
         const token = rootGetters['auth/getToken'];
-       const userId = rootGetters['auth/getLoggedInUser'];
+        const userId = rootGetters['auth/getLoggedInUser'];
         const response = await axios.get(`${apiUrl}/user/${userId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-              
+
         const userData = response.data;
-        commit('setUsers', userData);
-        return response;
+        commit('setUser', userData);
+        console.log(userData);
+        return userData;
     }
 
     //     async delete({ _ }) { 

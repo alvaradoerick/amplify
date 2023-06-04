@@ -4,14 +4,10 @@
   </div>
 </template>
 <style>
-  .dropdown,
-  .input-text {
-    width: 370px;
-  }
-    .input-text {
+  
+    .dropdown, .input-text {
         display: flex;
-        width: 300px;
-        align-items: center;
+        width: 300px;      
     }
 
     .links {

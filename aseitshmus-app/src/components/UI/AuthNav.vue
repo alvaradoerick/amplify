@@ -12,7 +12,7 @@
                             <router-link class="nav-link" to="/register">Registro</router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/register">dashboard Admin</router-link>
+                            <router-link class="nav-link" to="/profile">dashboard Admin</router-link>
                         </li>
                     </ul>
                 </div>

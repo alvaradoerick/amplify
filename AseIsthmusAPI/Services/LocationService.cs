@@ -48,5 +48,23 @@ namespace AseIsthmusAPI.Services
                     ProvinceName = a.Canton.Province.ProvinceName
                 }).ToListAsync();             
         }
+
+        public async Task<LocationDtoOut?> GetDistrictInformation(int districtId)
+        {
+            return await _context.Districts
+       .Include(d => d.Canton)
+       .ThenInclude(c => c.Province)
+       .Where(d => d.DistrictId == districtId)
+       .Select(a => new LocationDtoOut
+       {
+           DistrictId = a.DistrictId,
+           DistrictName = a.DistrictName,
+           CantonId = a.CantonId,
+           CantonName = a.Canton.CantonName,
+           ProvinceId = a.Canton.ProvinceId,
+           ProvinceName = a.Canton.Province.ProvinceName
+       })
+       .FirstOrDefaultAsync();
+        }
     }
 }
