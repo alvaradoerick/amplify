@@ -1,0 +1,202 @@
+<script setup>
+    import useVuelidate from '@vuelidate/core'
+    import {
+        email,
+    minLength,
+        required
+    } from '@vuelidate/validators'
+
+    import {
+        useStore
+    } from 'vuex'
+    import {
+        useRouter
+    } from 'vue-router';
+    import {
+        ref,
+        computed
+    } from 'vue';
+    import Toast from 'primevue/toast';
+
+    import {
+        useToast
+    } from 'primevue/usetoast';
+
+
+    const formData = ref({
+        EmailAddress: null,
+        Pw: null
+    })
+
+    const labelButton = ref('Ingresar');
+    const router = useRouter();
+    const rules = {
+        EmailAddress: {
+            email,
+            required
+        },
+        Pw: {
+            minLength: minLength(8),
+        required
+        }
+    }
+
+    const store = useStore();
+
+    const storeLogin = async () => {
+        await store.dispatch('auth/login', {
+            formData: formData.value,
+        })
+    }
+    const token = computed(() => {
+        return store.getters["auth/getToken"];
+    });
+
+    const loginResponse = computed(() => {
+        return store.getters["auth/getLoginResponse"];
+    });
+
+    const role = computed(() => {
+        return store.getters["auth/getRole"];
+    });
+
+    const toast = useToast();
+
+    const v$ = useVuelidate(rules, formData);
+
+    const onSend = async (event) => {
+        event.preventDefault();
+        const result = await v$.value.$validate();
+        if (!result) { 
+        if (formData.value.email === null || formData.value.Pw === null) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Correo y contraseña son requeridos.',
+            life: 3000
+        });
+            return
+        }
+           else if (v$?.value?.EmailAddress?.$error) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'El formato del correo es incorrecto.',
+                    life: 3000
+                });
+            } else if (v$?.value?.Pw?.$error) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'La contraseña es inválida.',
+                    life: 3000
+                });
+            }
+             return
+           }
+        
+        await storeLogin();
+        if (token.value !== null && token.value !== undefined) {
+            if (role.value === 1) {
+                router.push({
+                    name: "adminDashboard"
+                });
+
+            } else {
+                router.push({
+                    name: "myDashboard"
+                });
+            }
+
+        } else {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: loginResponse.value,
+                life: 3000
+            });
+        }
+    };
+
+    const forgotPassword = () => {
+        router.push({
+            name: "resetPassword"
+        });
+    }
+</script>
+<template>
+    <div class="center-container">
+        <Toast />
+        <div class="container">
+            <form>
+                <div class="form-row">
+                    <input-text class="input-text " type="email" id="email-address" v-model="formData.EmailAddress"
+                        placeholder="Correo eléctronico" />
+                </div>
+                <div class="form-row">
+                    <input-text class="input-text" id="password" type="password" v-model="formData.Pw"
+                        autocomplete="formData.Pw" placeholder="Contraseña" />
+                </div>
+                <div class="form-row sign-in">
+                    <base-button :label="labelButton" type="submit" @click="onSend" />
+                </div>
+                <div class="form-row">
+                    <a class="links" @click="forgotPassword">
+                        ¿Olvidó su contraseña?
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+    .center-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin: auto;
+    }
+
+    .form-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 2rem;
+        width: 100%;
+    }
+
+    #sign-in {
+        margin-top: 60px;
+    }
+
+
+    .input-text {
+        display: flex;
+        width: 300px;
+        align-items: center;
+    }
+
+    .links {
+        color: #253E8B;
+        display: flex;
+        overflow: hidden;
+        width: 20rem;
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .links:hover {
+        color: #fab03f;
+    }
+</style>
