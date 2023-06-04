@@ -1,28 +1,41 @@
 <script setup>
     import {
         ref,
-        onMounted, watch
+        onMounted,
+        watch
     } from 'vue';
     import {
         useStore
     } from 'vuex';
 import axios from "axios";
+    import {
+    useRouter
+} from 'vue-router';
+const router = useRouter();
 
-const apiUrl = process.env["VUE_APP_BASED_URL"]
-const provincias = ref([]);
-const cantones = ref([]);
+
+    const apiUrl = process.env["VUE_APP_BASED_URL"]
+let userData = null;
+    const provincias = ref([]);
+    const cantones = ref([]);
 const distritos = ref([]);
-const selectedProvincia = ref(null);
-const selectedCanton = ref(null);
-const selectedDistrito = ref(null);
+const selectedProvincia = ref(userData ? userData.ProvinceId : null);
+const selectedCanton = ref(userData ? userData.CantonId : null);
+const selectedDistrito = ref(userData ? userData.DistrictId : null);
 
-const fetchData = async (url, target) => {
-    try {
-        const response = await axios.get(url);
-        target.value = response.data.map(item => ({
-            value: item.DistrictId
-        }))
-    } catch (error) {
+const backLabel = 'Cancelar';
+const homePage = () => {
+    router.push({
+        name: "myDashboard"
+    });
+}
+const sendLabel = 'Actualizar';
+
+    const fetchData = async (url, target) => {
+        try {
+            const response = await axios.get(url);
+            target.value = response.data;
+        } catch (error) {
             console.error(error);
         }
     };
@@ -44,9 +57,16 @@ watch(selectedCanton, async (newValue) => {
     }
 });
 
+const onProvinciaChange = () => {
+    selectedCanton.value = null;
+    selectedDistrito.value = null;
+};
+
+const onCantonChange = () => {
+    selectedDistrito.value = null;
+};
 
     const store = useStore()
-
     const personalInfo = ref({
         PersonId: null,
         NumberId: null,
@@ -55,31 +75,49 @@ watch(selectedCanton, async (newValue) => {
         LastName2: null,
         PhoneNumber: null,
         BankAccount: null,
+        Address1: null,
+        Address2: null,
         DistrictId: selectedDistrito,
+        PostalCode: null
     });
 
     const fetchUserData = async () => {
         await store.dispatch('users/getById');
-        const userData = store.getters["users/getUser"];
-
+         userData = store.getters["users/getUser"];
         personalInfo.value.PersonId = userData.PersonId;
-
         personalInfo.value.NumberId = userData.NumberId;
         personalInfo.value.FirstName = userData.FirstName;
         personalInfo.value.LastName1 = userData.LastName1;
         personalInfo.value.LastName2 = userData.LastName2;
         personalInfo.value.PhoneNumber = userData.PhoneNumber;
         personalInfo.value.BankAccount = userData.BankAccount;
-        personalInfo.value.DistrictId = userData.DistrictId;
+        personalInfo.value.Address1 = userData.Address1;
+        personalInfo.value.Address2 = userData.Address2;
+        selectedDistrito.value = userData.DistrictId;
+        personalInfo.value.PostalCode = userData.PostalCode;  
+
+ axios.get(`${apiUrl}/location/district/${personalInfo.value.DistrictId}`)
+     .then(response => {
+            console.log(response.data)
+            const responseData = response.data;
+           selectedProvincia.value = responseData.ProvinceId;
+             selectedCanton.value = responseData.CantonId;
+            selectedDistrito.value  = responseData.DistrictId;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+};
 
 
-    };
 
     onMounted(fetchUserData);
 </script>
 
 <template>
     <div class="main">
+        
         <div class="form-column">
             <p><label><b>Código de empleado: </b></label>
                 {{ personalInfo.PersonId }}</p>
@@ -91,24 +129,35 @@ watch(selectedCanton, async (newValue) => {
         </div>
         <div class="header">
             <div class="form-row">
-                <input-text class="input-text form-margin-left" id="employee-phone" type="text"
+                <input-text class="input-text form-margin-right" id="employee-phone" type="text"
                     placeholder="Número telefónico" v-model="personalInfo.PhoneNumber" />
-                <input-text class="input-text form-margin-right" id="employee-account" type="text"
-                    placeholder="Cuenta IBAN" v-model="personalInfo.BankAccount" />
-
-
-
-                    <drop-down class="dropdown form-margin-right" :options="provincias" v-model="selectedProvincia"
-      optionLabel="label" optionValue="value" @onChange="onProvinciaChange"
-      placeholder="Provincia" />
-
-    <drop-down class="dropdown" :options="cantones" v-model="selectedCanton" optionLabel="label"
-      optionValue="value" @onChange="onCantonChange" placeholder="Cantón" />
-
-    <drop-down class="dropdown form-margin-right" :options="distritos" v-model="selectedDistrito"
-      optionLabel="label" optionValue="value" placeholder="Distrito" />
+                <input-text class="input-text" id="employee-account" type="text" placeholder="Cuenta IBAN"
+                    v-model="personalInfo.BankAccount" />
+            </div>
+            <div class="form-row">
+                <input-text placeholder="Dirección 1" class="dropdown form-margin-right" id="employee-address1"
+                    type="text" v-model="personalInfo.Address1" />
+                <input-text placeholder="Dirección 2" class="input-text" id="employee-address2" type="text"
+                    v-model="personalInfo.Address2" />
+            </div>
+            <div class="form-row">
+                <drop-down class="dropdown form-margin-right" :options="provincias" v-model="selectedProvincia"
+                        optionLabel="ProvinceName" optionValue="ProvinceId" @onChange="onProvinciaChange"
+                        placeholder="Provincia" />
+                <drop-down class="dropdown" :options="cantones" v-model="selectedCanton" optionLabel="CantonName"
+                        optionValue="CantonId" @onChange="onCantonChange" placeholder="Cantón" />
+            </div>
+            <div class="form-row">
+            <drop-down class="dropdown form-margin-right" :options="distritos" v-model="selectedDistrito"
+                        optionLabel="DistrictName" optionValue="DistrictId" placeholder="Distrito" />
+                <input-text class="input-text" id="employee-zip" type="text"
+                    v-model="personalInfo.PostalCode" placeholder="Código postal" />
             </div>
         </div>
+    <div class="actions">
+                <base-button :label="backLabel"  @click="homePage" :type="'button'" />
+                <base-button :label="sendLabel"  :type="'submit'" />
+               </div>
     </div>
 </template>
 <style scoped="scoped">
@@ -121,7 +170,6 @@ watch(selectedCanton, async (newValue) => {
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-height: 28vh;
     }
 
     .form-column {
@@ -134,8 +182,9 @@ watch(selectedCanton, async (newValue) => {
     .form-row {
         display: flex;
         justify-content: space-between;
+        align-self: center;
         margin-bottom: 2rem;
-        width: 100%;
+        width: 60%;
     }
 
     .form-margin-right {
@@ -145,4 +194,12 @@ watch(selectedCanton, async (newValue) => {
     .form-margin-left {
         margin-left: 6rem;
     }
+
+       .actions {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+    }
+
 </style>

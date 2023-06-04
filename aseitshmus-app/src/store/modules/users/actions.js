@@ -22,10 +22,8 @@ export default {
                 Authorization: `Bearer ${token}`
             }
         })
-
         const userData = response.data;
         commit('setUser', userData);
-        console.log(userData);
         return userData;
     }
 

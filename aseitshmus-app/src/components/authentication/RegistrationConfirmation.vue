@@ -3,7 +3,7 @@ import {
     useRouter
 } from 'vue-router';
 const router = useRouter();
-const ladingpage = () => {
+const ladingPage = () => {
     router.push({
         name: "login"
     });
@@ -20,7 +20,7 @@ En el momento de que el administrador apruebe su solicitud, se le enviará un co
         </p>
     </div>
     <div class="form-row">
-                        <a class="links" @click="ladingpage">
+                        <a class="links" @click="ladingPage">
                             Página Principal
                         </a>
                     </div>

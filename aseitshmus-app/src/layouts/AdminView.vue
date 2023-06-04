@@ -44,10 +44,7 @@ h2 {
     text-align: center;
 }
 
-.input-text {
-    width: 300px;
-    margin-bottom: 20px;
-}
+
 
 body {
     margin: 0;
