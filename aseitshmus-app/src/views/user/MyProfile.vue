@@ -1,10 +1,12 @@
 <script setup="setup">
     import {
         ref,
-        defineEmits,
-        watch
+        watch, onMounted, computed
     } from 'vue';
-    import axios from "axios";
+import axios from "axios";
+     import {
+    useStore
+} from 'vuex';
 
     const apiUrl = process.env["VUE_APP_BASED_URL"]
 
@@ -15,7 +17,6 @@
     const selectedProvincia = ref(null);
     const selectedCanton = ref(null);
     const selectedDistrito = ref(null);
-
 
     const fetchData = async (url, target) => {
         try {
@@ -65,14 +66,22 @@
         DistrictId: selectedDistrito,
         PostalCode: null
     });
+const store = useStore()
+const userData = computed(() => {
+    return store.getters["auth/getUsers"];
+});
 
 
-    const emits = defineEmits(['personal-info'])
+onMounted(async () => {
+    try {
+        const response = await store.dispatch('getById');
+        Object.assign(userData.value, response.data);
+        console.log(userData.value.firstName)
+    } catch (error) {
+        console.error('Error getting user data:', error);
+    }
+});
 
-
-    watch(personalInfo.value, (newValue) => {
-        emits('personal-info', newValue)
-    })
 </script>
 
 <template>

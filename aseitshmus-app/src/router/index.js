@@ -20,7 +20,7 @@ const routes = [
             component: RegistrationWizard,
             meta: {
               title: 'Registro',
-            }
+          },
       },
       {
         path: '/reset-password',

@@ -5,7 +5,6 @@ export default {
     async getAll({
         commit
     }) {
-
         const response = await axios.get(`${apiUrl}/user`);
         const users = response.data;
         commit("setUsers", users);
@@ -17,9 +16,7 @@ export default {
         rootGetters
     }) {
         const token = rootGetters['auth/getToken'];
-        const userId = rootGetters['auth/getLoggedInUser']; 
-        console.log('datos:' + userId)
-        console.log('token del usuario:' + token)
+       const userId = rootGetters['auth/getLoggedInUser'];
         const response = await axios.get(`${apiUrl}/user/${userId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -28,7 +25,6 @@ export default {
               
         const userData = response.data;
         commit('setUsers', userData);
-        console.log('datos:' + userData)
         return response;
     }
 

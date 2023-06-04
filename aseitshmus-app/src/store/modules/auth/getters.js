@@ -8,9 +8,9 @@ export default {
     },
 
     getLoggedInUser(state) {
-        return state.user;
+        return state.loggedInUser;
     },
-    getLoginResponse(state) {
+    getErrorResponse(state) {
         return state.errorResponse;
     },  
     getRole(state) {

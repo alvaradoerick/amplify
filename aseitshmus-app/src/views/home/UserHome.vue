@@ -16,7 +16,7 @@ const storeLogin = async () => {
 
 
 const userData = computed(() => {
-    return store.getters["users/getUser"];
+    return store.getters["users/getUsers"];
 });
 
 const displayUser = async () => {

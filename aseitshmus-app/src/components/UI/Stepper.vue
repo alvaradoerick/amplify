@@ -15,14 +15,15 @@ defineProps({
 
 <template>
     <div class="stepper">
-        <div class="stepper-item-container"  v-for="item in items" :key="item.id">
+        <div class="stepper-item-container" v-for="(item, index) in items" :key="item.id">
             <div class="stepper-item">
-                <div class="stepper-item__circle" :class="{'stepper-item__circle--active': active === item.id}">
+                <div class="stepper-item-circle" :class="{ 'stepper-item-circle--active': active === item.id }">
                     {{ item.id }}
                 </div>
-                <div class="stepper-item__label">{{ item.label }}</div>
-                
+                <div class="stepper-item-label">{{ item.label }}</div>
             </div>
+            <!-- Add the line only if it's not the last item -->
+            <div v-if="index !== items.length - 1" class="stepper-item-line"></div>
         </div>
     </div>
 </template>
@@ -45,8 +46,7 @@ defineProps({
 }
 
 
-
-.stepper-item__circle {
+.stepper-item-circle {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -58,12 +58,21 @@ defineProps({
     font-weight: bold;
 }
 
-.stepper-item__circle--active {
+.stepper-item-circle--active {
     background-color: #3f51b5;
 }
 
-.stepper-item__label {
+.stepper-item-label {
     font-size: 0.8rem;
     margin-top: 0.5rem;
+}
+
+.stepper-item-line {
+  flex-grow: 1;
+  height: 2px;
+  background-color: #852f2f;
+  color: #3f51b5;
+  margin-top: 0.5rem;
+  margin-left: 15px;
 }
 </style>

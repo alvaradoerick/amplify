@@ -5,7 +5,6 @@
     minLength,
         required
     } from '@vuelidate/validators'
-
     import {
         useStore
     } from 'vuex'
@@ -16,8 +15,6 @@
         ref,
         computed
     } from 'vue';
-    import Toast from 'primevue/toast';
-
     import {
         useToast
     } from 'primevue/usetoast';
@@ -53,7 +50,7 @@
     });
 
     const loginResponse = computed(() => {
-        return store.getters["auth/getLoginResponse"];
+        return store.getters["auth/getErrorResponse"];
     });
 
     const role = computed(() => {
@@ -63,58 +60,62 @@
     const toast = useToast();
 
     const v$ = useVuelidate(rules, formData);
-
-    const onSend = async (event) => {
-        event.preventDefault();
-        const result = await v$.value.$validate();
-        if (!result) { 
-        if (formData.value.email === null || formData.value.Pw === null) {
+const validateForm = async () => {
+    const result = await v$.value.$validate();
+if (!result) {
+    if (formData.value.email === null || formData.value.Pw === null) {
         toast.add({
             severity: 'error',
             summary: 'Error',
             detail: 'Correo y contraseña son requeridos.',
-            life: 3000
+            life: 2000
         });
-            return
-        }
-           else if (v$?.value?.EmailAddress?.$error) {
-                toast.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'El formato del correo es incorrecto.',
-                    life: 3000
-                });
-            } else if (v$?.value?.Pw?.$error) {
-                toast.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'La contraseña es inválida.',
-                    life: 3000
-                });
-            }
-             return
-           }
-        
-        await storeLogin();
-        if (token.value !== null && token.value !== undefined) {
-            if (role.value === 1) {
-                router.push({
-                    name: "adminDashboard"
-                });
+        return false
+    }
+    else if (v$?.value?.EmailAddress?.$error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'El formato del correo es incorrecto.',
+            life: 2000
+        });
+    } else if (v$?.value?.Pw?.$error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'La contraseña es inválida.',
+            life: 2000
+        });
+    }
+    return false
+}
+    return true;
+}
+    const onSend = async (event) => {
+      event.preventDefault();
+    const isValid = await validateForm();
+        if (isValid) {
+            await storeLogin();
+            if (token.value !== null && token.value !== undefined) {
+                if (role.value === 1) {
+                    router.push({
+                        name: "adminDashboard"
+                    });
+
+                } else {
+                    router.push({
+                        name: "myDashboard"
+                    });
+                }
 
             } else {
-                router.push({
-                    name: "myDashboard"
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: loginResponse.value,
+                    life: 2000
                 });
             }
-
-        } else {
-            toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: loginResponse.value,
-                life: 3000
-            });
         }
     };
 
@@ -126,7 +127,7 @@
 </script>
 <template>
     <div class="center-container">
-        <Toast />
+        <toast-component />
         <div class="container">
             <form>
                 <div class="form-row">
@@ -179,24 +180,5 @@
     }
 
 
-    .input-text {
-        display: flex;
-        width: 300px;
-        align-items: center;
-    }
-
-    .links {
-        color: #253E8B;
-        display: flex;
-        overflow: hidden;
-        width: 20rem;
-        text-align: center;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .links:hover {
-        color: #fab03f;
-    }
+  
 </style>

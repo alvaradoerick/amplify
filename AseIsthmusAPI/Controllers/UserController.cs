@@ -38,24 +38,30 @@ namespace AseIsthmusAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert(UserDtoIn user)
         {
-            string validationResult = await ValidateAccount(user);
+            string validationResult = await _service.AccountExist(user);
 
-            if (validationResult.Equals("Valid"))
-                return BadRequest(new { message = validationResult });
+            if (validationResult.Equals("user exists by Id"))
+                return BadRequest(new { error = "El usuario con el código de empleado ingresado ya existe en el sistema. Contacte al administrador." });
+            else if (validationResult.Equals("user exists by numberId"))
+                return BadRequest(new { error = "El usuario con la identificación ingresada ya existe en el sistema. Contacte al administrador." });
+            else if (validationResult.Equals("user exists by email"))
+                return BadRequest(new { error = "El usuario con el correo ingresado ya existe en el sistema. Contacte al administrador." });
+            else {
+                var newUser = await _service.Create(user);
 
-            var newUser = await _service.Create(user);
-
-            return CreatedAtAction(nameof(GetById), new { id = newUser.PersonId }, newUser);
+                return CreatedAtAction(nameof(GetById), new { id = newUser.PersonId }, newUser);
+            }
+            
         }
 
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] string id, UserDtoIn user)
         {
-            string validationResult = await ValidateAccount(user);
+            //string validationResult = await ValidateAccount(user);
 
-            if (!validationResult.Equals("Usuario existe en la BD"))
-                return BadRequest(new { message = validationResult });
+           // if (!validationResult.Equals("Usuario existe en la BD"))
+            //    return BadRequest(new { message = validationResult });
 
             if (id != user.PersonId)
                 return BadRequest(new { message = $"El código({id}) de la URL no coincide con el código({user.PersonId}) de los datos" });
@@ -93,19 +99,10 @@ namespace AseIsthmusAPI.Controllers
         [NonAction]
         public NotFoundObjectResult UserNotFound(string id)
         {
-            return NotFound(new { message = $"El usuario con código={id} no existe." });
+            return NotFound(new { error = $"El usuario con código={id} no existe." });
         }
 
-        [NonAction]
-        public async Task<string> ValidateAccount(UserDtoIn user)
-        {
-            string result = "Usuario existe en la BD";
-            var userExist = await _service.GetById(user.PersonId);
-            if (userExist is null)
-                result = $"El usuario con código {user.PersonId} no existe.";
-
-            return result;
-        }
+        
 
     }
 }
