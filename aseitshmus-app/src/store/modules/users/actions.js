@@ -25,7 +25,7 @@ export default {
         const userData = response.data;
         commit('setUser', userData);
         return userData;
-    }
+    },
 
     //     async delete({ _ }) { 
     //     return axios.get(apiUrl + "/api/v1/users/" + _)
@@ -38,5 +38,21 @@ export default {
     //     async update({ _ }) { 
     //     return axios.get(apiUrl + "/api/v1/users/" + _)
     // }
+    
+    async patchProfile({ _ }, payload) {
+            const personalInfo = payload.personalInfo;          
+            const response = await axios.fetch(
+                `${apiUrl}/user`, {
+                ...personalInfo,
+                ...workInfo,
+                ...addressInfo,
+                DateBirth: dayjs(personalInfo.DateBirth).format('YYYY-MM-DD'),
+                WorkStartDate: dayjs(workInfo.WorkStartDate).format('YYYY-MM-DD'), //IdNumber: personalInfo.IdNumber.replaceAll('-', ''),
+            }
+            )
+           return response;
+
+    }
+     
 
 }

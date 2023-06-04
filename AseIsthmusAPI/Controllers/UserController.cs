@@ -22,7 +22,7 @@ namespace AseIsthmusAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<UserDtoOut>> Get()
         {
-           return await _service.GetAll();
+            return await _service.GetAll();
         }
 
         [Authorize]
@@ -51,17 +51,13 @@ namespace AseIsthmusAPI.Controllers
 
                 return CreatedAtAction(nameof(GetById), new { id = newUser.PersonId }, newUser);
             }
-            
+
         }
 
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] string id, UserDtoIn user)
         {
-            //string validationResult = await ValidateAccount(user);
-
-           // if (!validationResult.Equals("Usuario existe en la BD"))
-            //    return BadRequest(new { message = validationResult });
 
             if (id != user.PersonId)
                 return BadRequest(new { message = $"El código({id}) de la URL no coincide con el código({user.PersonId}) de los datos" });
@@ -102,7 +98,28 @@ namespace AseIsthmusAPI.Controllers
             return NotFound(new { error = $"El usuario con código={id} no existe." });
         }
 
-        
+        [Authorize]
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateUserByUser([FromRoute] string id, UserUpdateDto user)
+        {
+            var existingClient = await _service.GetById(id);
+            try
+            {
+                if (existingClient is not null)
+                {
+                    await _service.UpdateUserByUser(user);
+                     return Ok(new { message = "successful" });
+                }
+                else
+                {
+                    return UserNotFound(id);
+                }
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest(new { error = "No se pudo procesar su pedido." });
+            }
+        }
 
     }
 }

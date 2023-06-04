@@ -150,6 +150,22 @@ namespace AseIsthmusAPI.Services
             }
         }
 
+        public async Task UpdateUserByUser(UserUpdateDto user)
+        {
+            var existingClient = await GetById(user.PersonId);
+            if (existingClient is not null)
+            {
+                existingClient.PersonId = existingClient.PersonId;
+                existingClient.PhoneNumber = user.PhoneNumber;
+                existingClient.BankAccount = user.BankAccount;
+                existingClient.Address1 = user.Address1;
+                existingClient.Address2 = user.Address2;
+                existingClient.DistrictId = user.DistrictId;
+                existingClient.PostalCode = user.PostalCode;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task DeleteUser(string id)
         {
             var existingClient = await GetById(id);
@@ -160,7 +176,6 @@ namespace AseIsthmusAPI.Services
             }
         }
 
-        [NonAction]
         public async Task<string?> AccountExist(UserDtoIn user)
         {
             string result = "valid";
