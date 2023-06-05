@@ -18,6 +18,7 @@ namespace AseIsthmusAPI.Controllers
         {
             _service = service;
         }
+
         [HttpPost]
         public IActionResult SendEmail(EmailDto emailDto) {
 
