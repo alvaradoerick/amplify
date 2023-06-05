@@ -150,12 +150,12 @@ namespace AseIsthmusAPI.Services
             }
         }
 
-        public async Task UpdateUserByUser(UserUpdateDto user)
+        public async Task UpdateUserByUser(string id, UserUpdateDto user)
         {
-            var existingClient = await GetById(user.PersonId);
+            var existingClient = await GetById(id);
             if (existingClient is not null)
             {
-                existingClient.PersonId = existingClient.PersonId;
+  
                 existingClient.PhoneNumber = user.PhoneNumber;
                 existingClient.BankAccount = user.BankAccount;
                 existingClient.Address1 = user.Address1;

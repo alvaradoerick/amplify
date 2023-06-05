@@ -107,7 +107,7 @@ namespace AseIsthmusAPI.Controllers
             {
                 if (existingClient is not null)
                 {
-                    await _service.UpdateUserByUser(user);
+                    await _service.UpdateUserByUser(id, user);
                      return Ok(new { message = "successful" });
                 }
                 else

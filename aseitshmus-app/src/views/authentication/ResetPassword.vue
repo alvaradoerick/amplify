@@ -12,18 +12,17 @@
 
 <template>
     <div style="margin-left: 40px;">
-        <p>Por favor ingrese el correo eléctronico con el que está asociada su cuenta.</p> <p>Recibirá un correo con su nueva contraseña.</p>
+        <p>Por favor ingrese el correo eléctronico con el que está asociada su cuenta.</p>
+        <p>Recibirá un correo con su nueva contraseña.</p>
     </div>
     <div class="center-container">
         <div class="container">
-
-
             <form>
                 <div class="form-row">
                     <input-text class="input-text " type="email" id="email-address" v-model="resetData.EmailAddress"
                         placeholder="Correo eléctronico" />
                 </div>
-                <div class="form-row sign-in">
+                <div class="form-row" style="margin-top: 40px;">
                     <base-button :label="labelButton" type="submit" />
                 </div>
             </form>

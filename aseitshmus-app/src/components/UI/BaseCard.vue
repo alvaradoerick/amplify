@@ -25,7 +25,7 @@
         width: 950px;
         margin-top: 50px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        height: 37rem;
+        height: 40rem;
     }
 
     h2 {

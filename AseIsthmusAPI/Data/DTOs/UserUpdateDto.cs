@@ -4,7 +4,6 @@ namespace AseIsthmusAPI.Data.DTOs
 {
     public class UserUpdateDto
     {
-        public string? PersonId { get; set; }
         [MaxLength(20, ErrorMessage = "El número de teléfono debe ser menor a 20 caracteres.")]
         public string PhoneNumber { get; set; }
 
