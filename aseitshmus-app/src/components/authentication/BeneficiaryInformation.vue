@@ -63,15 +63,15 @@ watch(beneficiaryInfo.value, (newValue) => {
 
 <style scoped>
 .header {
-    display:flex;
+ display:flex;
     width: 100%;
     justify-content: flex-end;
     margin-bottom: 3rem;
 }
 .body {
-    overflow: scroll;
-    height: 30vh;
-    max-height: 30vh;
+   overflow: scroll;
+    min-height: 23vh;
+    max-height: 23vh;
 }
 .container {
     display: flex;

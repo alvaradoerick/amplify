@@ -36,6 +36,13 @@ namespace AseIsthmusAPI.Controllers
             var districts = await _service.GetDistrictsByCanton(cantonId);
             return Ok(districts);
         }
+
+        [HttpGet("district/{districtId}")]
+        public async Task<ActionResult<District>> GetDistrictInformation([FromRoute] int districtId)
+        {
+            var districtInfo = await _service.GetDistrictInformation(districtId);
+            return Ok(districtInfo);
+        }
     }
 
 }

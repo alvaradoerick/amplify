@@ -1,6 +1,7 @@
 export default {
     role: null,
     token: null,
-    setLoggedInUser: null,
-    errorResponse:null
+    loggedInUser: null,
+    errorResponse: null,
+    password:null,
 }

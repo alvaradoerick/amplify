@@ -29,7 +29,11 @@ namespace AseIsthmusAPI.Services
             return loginEntity ;
         }
 
-
+        /// <summary>
+        /// This method is executed when the admin approves the user for the first time
+        /// </summary>
+        /// <param name="updatePasswordRequestDto"></param>
+        /// <returns></returns>
         public async Task<string?> UpdatePasswordByEmail(UpdatePasswordRequestDto updatePasswordRequestDto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == updatePasswordRequestDto.EmailAddress);
@@ -52,6 +56,11 @@ namespace AseIsthmusAPI.Services
             return newPassword;
         }
 
+        /// <summary>
+        /// This method is executed when the user is already approved and wants to reset the password
+        /// </summary>
+        /// <param name="updatePasswordRequestDto"></param>
+        /// <returns></returns>
         public async Task<string?> ResetPasswordByEmail(UpdatePasswordRequestDto updatePasswordRequestDto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == updatePasswordRequestDto.EmailAddress);
@@ -66,8 +75,7 @@ namespace AseIsthmusAPI.Services
                 return null;
             }
 
-
-            else if (login.Pw == null)
+            else if (user.IsActive == false)
             {
                 return "1";
             }

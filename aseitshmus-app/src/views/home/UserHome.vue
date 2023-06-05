@@ -16,7 +16,7 @@ const storeLogin = async () => {
 
 
 const userData = computed(() => {
-    return store.getters["users/getUser"];
+    return store.getters["users/getUsers"];
 });
 
 const displayUser = async () => {
@@ -31,6 +31,7 @@ const displayUser = async () => {
 
 
 <template >
+    <toast-component />
     <div class="card p-fluid">
        home page
        <button @click="displayUser">delete al boton</button>

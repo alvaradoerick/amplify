@@ -5,7 +5,6 @@ export default {
     async getAll({
         commit
     }) {
-
         const response = await axios.get(`${apiUrl}/user`);
         const users = response.data;
         commit("setUsers", users);
@@ -17,20 +16,16 @@ export default {
         rootGetters
     }) {
         const token = rootGetters['auth/getToken'];
-        const userId = rootGetters['auth/getLoggedInUser']; 
-        console.log('datos:' + userId)
-        console.log('token del usuario:' + token)
+        const userId = rootGetters['auth/getLoggedInUser'];
         const response = await axios.get(`${apiUrl}/user/${userId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-              
         const userData = response.data;
         commit('setUsers', userData);
-        console.log('datos:' + userData)
-        return response;
-    }
+        return userData;
+    },
 
     //     async delete({ _ }) { 
     //     return axios.get(apiUrl + "/api/v1/users/" + _)
@@ -44,4 +39,24 @@ export default {
     //     return axios.get(apiUrl + "/api/v1/users/" + _)
     // }
 
+    async patchProfile({
+        rootGetters
+    }, payload) {
+        try {
+            const personalInfo = payload.personalInfo;
+            const token = rootGetters['auth/getToken'];
+            const userId = rootGetters['auth/getLoggedInUser'];
+            const response = await axios.patch(
+                `${apiUrl}/user/${userId}`,
+                personalInfo, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
