@@ -25,7 +25,9 @@
     import Stepper from '@/components/UI/Stepper.vue'
 import RegistrationConfirmation from '@/components/authentication/RegistrationConfirmation.vue';
    // const router = useRouter();
-    const store = useStore()
+const store = useStore()
+const toast = useToast();
+    
     const personalInfo = ref({
         PersonId: null,
         NumberId: null,
@@ -151,7 +153,7 @@ import RegistrationConfirmation from '@/components/authentication/RegistrationCo
         })
     }
 
-const toast = useToast();
+
 //const resetValidation = () => {
 //     v$.value.$reset();
 // };
