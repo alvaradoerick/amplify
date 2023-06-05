@@ -15,8 +15,10 @@ namespace AseIsthmusAPI.Services
             _context = context;
         }
 
+
+
         public async Task<IEnumerable<CategoryAgreement>> Getall()
-        { 
+        {
             return await _context.CategoryAgreements.ToListAsync();
         }
 
@@ -34,29 +36,27 @@ namespace AseIsthmusAPI.Services
         }
 
         public async Task Update(int id, CategoryAgreement categoryAgreement)
-        { 
+        {
             var existingCategoryAgreement = await GetById(id);
 
             if (existingCategoryAgreement is not null)
             {
-                existingCategoryAgreement.Description = categoryAgreement.Description;  
+                existingCategoryAgreement.Description = categoryAgreement.Description;
                 existingCategoryAgreement.IsActive = categoryAgreement.IsActive;
 
-                await _context.SaveChangesAsync();
-            }            
-        }
-
-        public async Task Delete(int id)
-        { 
-            var categoryAgreementToDelete = await GetById(id);
-            
-            if (categoryAgreementToDelete is not null) 
-            { 
-                _context.CategoryAgreements.Remove(categoryAgreementToDelete);
                 await _context.SaveChangesAsync();
             }
         }
 
+        public async Task Delete(int id)
+        {
+            var categoryAgreementToDelete = await GetById(id);
 
+            if (categoryAgreementToDelete is not null)
+            {
+                _context.CategoryAgreements.Remove(categoryAgreementToDelete);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

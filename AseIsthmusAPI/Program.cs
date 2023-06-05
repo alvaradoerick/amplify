@@ -32,6 +32,7 @@ builder.Services.AddScoped<BeneficiaryService>();
 builder.Services.AddScoped<LocationService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<CategoryAgreementService>();
+builder.Services.AddScoped<AgreementService>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
