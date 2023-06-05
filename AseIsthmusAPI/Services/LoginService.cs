@@ -34,7 +34,7 @@ namespace AseIsthmusAPI.Services
         /// </summary>
         /// <param name="updatePasswordRequestDto"></param>
         /// <returns></returns>
-        public async Task<string?> UpdatePasswordByEmail(UpdatePasswordRequestDto updatePasswordRequestDto)
+        public async Task<string?> SetNewPassword(UpdatePasswordRequestDto updatePasswordRequestDto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == updatePasswordRequestDto.EmailAddress);
             if (user == null) 
@@ -61,31 +61,34 @@ namespace AseIsthmusAPI.Services
         /// </summary>
         /// <param name="updatePasswordRequestDto"></param>
         /// <returns></returns>
-        public async Task<string?> ResetPasswordByEmail(UpdatePasswordRequestDto updatePasswordRequestDto)
+        public async Task<string?> ResetPasswordUnauthenticated(UpdatePasswordRequestDto updatePasswordRequestDto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == updatePasswordRequestDto.EmailAddress);
                 if (user == null)
             {
                 return null;
-            }
-
-            var login = await _context.Logins.FirstOrDefaultAsync(l => l.PersonId == user.PersonId);
-            if (login == null)
-            {
-                return null;
-            }
+            }           
 
             else if (user.IsActive == false)
             {
                 return "1";
             }
 
-            var newPassword = GenerateRandomPassword();
+            var login = await _context.Logins.FirstOrDefaultAsync(l => l.PersonId == user.PersonId);
+          if (login == null)
+            {
+                return null;
+            }
 
-            login.Pw = HashPassword(newPassword);
-            await _context.SaveChangesAsync();
+            else {
+                var newPassword = GenerateRandomPassword();
 
-            return newPassword;
+                login.Pw = HashPassword(newPassword);
+                await _context.SaveChangesAsync();
+
+                return newPassword;
+            }
+
         }
         public static string GenerateRandomPassword(int length = 8)
         {

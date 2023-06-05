@@ -2,7 +2,7 @@
     import useVuelidate from '@vuelidate/core'
     import {
         email,
-    minLength,
+        minLength,
         required
     } from '@vuelidate/validators'
     import {
@@ -18,6 +18,9 @@
     import {
         useToast
     } from 'primevue/usetoast';
+    const router = useRouter();
+    const store = useStore();
+    const toast = useToast();
 
     const formData = ref({
         EmailAddress: null,
@@ -25,7 +28,7 @@
     })
 
     const labelButton = ref('Ingresar');
-    const router = useRouter();
+
     const rules = {
         EmailAddress: {
             email,
@@ -33,11 +36,10 @@
         },
         Pw: {
             minLength: minLength(8),
-        required
+            required
         }
     }
 
-    const store = useStore();
 
     const storeLogin = async () => {
         await store.dispatch('auth/login', {
@@ -56,43 +58,42 @@
         return store.getters["auth/getRole"];
     });
 
-    const toast = useToast();
+
 
     const v$ = useVuelidate(rules, formData);
-const validateForm = async () => {
-    const result = await v$.value.$validate();
-if (!result) {
-    if (formData.value.email === null || formData.value.Pw === null) {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Correo y contraseña son requeridos.',
-            life: 2000
-        });
-        return false
+    const validateForm = async () => {
+        const result = await v$.value.$validate();
+        if (!result) {
+            if (formData.value.email === null || formData.value.Pw === null) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Correo y contraseña son requeridos.',
+                    life: 2000
+                });
+                return false
+            } else if (v$?.value?.EmailAddress?.$error) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'El formato del correo es incorrecto.',
+                    life: 2000
+                });
+            } else if (v$?.value?.Pw?.$error) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'La contraseña es inválida.',
+                    life: 2000
+                });
+            }
+            return false
+        }
+        return true;
     }
-    else if (v$?.value?.EmailAddress?.$error) {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'El formato del correo es incorrecto.',
-            life: 2000
-        });
-    } else if (v$?.value?.Pw?.$error) {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'La contraseña es inválida.',
-            life: 2000
-        });
-    }
-    return false
-}
-    return true;
-}
     const onSend = async (event) => {
-      event.preventDefault();
-    const isValid = await validateForm();
+        event.preventDefault();
+        const isValid = await validateForm();
         if (isValid) {
             await storeLogin();
             if (token.value !== null && token.value !== undefined) {
@@ -177,7 +178,4 @@ if (!result) {
     #sign-in {
         margin-top: 60px;
     }
-
-
-  
 </style>
