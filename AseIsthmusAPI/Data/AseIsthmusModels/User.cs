@@ -73,7 +73,7 @@ public partial class User
 
     [JsonIgnore]
     public virtual ICollection<SavingsRequest> SavingsRequests { get; set; } = new List<SavingsRequest>();
-    
+
     [JsonIgnore]
     public virtual ICollection<TransactionLog> TransactionLogs { get; set; } = new List<TransactionLog>();
 }

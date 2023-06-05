@@ -34,10 +34,19 @@ namespace AseIsthmusAPI.Controllers
         {
             var login = await _service.GetLogin(loginDto);
             if (login is null)
-                return BadRequest(new { message = "Credenciales inválidas" });
+                return BadRequest(new { error = "Sus credenciales son inválidas." });
+
+           else if (login.Person.IsActive is false)
+                return BadRequest(new { error = "Su afiliación no está activada." });
 
             string jwtToken = await GenerateToken(login.Person);
-            return Ok(new { token = jwtToken });
+            var responseDto = new AuthenticationResponseDto
+            {
+                Token = jwtToken,
+                PersonId = login.Person.PersonId,
+                RoleId = login.Person.RoleId
+            };
+            return Ok(responseDto);
         }
 
         private async Task<string> GenerateToken(User user)
@@ -73,9 +82,9 @@ namespace AseIsthmusAPI.Controllers
                 var newPassword = await _service.UpdatePasswordByEmail(updatePasswordRequestDto);
                 return Ok(new UpdatePasswordResponseDto { NewPassword = newPassword });
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = "Su cuenta no ha sido activada." });
             }
         }
 
