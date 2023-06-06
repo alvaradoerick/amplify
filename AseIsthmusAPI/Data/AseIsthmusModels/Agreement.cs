@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
-namespace AseIsthmusAPI.Data;
+namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
 public partial class Agreement
 {
@@ -12,17 +11,15 @@ public partial class Agreement
 
     public string Description { get; set; } = null!;
 
-    public byte[] Image { get; set; } = null!;
+    public byte[]? Image { get; set; }
 
     public int CategoryAgreementId { get; set; }
 
     public bool IsActive { get; set; }
 
-    public string PersonId { get; set; } = null!;
+    public string? PersonId { get; set; }
 
-    [JsonIgnore]
     public virtual CategoryAgreement CategoryAgreement { get; set; } = null!;
 
-    [JsonIgnore]
-    public virtual User Person { get; set; } = null!;
+    public virtual User? Person { get; set; }
 }

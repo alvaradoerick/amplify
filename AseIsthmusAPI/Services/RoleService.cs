@@ -1,4 +1,5 @@
 ﻿using AseIsthmusAPI.Data;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using Microsoft.EntityFrameworkCore;
 

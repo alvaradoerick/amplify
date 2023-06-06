@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AseIsthmusAPI.Data;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using System.Collections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 
 namespace AseIsthmusAPI.Controllers
 {
-   
+
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryAgreementController: ControllerBase

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
-namespace AseIsthmusAPI.Data;
+namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
 public partial class Role
 {
@@ -10,6 +9,5 @@ public partial class Role
 
     public string RoleDescription { get; set; } = null!;
 
-    [JsonIgnore]
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

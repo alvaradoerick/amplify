@@ -1,8 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace AseIsthmusAPI.Data;
+namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
 public partial class Login
 {
@@ -12,6 +11,5 @@ public partial class Login
 
     public string? Pw { get; set; }
 
-    [JsonIgnore]
     public virtual User Person { get; set; } = null!;
 }
