@@ -20,7 +20,6 @@ namespace AseIsthmusAPI.Controllers
         }
         [HttpPost("resetPassword")]
         public IActionResult SendEmail(EmailDto emailDto) {
-
             _service.SendEmail(emailDto);
             return Ok();
         }

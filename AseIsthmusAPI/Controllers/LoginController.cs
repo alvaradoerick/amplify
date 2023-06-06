@@ -1,5 +1,4 @@
-﻿using AseIsthmusAPI.Data;
-using AseIsthmusAPI.Data.AseIsthmusModels;
+﻿using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using Microsoft.AspNetCore.Authorization;

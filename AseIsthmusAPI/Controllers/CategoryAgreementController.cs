@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AseIsthmusAPI.Data;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using System.Collections;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Authorization;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 
 namespace AseIsthmusAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryAgreementController: ControllerBase
@@ -20,7 +21,7 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
 
-        [HttpGet("getall")]
+        [HttpGet]
         public async Task<IEnumerable<CategoryAgreement>> Get()
         {
             return await _service.Getall();
@@ -42,7 +43,8 @@ namespace AseIsthmusAPI.Controllers
             
         }
 
-        [HttpPost("create")]
+        [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(CategoryAgreement categoryAgreement)
         {
             var newCategoryAgreement = await _service.Create(categoryAgreement);
@@ -50,7 +52,8 @@ namespace AseIsthmusAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newCategoryAgreement.CategoryAgreementId }, newCategoryAgreement);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> Update(int id, CategoryAgreement categoryAgreement)
         {
             if (id != categoryAgreement.CategoryAgreementId)
@@ -70,7 +73,8 @@ namespace AseIsthmusAPI.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var categoryAgreementToDelete = await _service.GetById(id);

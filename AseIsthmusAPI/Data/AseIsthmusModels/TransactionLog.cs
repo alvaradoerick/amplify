@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using AseIsthmusAPI.Data.AseIsthmusModels;
 
-namespace AseIsthmusAPI.Data;
+namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
 public partial class TransactionLog
 {

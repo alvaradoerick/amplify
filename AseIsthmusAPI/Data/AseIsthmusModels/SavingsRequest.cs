@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using AseIsthmusAPI.Data.AseIsthmusModels;
 
-namespace AseIsthmusAPI.Data;
+namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
 public partial class SavingsRequest
 {
@@ -12,7 +11,7 @@ public partial class SavingsRequest
 
     public int SavingsTypeId { get; set; }
 
-    public DateTime ApplicationDate { get; set; }
+    public DateTime? ApplicationDate { get; set; }
 
     public decimal Amount { get; set; }
 
@@ -20,11 +19,9 @@ public partial class SavingsRequest
 
     public int Term { get; set; }
 
-    public DateTime ApprovedDate { get; set; }
+    public DateTime? ApprovedDate { get; set; }
 
-    public bool IsApproved { get; set; }
-
-    public virtual ICollection<LoanBalance> LoanBalances { get; set; } = new List<LoanBalance>();
+    public bool? IsApproved { get; set; }
 
     public virtual User Person { get; set; } = null!;
 
