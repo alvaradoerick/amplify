@@ -17,28 +17,35 @@ namespace AseIsthmusAPI.Services
 
         public async Task<Login?> GetLogin(LoginDto login)
         {
-
             var loginEntity = await _context.Logins
        .Include(l => l.Person)
        .FirstOrDefaultAsync(x => x.Person.EmailAddress == login.EmailAddress && x.Pw == HashPassword(login.Pw));
 
             if (loginEntity == null)
             {
-                return null;
+              return null;
             }
 
-            return loginEntity;
+            return loginEntity ;
         }
 
-
-        public async Task<string> UpdatePasswordByEmail(UpdatePasswordRequestDto updatePasswordRequestDto)
+        /// <summary>
+        /// This method is executed when the admin approves the user for the first time
+        /// </summary>
+        /// <param name="updatePasswordRequestDto"></param>
+        /// <returns></returns>
+        public async Task<string?> UpdatePasswordByEmail(UpdatePasswordRequestDto updatePasswordRequestDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == updatePasswordRequestDto.EmailAddress) ?? throw new ArgumentException("El usuario no ha sido encontrado.");
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == updatePasswordRequestDto.EmailAddress);
+            if (user == null) 
+            { 
+                return null; 
+            } 
 
             var login = await _context.Logins.FirstOrDefaultAsync(l => l.PersonId == user.PersonId);
             if (login == null)
             {
-                throw new ArgumentException("La cuenta no ha sido encontrada.");
+                return null;
             }
 
             var newPassword = GenerateRandomPassword();
@@ -49,31 +56,37 @@ namespace AseIsthmusAPI.Services
             return newPassword;
         }
 
-        public async Task<string> ResetPasswordByEmail(UpdatePasswordRequestDto updatePasswordRequestDto)
+        /// <summary>
+        /// This method is executed when the user is already approved and wants to reset the password
+        /// </summary>
+        /// <param name="updatePasswordRequestDto"></param>
+        /// <returns></returns>
+        public async Task<string?> ResetPasswordByEmail(UpdatePasswordRequestDto updatePasswordRequestDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == updatePasswordRequestDto.EmailAddress) ?? throw new ArgumentException("El usuario no ha sido encontrado.");
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == updatePasswordRequestDto.EmailAddress);
+                if (user == null)
+            {
+                return null;
+            }
 
             var login = await _context.Logins.FirstOrDefaultAsync(l => l.PersonId == user.PersonId);
-            if (login == null )
+            if (login == null)
             {
-                throw new ArgumentException("La cuenta no ha sido encontrada.");
+                return null;
             }
 
-
-            else if (login.Pw == null)
+            else if (user.IsActive == false)
             {
-                throw new ArgumentException("Usuario no ha sido activado.");
+                return "1";
             }
 
-                var newPassword = GenerateRandomPassword();
+            var newPassword = GenerateRandomPassword();
 
             login.Pw = HashPassword(newPassword);
             await _context.SaveChangesAsync();
 
             return newPassword;
         }
-
-
         public static string GenerateRandomPassword(int length = 8)
         {
             const string uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -95,11 +108,12 @@ namespace AseIsthmusAPI.Services
                 return new string(chars);
             }
         }
-
-
-        public string HashPassword(string password)
+        public string? HashPassword(string password)
         {
-            byte[] salt = new byte[128 / 8];         
+            if  (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(password)) {
+                return null;
+            }
+            byte[] salt = new byte[128 / 8];
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
                 salt: salt,

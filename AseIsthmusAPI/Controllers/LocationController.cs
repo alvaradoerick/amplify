@@ -1,4 +1,4 @@
-﻿using AseIsthmusAPI.Data;
+﻿using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -35,6 +35,13 @@ namespace AseIsthmusAPI.Controllers
         {
             var districts = await _service.GetDistrictsByCanton(cantonId);
             return Ok(districts);
+        }
+
+        [HttpGet("district/{districtId}")]
+        public async Task<ActionResult<District>> GetDistrictInformation([FromRoute] int districtId)
+        {
+            var districtInfo = await _service.GetDistrictInformation(districtId);
+            return Ok(districtInfo);
         }
     }
 

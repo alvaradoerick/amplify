@@ -52,6 +52,10 @@ public partial class AseItshmusContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=AseItshmus.mssql.somee.com;user id=krudina_SQLLogin_1;pwd=c3il8epc66;Database=AseItshmus;persist security info=False; encrypt=false");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Agreement>(entity =>
@@ -67,7 +71,6 @@ public partial class AseItshmusContext : DbContext
 
             entity.HasOne(d => d.Person).WithMany(p => p.Agreements)
                 .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Agreement_Users");
         });
 
@@ -157,15 +160,15 @@ public partial class AseItshmusContext : DbContext
             entity.Property(e => e.ScheduledPayment).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.TotalPayment).HasColumnType("decimal(18, 0)");
 
+            entity.HasOne(d => d.LoanRequest).WithMany(p => p.LoanBalances)
+                .HasForeignKey(d => d.LoanRequestId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_LoanBalances_LoanRequests");
+
             entity.HasOne(d => d.Person).WithMany(p => p.LoanBalances)
                 .HasForeignKey(d => d.PersonId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_LoanBalance_Person");
-
-            entity.HasOne(d => d.SavingsRequest).WithMany(p => p.LoanBalances)
-                .HasForeignKey(d => d.SavingsRequestId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_LoanBalance_SavingsRequest");
         });
 
         modelBuilder.Entity<LoanRequest>(entity =>
@@ -239,6 +242,7 @@ public partial class AseItshmusContext : DbContext
 
             entity.HasOne(d => d.SavingsRequest).WithMany(p => p.SavingsBalances)
                 .HasForeignKey(d => d.SavingsRequestId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SavingsBalance_SavingsRequest");
         });
 
@@ -285,6 +289,10 @@ public partial class AseItshmusContext : DbContext
             entity.HasKey(e => e.PersonId);
 
             entity.ToTable(tb => tb.HasTrigger("AddUserLogin"));
+
+            entity.HasIndex(e => e.EmailAddress, "IX_Email").IsUnique();
+
+            entity.HasIndex(e => e.NumberId, "IX_NumberId").IsUnique();
 
             entity.Property(e => e.PersonId).HasMaxLength(12);
             entity.Property(e => e.Address1).HasMaxLength(150);

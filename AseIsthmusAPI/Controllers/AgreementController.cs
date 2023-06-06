@@ -20,19 +20,18 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] Agreement agreement)
+        public IActionResult Create(AgreementDtoIn agreementDtoIn)
         {
 
-            if (agreement.Image is not null && agreement.Image.Length > 0)
+            if (!ModelState.IsValid)
             {
-                var newAgreement = await _service.Create(agreement);
-
-                return Ok(newAgreement);
+                return BadRequest(ModelState);
             }
             else
             {
-                return BadRequest();
-            }
+                _service.Create(agreementDtoIn);
+                return Ok("Sucess");
+            }          
         }
 
     }

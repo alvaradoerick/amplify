@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
-namespace AseIsthmusAPI.Data;
+namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
 public partial class User
 {
@@ -44,36 +43,25 @@ public partial class User
 
     public DateTime? ApprovedDate { get; set; }
 
-    [JsonIgnore]
     public virtual ICollection<Agreement> Agreements { get; set; } = new List<Agreement>();
 
-    [JsonIgnore]
     public virtual ICollection<Beneficiary> Beneficiaries { get; set; } = new List<Beneficiary>();
 
-    [JsonIgnore]
     public virtual ICollection<ContributionBalance> ContributionBalances { get; set; } = new List<ContributionBalance>();
 
-    [JsonIgnore]
     public virtual District District { get; set; } = null!;
 
-    [JsonIgnore]
     public virtual ICollection<LoanBalance> LoanBalances { get; set; } = new List<LoanBalance>();
 
-    [JsonIgnore]
     public virtual ICollection<LoanRequest> LoanRequests { get; set; } = new List<LoanRequest>();
 
-    [JsonIgnore]
     public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
 
-    [JsonIgnore]
     public virtual Role Role { get; set; } = null!;
 
-    [JsonIgnore]
     public virtual ICollection<SavingsBalance> SavingsBalances { get; set; } = new List<SavingsBalance>();
 
-    [JsonIgnore]
     public virtual ICollection<SavingsRequest> SavingsRequests { get; set; } = new List<SavingsRequest>();
-    
-    [JsonIgnore]
+
     public virtual ICollection<TransactionLog> TransactionLogs { get; set; } = new List<TransactionLog>();
 }
