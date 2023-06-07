@@ -3,15 +3,17 @@ import axios from "axios";
 
 const apiUrl = process.env["VUE_APP_BASED_URL"]
 export default {
-
-
     async addCategoryAgreement({
-        _
+        rootGetters
     }, payload) {
-            console.log(_)
+        const token = rootGetters['auth/getToken'];
             const response = await axios.post(
                 `${apiUrl}/categoryagreement`,
-                payload.agreementCategory
+                payload.agreementCategory, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             )
             return response;
     },

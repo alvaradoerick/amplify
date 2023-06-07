@@ -18,6 +18,8 @@
     import {
         useToast
     } from 'primevue/usetoast';
+
+    import {roles} from "../../constants/RolesConst.js";
     const router = useRouter();
     const store = useStore();
     const toast = useToast();
@@ -97,9 +99,9 @@
         if (isValid) {
             await storeLogin();
             if (token.value !== null && token.value !== undefined) {
-                if (role.value === 1) {
+                if (role.value === roles.PRESIDENT) {
                     router.push({
-                        name: "adminDashboard"
+                        name: "dashboard"
                     });
 
                 } else {
