@@ -5,6 +5,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.HttpResults;
 using AseIsthmusAPI.Data.DTOs;
+using System.Collections;
 
 namespace AseIsthmusAPI.Services
 {
@@ -20,13 +21,11 @@ namespace AseIsthmusAPI.Services
 
         public async Task<Agreement> Create(AgreementDtoIn newAgreementDto)
         {
-           
-            
                 var agreement = new Agreement
                 {
                     Title = newAgreementDto.Title,
                     Description = newAgreementDto.Description,
-                   // Image = newAgreementDto.Image,
+                    Image = newAgreementDto.Image,
                     CategoryAgreementId = newAgreementDto.CategoryAgreementId,
                     IsActive = newAgreementDto.IsActive
                 };
@@ -36,5 +35,34 @@ namespace AseIsthmusAPI.Services
 
                 return agreement;
         }
+
+        public async Task<IEnumerable<AgreementDtoOut>> GetAll()
+        { 
+            return await _context.Agreements.Select(a => new AgreementDtoOut
+            {
+                AgreementId = a.AgreementId,
+                Title = a.Title,
+                Description = a.Description,
+                Image = a.Image,
+                CategoryAgreementId = a.CategoryAgreementId,    
+                CategoryName = a.CategoryAgreement.Description
+            }).ToListAsync();
+        }
+
+        public async Task<IEnumerable<AgreementDtoOut>> GetAgreementByCategoryId(int id)
+        {
+            var agreementByCategory =  await _context.Agreements.Where(a => a.CategoryAgreementId == id).               
+                Select(a => new AgreementDtoOut
+                {
+                    AgreementId = a.AgreementId,
+                    Title = a.Title,
+                    Description = a.Description,
+                    Image = a.Image,
+                    CategoryName = a.CategoryAgreement.Description
+                }).ToListAsync();
+           
+            return agreementByCategory;
+        }
+
     }
 }
