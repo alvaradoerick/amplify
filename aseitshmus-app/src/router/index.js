@@ -91,6 +91,22 @@ const routes = [
       },
     ]
   },
+  {
+    path: '/agreements',
+    name: 'agreements',
+    component: () => import('../layouts/AdminView.vue' /* webpackChunkName: "AdminView" */),
+    children: [
+      {
+        path: '/create-agreements',
+        name: 'createAgreement',
+        component: () => import('../views/admin/AgreementCategory.vue' /* webpackChunkName: "AgreementCategory" */),
+        meta: {
+          title: 'Crear Categoria',
+        }
+      },
+
+    ]
+  },
 ]
 
 const router = createRouter({
