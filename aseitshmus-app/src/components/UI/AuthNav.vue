@@ -6,7 +6,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/">Ingresar</router-link>
+                            <router-link class="nav-link" to="/">Iniciar Sesión</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link class="nav-link" to="/register">Registro</router-link>

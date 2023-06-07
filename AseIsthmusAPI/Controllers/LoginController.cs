@@ -76,28 +76,32 @@ namespace AseIsthmusAPI.Controllers
         [HttpPatch("setNewPassword")]
         public async Task<IActionResult> SetPassword(UpdatePasswordRequestDto updatePasswordRequestDto)
         {
-            try
+            var newPassword = await _service.SetNewPassword(updatePasswordRequestDto);
+            if (newPassword != null)
             {
-                var newPassword = await _service.UpdatePasswordByEmail(updatePasswordRequestDto);
                 return Ok(new UpdatePasswordResponseDto { NewPassword = newPassword });
-            }
-            catch (ArgumentException)
+            }            
+          else 
             {
-                return BadRequest(new { error = "Su cuenta no ha sido activada." });
+                return BadRequest(new { error = "Su solicitud no pudo enviarse." });
             }
         }
 
         [HttpPatch("resetPassword")]
-        public async Task<IActionResult> ResetPassword(UpdatePasswordRequestDto updatePasswordRequestDto)
+        public async Task<IActionResult> ResetPasswordUnauthenticated(UpdatePasswordRequestDto updatePasswordRequestDto)
         {
-            try
+            var newPassword = await _service.ResetPasswordUnauthenticated(updatePasswordRequestDto);
+            if (newPassword != null && newPassword != "1")
             {
-                var newPassword = await _service.ResetPasswordByEmail(updatePasswordRequestDto);
                 return Ok(new UpdatePasswordResponseDto { NewPassword = newPassword });
             }
-            catch (ArgumentException ex)
+            else if (newPassword == "1")
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = "Su afiliación no está activada." });
+            }
+            else
+            {
+                return BadRequest(new { error = "Su solicitud no pudo enviarse." });
             }
         }
     }

@@ -1,16 +1,67 @@
 <script setup>
     import {
-        ref
+        ref,
+        computed,
     } from 'vue';
-
+    import {
+        useStore
+    } from 'vuex';
+    import {
+        useToast
+    } from 'primevue/usetoast';
+    import {
+        useRouter
+} from 'vue-router'
+import PasswordTemplate from '../../assets/PasswordTemplate.vue';
+    
+    const store = useStore();
+    const toast = useToast();
+const router = useRouter();
+    const passwordResponse = computed(() => {
+        return store.getters["auth/getErrorResponse"];
+    });
     const resetData = ref({
         EmailAddress: null,
     })
 
-    const labelButton = ref('Enviar');
+    const emailInformation = ref({
+        to: "ear288@gmail.com",
+        subject: "Prueba desde vue",
+        //body: "<h1>Esto es una prueba</h1>"
+        body: PasswordTemplate,
+    })
+
+const storeUser = async () => {
+        await store.dispatch('auth/resetPasswordUnauthenticated', {
+            resetData: resetData.value,
+            emailInformation: emailInformation.value
+        })
+}
+    //const newPassword = "new pw"
+    const resetPassword = async (event) => {
+        event.preventDefault();
+        await storeUser();
+        if (passwordResponse.value !== null) {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: passwordResponse.value,
+                life: 2000
+            });
+        } else {
+            router.push({
+                name: "login"
+            });
+        }
+    }
+
+const labelButton = ref('Enviar');
+
+
 </script>
 
 <template>
+    <toast-component />
     <div style="margin-left: 40px;">
         <p>Por favor ingrese el correo eléctronico con el que está asociada su cuenta.</p>
         <p>Recibirá un correo con su nueva contraseña.</p>
@@ -23,7 +74,7 @@
                         placeholder="Correo eléctronico" />
                 </div>
                 <div class="form-row" style="margin-top: 40px;">
-                    <base-button :label="labelButton" type="submit" />
+                    <base-button :label="labelButton" type="submit" @click="resetPassword" />
                 </div>
             </form>
         </div>
