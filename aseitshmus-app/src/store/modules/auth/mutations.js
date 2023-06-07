@@ -11,12 +11,12 @@ export default {
         state.role = role;
     },
 
-    setErrorResponse(state, password) {
-        state.password = password;
+    setErrorResponse(state, errorResponse) {
+        state.errorResponse = errorResponse;
     },
 
-    setPassword(state, errorResponse) {
-        state.errorResponse = errorResponse;
+    setPassword(state, password) {
+        state.password = password;
     },
 
     clearToken(state) {

@@ -18,6 +18,8 @@
     import {
         useToast
     } from 'primevue/usetoast';
+
+    import {roles} from "../../constants/RolesConst.js";
     const router = useRouter();
     const store = useStore();
     const toast = useToast();
@@ -58,8 +60,6 @@
         return store.getters["auth/getRole"];
     });
 
-
-
     const v$ = useVuelidate(rules, formData);
     const validateForm = async () => {
         const result = await v$.value.$validate();
@@ -95,28 +95,35 @@
         event.preventDefault();
         const isValid = await validateForm();
         if (isValid) {
+            try{
             await storeLogin();
-            if (token.value !== null && token.value !== undefined) {
-                if (role.value === 1) {
-                    router.push({
-                        name: "adminDashboard"
-                    });
+            if (token.value) {
+        formData.value.EmailAddress = null;
+        formData.value.Pw = null;
 
-                } else {
-                    router.push({
-                        name: "myDashboard"
-                    });
-                }
-
-            } else {
-                toast.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: loginResponse.value,
-                    life: 2000
-                });
-            }
+        if (role.value === roles.PRESIDENT) {
+          router.push({ name: "dashboard" });
+        } else {
+          router.push({ name: "myDashboard" });
         }
+
+    } else {
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: loginResponse.value || 'An error occurred during login.',
+          life: 2000
+        });
+      }
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An error occurred during login.',
+        life: 2000
+      });
+        }
+    }
     };
 
     const forgotPassword = () => {

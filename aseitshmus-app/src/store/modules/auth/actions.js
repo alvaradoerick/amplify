@@ -76,7 +76,7 @@ export default {
             const emailInformation = payload.emailInformation;
             const resetData = payload.resetData;
             const response = await axios.patch(
-                `${apiUrl}/login/resetPassword`,
+                `${apiUrl}/password/resetPassword`,
                 resetData
             );
             await dispatch('sendResetPasswordEmail', {

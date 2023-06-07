@@ -1,41 +1,37 @@
 
 <script setup>
-import {
-    useStore
-} from 'vuex'
-import {
-    computed
-} from 'vue';
+// import {
+//     useStore
+// } from 'vuex'
+// import {
+//     computed
+// } from 'vue';
 
-const store = useStore();
-
-
-const storeLogin = async () => {
-    await store.dispatch('users/getById')
-}
+// const store = useStore();
 
 
-const userData = computed(() => {
-    return store.getters["users/getUsers"];
-});
+// const storeLogin = async () => {
+//     await store.dispatch('users/getById')
+// }
 
-const displayUser = async () => {
-    
-    await storeLogin();
-    console.log(userData.value)
-    
-};
+
+// const userData = computed(() => {
+//     return store.getters["users/getUsers"];
+// });
+
 
 
 </script>
 
 
 <template >
-    <toast-component />
+<template >
     <div class="card p-fluid">
-       home page
-       <button @click="displayUser">delete al boton</button>
+       user home page
+    fuera de scope
     </div>
+</template>
+
 </template>
 
 
