@@ -55,8 +55,13 @@ const storeUser = async () => {
         }
     }
 
-const labelButton = ref('Enviar');
-
+const sendButton = ref('Enviar');
+const cancelButton = ref('Cancelar');
+const loginPage = () => {
+        router.push({
+            name: "login"
+        });
+    }
 
 </script>
 
@@ -68,17 +73,18 @@ const labelButton = ref('Enviar');
     </div>
     <div class="center-container">
         <div class="container">
-            <form>
                 <div class="form-row">
                     <input-text class="input-text " type="email" id="email-address" v-model="resetData.EmailAddress"
                         placeholder="Correo eléctronico" />
                 </div>
-                <div class="form-row" style="margin-top: 40px;">
-                    <base-button :label="labelButton" type="submit" @click="resetPassword" />
-                </div>
-            </form>
         </div>
+        
     </div>
+    <div class="actions">
+            
+            <base-button :label="cancelButton" type="login" @click="loginPage" />
+            <base-button :label="sendButton" type="submit" @click="resetPassword" />
+        </div>
 </template>
 
 <style scoped>
@@ -109,5 +115,12 @@ const labelButton = ref('Enviar');
         display: flex;
         width: 300px;
         align-items: center;
+    }
+
+    .actions {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
     }
 </style>
