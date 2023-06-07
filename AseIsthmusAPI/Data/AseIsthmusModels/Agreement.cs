@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
@@ -22,4 +23,7 @@ public partial class Agreement
     public virtual CategoryAgreement CategoryAgreement { get; set; } = null!;
 
     public virtual User? Person { get; set; }
+
+    [JsonIgnore]
+    public virtual CategoryAgreement CategoryAgreementDescriptionNavigation { get; set; } = null!;
 }

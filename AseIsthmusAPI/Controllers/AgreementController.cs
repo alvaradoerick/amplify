@@ -5,6 +5,7 @@ using AseIsthmusAPI.Services;
 using System.Collections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AseIsthmusAPI.Controllers
 {
@@ -20,18 +21,38 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(AgreementDtoIn agreementDtoIn)
+        public async Task<IActionResult> Create(AgreementDtoIn agreementDtoIn)
         {
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             else
             {
-                _service.Create(agreementDtoIn);
+                await _service.Create(agreementDtoIn);
                 return Ok("Sucess");
-            }          
+            }
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<AgreementDtoOut>> Get()
+        {
+            return await _service.GetAll();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByCategoryId(int id)
+        {
+            var agreement = await _service.GetAgreementByCategoryId(id);
+
+            if (!agreement.Any() )
+            {
+                return NoContent();
+            }
+            else
+            {
+                return Ok(agreement);  
+            }           
         }
 
     }
