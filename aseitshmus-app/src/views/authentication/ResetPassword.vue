@@ -89,6 +89,7 @@ console.log(v$)
                 detail: passwordResponse.value,
                 life: 2000
             });
+            store.commit('auth/clearErrorResponse');
         } else {     
             toast.add({
                 severity: 'success',
