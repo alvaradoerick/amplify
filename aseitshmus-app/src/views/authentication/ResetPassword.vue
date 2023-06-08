@@ -1,4 +1,9 @@
 <script setup>
+    import useVuelidate from '@vuelidate/core'
+    import {
+        email,
+        required
+    } from '@vuelidate/validators'
     import {
         ref,
         computed,
@@ -12,7 +17,6 @@
     import {
         useRouter
 } from 'vue-router'
-import PasswordTemplate from '../../assets/PasswordTemplate.vue';
     
     const store = useStore();
     const toast = useToast();
@@ -24,11 +28,16 @@ const router = useRouter();
         EmailAddress: null,
     })
 
+    const rules = {
+        EmailAddress: {
+            email,
+            required
+        }
+    }
     const emailInformation = ref({
         to: "ear288@gmail.com",
         subject: "Prueba desde vue",
-        //body: "<h1>Esto es una prueba</h1>"
-        body: PasswordTemplate,
+        body: "<h1>Esto es una prueba</h1>"
     })
 
 const storeUser = async () => {
@@ -38,9 +47,41 @@ const storeUser = async () => {
         })
 }
     //const newPassword = "new pw"
+    const v$ = useVuelidate(rules, resetData);
+    const validateForm = async () => {
+        const result = await v$.value.$validate();
+console.log(v$)
+        if (!result) {
+            if (v$.value.$errors[0].$validator === 'required') {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Correo es requerido.',
+                    life: 2000
+                });
+                return false
+            } else if (v$.value.$errors[0].$validator === 'email')   {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'El formato del correo es incorrecto.',
+                    life: 2000
+                });}
+                return false
+           
+            
+        }
+        return true;
+    }
+
     const resetPassword = async (event) => {
         event.preventDefault();
-        await storeUser();
+        const isValid = await validateForm();
+        console.log(passwordResponse.value)
+        if (isValid) {
+            try
+            { 
+                await storeUser();
         if (passwordResponse.value !== null) {
             toast.add({
                 severity: 'error',
@@ -48,12 +89,27 @@ const storeUser = async () => {
                 detail: passwordResponse.value,
                 life: 2000
             });
-        } else {
-            router.push({
-                name: "login"
-            });
+        } else {     
+            toast.add({
+                severity: 'success',
+                summary: 'Felicidades',
+                detail: "Su nueva contraseña ha sido enviada.",
+                life: 2000
+            });  
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+        router.push({ name: "login" });
         }
+       
     }
+    catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'An error occurred during login.',
+        life: 2000
+      });
+        }
+    }}
 
 const sendButton = ref('Enviar');
 const cancelButton = ref('Cancelar');

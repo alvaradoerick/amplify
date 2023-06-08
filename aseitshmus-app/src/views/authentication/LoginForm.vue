@@ -42,7 +42,6 @@
         }
     }
 
-
     const storeLogin = async () => {
         await store.dispatch('auth/login', {
             formData: formData.value,
@@ -55,6 +54,7 @@
     const loginResponse = computed(() => {
         return store.getters["auth/getErrorResponse"];
     });
+
 
     const role = computed(() => {
         return store.getters["auth/getRole"];
@@ -102,24 +102,30 @@
         formData.value.Pw = null;
 
         if (role.value === roles.PRESIDENT) {
-          router.push({ name: "dashboard" });
-        } else {
-          router.push({ name: "myDashboard" });
+            setTimeout(() => {
+                router.push({ name: "dashboard" });
+        }, 500);
+        }
+         else {
+            setTimeout(() => {
+                router.push({ name: "myDashboard" });
+        }, 500);
         }
 
     } else {
         toast.add({
           severity: 'error',
           summary: 'Error',
-          detail: loginResponse.value || 'An error occurred during login.',
-          life: 2000
+          detail: loginResponse.value || 'Un error ocurrió.',
+          life: 2000,         
         });
+        store.commit('auth/clearErrorResponse');
       }
     } catch (error) {
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'An error occurred during login.',
+        detail: 'Un error ocurrió.',
         life: 2000
       });
         }

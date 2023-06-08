@@ -15,6 +15,10 @@ export default {
         state.errorResponse = errorResponse;
     },
 
+    clearErrorResponse(state) {
+        state.errorResponse = null;
+    },
+    
     setPassword(state, password) {
         state.password = password;
     },
