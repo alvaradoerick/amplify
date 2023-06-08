@@ -65,6 +65,7 @@
 
     const validateForm = async () => {
         const result = await v$.value.$validate();
+       
         if (!result) {
             if (formData.value.email === null || formData.value.Pw === null) {
                 toast.add({
@@ -98,15 +99,12 @@
 
     const onSend = async (event) => {
         event.preventDefault();
-        console.log(v$)
+
         const isValid = await validateForm();
         if (isValid) {
             try{
             await storeLogin();
             if (token.value) {
-        formData.value.EmailAddress = null;
-        formData.value.Pw = null;
-        console.log(roles.PRESIDENT)
         if (role.value === roles.ADMINISTRATOR) {
             toast.add({
                     severity: 'success',
@@ -160,10 +158,10 @@
             <form>              
                 <div class="form-row">               
                     <input-text class="input-text " type="email" id="email-address" v-model="formData.EmailAddress"
-                        placeholder="Correo eléctronico" :class="{'hasError': v$?.EmailAddress?.$error || isValiData}" />           
+                        placeholder="Correo eléctronico" :class="{'hasError': (v$?.EmailAddress?.$error || isValiData) }" />           
             </div>
                 <div class="form-row">
-                    <input-text class="input-text" id="password" :class="{ 'hasError': v$?.Pw?.$error || isValiData }" type="password" v-model="formData.Pw"
+                    <input-text class="input-text" id="password" :class="{ 'hasError': (v$?.Pw?.$error || isValiData) }" type="password" v-model="formData.Pw"
                         autocomplete="formData.Pw" placeholder="Contraseña" />
                 </div>
                 <div class="form-row sign-in">
@@ -187,8 +185,7 @@
         height: 50vh;
     }
     .hasError  {
-    border-color: red;
-        
+    border-color: red;        
     }
 
     .container {

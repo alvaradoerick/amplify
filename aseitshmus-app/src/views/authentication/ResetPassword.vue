@@ -67,9 +67,7 @@ console.log(v$)
                     detail: 'El formato del correo es incorrecto.',
                     life: 2000
                 });}
-                return false
-           
-            
+                return false                   
         }
         return true;
     }

@@ -112,9 +112,9 @@
         <div class="header">
             <div class="form-row">
                 <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
-                    v-model="agreementCategory.Description" />
+                    v-model="agreementCategory.Description"  :class="{'hasError': v$?.Description?.$error}"/>
                 <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
-                    placeholder="Estado" class="dropdown" />
+                    placeholder="Estado" class="dropdown" :class="{'hasError': v$?.selectedState?.$error}"/>
             </div>
         </div>
 
@@ -141,7 +141,9 @@
         flex-direction: column;
         min-height: 10vh;
     }
-
+    .hasError  {
+    border-color: red; 
+    }
 
     .form-row {
         margin-top: 6rem;
