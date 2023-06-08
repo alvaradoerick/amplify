@@ -100,16 +100,24 @@
             if (token.value) {
         formData.value.EmailAddress = null;
         formData.value.Pw = null;
-
-        if (role.value === roles.PRESIDENT) {
-            setTimeout(() => {
-                router.push({ name: "dashboard" });
-        }, 500);
+        console.log(roles.PRESIDENT)
+        if (role.value === roles.ADMINISTRATOR) {
+            toast.add({
+                    severity: 'success',
+                    detail: "Bienvenid@",
+                    life: 2000
+                });
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+            router.push({ name: "dashboard" });
         }
          else {
-            setTimeout(() => {
+            toast.add({
+                    severity: 'success',
+                    detail: "Bienvenid@",
+                    life: 2000
+                });
+                await new Promise((resolve) => setTimeout(resolve, 1000));
                 router.push({ name: "myDashboard" });
-        }, 500);
         }
 
     } else {

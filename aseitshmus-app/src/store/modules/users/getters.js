@@ -6,5 +6,8 @@ export default {
         return id => {
             return state.users.find(user => user.id === id);
         }
-    }
+    },
+    getErrorResponse(state) {
+        return state.errorResponse;
+    },
 }

@@ -29,10 +29,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/">Ingresar</router-link>
-                        </li>
-                        <li class="nav-item">
-                            <router-link class="nav-link" to="/register">Registro</router-link>
+                            <router-link class="nav-link" :to="{name:'dashboard'}">Principal</router-link>
                         </li>
                         <li class="nav-item" @click="showSubMenu1" @mouseleave="hideSubMenu1">
                             <a class="nav-link">Convenios</a>

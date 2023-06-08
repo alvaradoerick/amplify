@@ -77,7 +77,6 @@ console.log(v$)
     const resetPassword = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
-        console.log(passwordResponse.value)
         if (isValid) {
             try
             { 
@@ -106,7 +105,7 @@ console.log(v$)
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'An error occurred during login.',
+        detail: 'Un error ocurrió.',
         life: 2000
       });
         }

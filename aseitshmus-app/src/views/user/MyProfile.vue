@@ -20,12 +20,21 @@
     } from 'primevue/usetoast';
     const toast = useToast();
     const rules = {
-        PhoneNumber: required,
-        BankAccount: required,
-        Address1: required,
-        Address2: required,
-        DistrictId: required,
-        PostalCode: required
+        PhoneNumber: {
+            required
+        },
+        BankAccount: {
+            required
+        },
+        Address1: {
+            required
+        },
+        DistrictId: {
+            required
+        },
+        PostalCode: {
+            required
+        }
     }
 
     const router = useRouter();
@@ -107,27 +116,22 @@ const storeUser = async () => {
     const v$ = useVuelidate(rules, personalInfo);
     const validateForm = async () => {
         const result = await v$.value.$validate();
-        if (result) {
-            if (personalInfo.value.PhoneNumber.trim() === '' ||
-                personalInfo.value.BankAccount.trim() === '' ||
-                personalInfo.value.Address1.trim() === '' ||
-                personalInfo.value.DistrictId === null ||
-                selectedCanton.value === null ||
-                selectedProvincia.value === null ||
-             selectedDistrito.value === null ||
-                personalInfo.value.PostalCode.trim() === '') {
+        console.log(v$)
+        if (!result) {
+            if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Revise que los campos no esten vacios.',
-                    life: 1000
+                    detail: 'Todos los campos son requeridos.',
+                    life: 2000
                 });
-                return false
+               
             }
             return false
         }
         return true;
     }
+
     const fetchUserData = async () => {
         await store.dispatch('users/getById');
         userData = store.getters["users/getUsers"];
@@ -153,27 +157,36 @@ const storeUser = async () => {
             .catch(error => {
                 console.error(error);
             });
-
     };
 
-  
 
     const submitData = async (event) => {
         event.preventDefault();
-        const isValid = validateForm();
-        console.log(validateForm())
+        const isValid = await validateForm();
         if (isValid) {
-            storeUser();           
-            toast.add({
-            severity: 'success',
-            summary: 'Felicidades',
-            detail: 'Sus cambios han sido guardados.',
-                life: 2000
-            });
-         setTimeout(() => {
-            //router.push({ name: 'myDashboard' });
-        }, 500);
+            if (isValid) {
+            try {
+              await  storeUser();
+                toast.add({
+                    severity: 'success',
+                    summary: 'Felicidades',
+                    detail: "Sus cambios han sido guardados.",
+                    life: 2000
+                });
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                router.push({
+                    name: 'myDashboard'
+                });
+            } catch (error) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Un error ocurrió.',
+                    life: 2000
+                });
+            }
         }
+    }
     }
 
     onMounted(fetchUserData);

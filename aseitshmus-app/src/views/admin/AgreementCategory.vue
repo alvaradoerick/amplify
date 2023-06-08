@@ -1,4 +1,8 @@
 <script setup>
+    import useVuelidate from '@vuelidate/core'
+    import {
+        required
+    } from '@vuelidate/validators'
     import {
         useStore
     } from 'vuex'
@@ -12,8 +16,9 @@
         useToast
     } from 'primevue/usetoast';
 
-    const router = useRouter();
+    
     const store = useStore();
+    const router = useRouter();
     const toast = useToast();
     const backLabel = 'Cancelar';
     const homePage = () => {
@@ -22,7 +27,7 @@
         });
     }
     const sendLabel = 'Crear';
-    const selectedState = ref();
+    const selectedState = ref(1);
     const status = ref([{
             name: 'Activo',
             value: 1
@@ -38,44 +43,86 @@
         IsActive: selectedState
     })
 
-    const storeLogin = async () => {
+    const rules = {
+        Description: {
+            required
+        },
+        IsActive:
+        {
+            required
+        }
+    }
+
+    const v$ = useVuelidate(rules, agreementCategory);
+
+    const validateForm = async () => {
+        const result = await v$.value.$validate();
+        if (!result) {
+            if (v$.value.$errors[0].$validator === 'required') {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Todos los campos son requeridos.',
+                    life: 2000
+                });              
+            }
+            return false
+        }
+        return true;
+    }
+
+    const storeCategory = async () => {
         await store.dispatch('agreements/addCategoryAgreement', {
             agreementCategory: agreementCategory.value,
         })
     }
-   const onSend = async (event) => {
-    event.preventDefault();
-    storeLogin();           
-            toast.add({
-            severity: 'success',
-            summary: 'Felicidades',
-            detail: 'Sus cambios han sido guardados.',
-                life: 2000
-            });
-         setTimeout(() => {
-            router.push({ name: 'dashboard' });
-        }, 500);
-   }
+    const onSend = async (event) => {
+        event.preventDefault();
+        const isValid = await validateForm();
+        if (isValid) {
+            try {
+              await  storeCategory();
+                toast.add({
+                    severity: 'success',
+                    summary: 'Felicidades',
+                    detail: "Su categoría ha sido agregada.",
+                    life: 2000
+                });
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                router.push({
+                    name: 'dashboard'
+                });
+            } catch (error) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Un error ocurrió.',
+                    life: 2000
+                });
+            }
+        }
+    }
 </script>
 
 <template>
 
-<div class="main">
+    <div class="main">
         <toast-component />
         <p>La categoría creada deberá ser asignada al convenio.</p>
-        <div class="header">     
+        <div class="header">
             <div class="form-row">
-                     <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text" v-model="agreementCategory.Description"/>
+                <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
+                    v-model="agreementCategory.Description" />
                 <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
                     placeholder="Estado" class="dropdown" />
             </div>
         </div>
-        
+
     </div>
     <div class="actions">
-            <base-button :label="backLabel" @click="homePage" :type="'button'" />
-            <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
-        </div>
+        <base-button :label="backLabel" @click="homePage" :type="'button'" />
+        <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
+    </div>
 </template>
 <style scoped="scoped">
     .main {
