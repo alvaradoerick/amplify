@@ -4,12 +4,13 @@
   </div>
 </template>
 <style>
-  
+
     .dropdown, .input-text {
         display: flex;
-        width: 300px;      
+        width: 300px;   
     }
 
+    
     .links {
         color: #253E8B;
         display: flex;
@@ -24,4 +25,6 @@
     .links:hover {
         color: #fab03f;
     }
+
+   
 </style>

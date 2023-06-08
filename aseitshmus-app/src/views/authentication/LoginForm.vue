@@ -61,6 +61,8 @@
     });
 
     const v$ = useVuelidate(rules, formData);
+
+
     const validateForm = async () => {
         const result = await v$.value.$validate();
         if (!result) {
@@ -91,8 +93,12 @@
         }
         return true;
     }
+    const isValiData =  ref(false)
+
+
     const onSend = async (event) => {
         event.preventDefault();
+        console.log(v$)
         const isValid = await validateForm();
         if (isValid) {
             try{
@@ -121,6 +127,7 @@
         }
 
     } else {
+        isValiData.value = true
         toast.add({
           severity: 'error',
           summary: 'Error',
@@ -139,7 +146,7 @@
         }
     }
     };
-
+   
     const forgotPassword = () => {
         router.push({
             name: "resetPassword"
@@ -150,13 +157,13 @@
     <div class="center-container">
         <toast-component />
         <div class="container">
-            <form>
-                <div class="form-row">
+            <form>              
+                <div class="form-row">               
                     <input-text class="input-text " type="email" id="email-address" v-model="formData.EmailAddress"
-                        placeholder="Correo eléctronico" />
-                </div>
+                        placeholder="Correo eléctronico" :class="{'hasError': v$?.EmailAddress?.$error || isValiData}" />           
+            </div>
                 <div class="form-row">
-                    <input-text class="input-text" id="password" type="password" v-model="formData.Pw"
+                    <input-text class="input-text" id="password" :class="{ 'hasError': v$?.Pw?.$error || isValiData }" type="password" v-model="formData.Pw"
                         autocomplete="formData.Pw" placeholder="Contraseña" />
                 </div>
                 <div class="form-row sign-in">
@@ -178,6 +185,10 @@
         justify-content: center;
         align-items: center;
         height: 50vh;
+    }
+    .hasError  {
+    border-color: red;
+        
     }
 
     .container {

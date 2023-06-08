@@ -73,7 +73,8 @@ console.log(v$)
         }
         return true;
     }
-
+    
+    const isValiData =  ref(false)
     const resetPassword = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
@@ -82,6 +83,7 @@ console.log(v$)
             { 
                 await storeUser();
         if (passwordResponse.value !== null) {
+            isValiData.value = true
             toast.add({
                 severity: 'error',
                 summary: 'Error',
@@ -131,13 +133,12 @@ const loginPage = () => {
         <div class="container">
                 <div class="form-row">
                     <input-text class="input-text " type="email" id="email-address" v-model="resetData.EmailAddress"
-                        placeholder="Correo eléctronico" />
+                        placeholder="Correo eléctronico" :class="{'hasError': v$?.EmailAddress?.$error || isValiData }"/>
                 </div>
         </div>
         
     </div>
-    <div class="actions">
-            
+    <div class="actions">           
             <base-button :label="cancelButton" type="login" @click="loginPage" />
             <base-button :label="sendButton" type="submit" @click="resetPassword" />
         </div>
@@ -150,7 +151,9 @@ const loginPage = () => {
         align-items: center;
         height: 40vh;
     }
-
+    .hasError  {
+    border-color: red; 
+    }
     .container {
         display: flex;
         flex-direction: column;
