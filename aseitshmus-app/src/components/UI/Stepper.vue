@@ -45,7 +45,6 @@ defineProps({
     align-items: center;
 }
 
-
 .stepper-item-circle {
     width: 30px;
     height: 30px;
