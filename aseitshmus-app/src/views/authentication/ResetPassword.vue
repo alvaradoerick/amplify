@@ -1,4 +1,9 @@
 <script setup>
+    import useVuelidate from '@vuelidate/core'
+    import {
+        email,
+        required
+    } from '@vuelidate/validators'
     import {
         ref,
         computed,
@@ -12,7 +17,6 @@
     import {
         useRouter
 } from 'vue-router'
-import PasswordTemplate from '../../assets/PasswordTemplate.vue';
     
     const store = useStore();
     const toast = useToast();
@@ -24,11 +28,16 @@ const router = useRouter();
         EmailAddress: null,
     })
 
+    const rules = {
+        EmailAddress: {
+            email,
+            required
+        }
+    }
     const emailInformation = ref({
         to: "ear288@gmail.com",
         subject: "Prueba desde vue",
-        //body: "<h1>Esto es una prueba</h1>"
-        body: PasswordTemplate,
+        body: "<h1>Esto es una prueba</h1>"
     })
 
 const storeUser = async () => {
@@ -38,22 +47,69 @@ const storeUser = async () => {
         })
 }
     //const newPassword = "new pw"
+    const v$ = useVuelidate(rules, resetData);
+    const validateForm = async () => {
+        const result = await v$.value.$validate();
+console.log(v$)
+        if (!result) {
+            if (v$.value.$errors[0].$validator === 'required') {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Correo es requerido.',
+                    life: 2000
+                });
+                return false
+            } else if (v$.value.$errors[0].$validator === 'email')   {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'El formato del correo es incorrecto.',
+                    life: 2000
+                });}
+                return false                   
+        }
+        return true;
+    }
+    
+    const isValiData =  ref(false)
     const resetPassword = async (event) => {
         event.preventDefault();
-        await storeUser();
+        const isValid = await validateForm();
+        if (isValid) {
+            try
+            { 
+                await storeUser();
         if (passwordResponse.value !== null) {
+            isValiData.value = true
             toast.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: passwordResponse.value,
                 life: 2000
             });
-        } else {
-            router.push({
-                name: "login"
-            });
+            store.commit('auth/clearErrorResponse');
+        } else {     
+            toast.add({
+                severity: 'success',
+                summary: 'Felicidades',
+                detail: "Su nueva contraseña ha sido enviada.",
+                life: 2000
+            });  
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+        router.push({ name: "login" });
         }
+       
     }
+    catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Un error ocurrió.',
+        life: 2000
+      });
+        }
+    }}
 
 const sendButton = ref('Enviar');
 const cancelButton = ref('Cancelar');
@@ -75,13 +131,12 @@ const loginPage = () => {
         <div class="container">
                 <div class="form-row">
                     <input-text class="input-text " type="email" id="email-address" v-model="resetData.EmailAddress"
-                        placeholder="Correo eléctronico" />
+                        placeholder="Correo eléctronico" :class="{'hasError': v$?.EmailAddress?.$error || isValiData }"/>
                 </div>
         </div>
         
     </div>
-    <div class="actions">
-            
+    <div class="actions">           
             <base-button :label="cancelButton" type="login" @click="loginPage" />
             <base-button :label="sendButton" type="submit" @click="resetPassword" />
         </div>
@@ -94,7 +149,9 @@ const loginPage = () => {
         align-items: center;
         height: 40vh;
     }
-
+    .hasError  {
+    border-color: red; 
+    }
     .container {
         display: flex;
         flex-direction: column;

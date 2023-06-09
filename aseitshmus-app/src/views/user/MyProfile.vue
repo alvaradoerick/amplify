@@ -20,12 +20,21 @@
     } from 'primevue/usetoast';
     const toast = useToast();
     const rules = {
-        PhoneNumber: required,
-        BankAccount: required,
-        Address1: required,
-        Address2: required,
-        DistrictId: required,
-        PostalCode: required
+        PhoneNumber: {
+            required
+        },
+        BankAccount: {
+            required
+        },
+        Address1: {
+            required
+        },
+        DistrictId: {
+            required
+        },
+        PostalCode: {
+            required
+        }
     }
 
     const router = useRouter();
@@ -107,27 +116,22 @@ const storeUser = async () => {
     const v$ = useVuelidate(rules, personalInfo);
     const validateForm = async () => {
         const result = await v$.value.$validate();
-        if (result) {
-            if (personalInfo.value.PhoneNumber.trim() === '' ||
-                personalInfo.value.BankAccount.trim() === '' ||
-                personalInfo.value.Address1.trim() === '' ||
-                personalInfo.value.DistrictId === null ||
-                selectedCanton.value === null ||
-                selectedProvincia.value === null ||
-             selectedDistrito.value === null ||
-                personalInfo.value.PostalCode.trim() === '') {
+        console.log(v$)
+        if (!result) {
+            if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
                     severity: 'error',
                     summary: 'Error',
-                    detail: 'Revise que los campos no esten vacios.',
-                    life: 1000
+                    detail: 'Por favor revisar los campos en rojo.',
+                    life: 2000
                 });
-                return false
+               
             }
             return false
         }
         return true;
     }
+
     const fetchUserData = async () => {
         await store.dispatch('users/getById');
         userData = store.getters["users/getUsers"];
@@ -153,27 +157,36 @@ const storeUser = async () => {
             .catch(error => {
                 console.error(error);
             });
-
     };
 
-  
 
     const submitData = async (event) => {
         event.preventDefault();
-        const isValid = validateForm();
-        console.log(validateForm())
+        const isValid = await validateForm();
         if (isValid) {
-            storeUser();           
-            toast.add({
-            severity: 'success',
-            summary: 'Felicidades',
-            detail: 'Sus cambios han sido guardados.',
-                life: 2000
-            });
-         setTimeout(() => {
-            //router.push({ name: 'myDashboard' });
-        }, 500);
+            if (isValid) {
+            try {
+              await  storeUser();
+                toast.add({
+                    severity: 'success',
+                    summary: 'Felicidades',
+                    detail: "Sus cambios han sido guardados.",
+                    life: 2000
+                });
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                router.push({
+                    name: 'myDashboard'
+                });
+            } catch (error) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Un error ocurrió.',
+                    life: 2000
+                });
+            }
         }
+    }
     }
 
     onMounted(fetchUserData);
@@ -194,28 +207,28 @@ const storeUser = async () => {
         <div class="header">
             <div class="form-row">
                 <input-text class="input-text form-margin-right" id="employee-phone" type="text"
-                    placeholder="Número telefónico" v-model="personalInfo.PhoneNumber" />
+                    placeholder="Número telefónico" v-model="personalInfo.PhoneNumber" :class="{'hasError': (v$?.BankAccount?.$error) }"/>
                 <input-text class="input-text" id="employee-account" type="text" placeholder="Cuenta IBAN"
-                    v-model="personalInfo.BankAccount" />
+                    v-model="personalInfo.BankAccount"  :class="{'hasError': (v$?.BankAccount?.$error) }"/>
             </div>
             <div class="form-row">
                 <input-text placeholder="Dirección 1" class="dropdown form-margin-right" id="employee-address1"
-                    type="text" v-model="personalInfo.Address1" />
+                    type="text" v-model="personalInfo.Address1"  :class="{'hasError': (v$?.Address1?.$error ) }"/>
                 <input-text placeholder="Dirección 2" class="input-text" id="employee-address2" type="text"
                     v-model="personalInfo.Address2" />
             </div>
             <div class="form-row">
                 <drop-down class="dropdown form-margin-right" :options="provincias" v-model="selectedProvincia"
                     optionLabel="ProvinceName" optionValue="ProvinceId" @onChange="onProvinciaChange"
-                    placeholder="Provincia" />
+                    placeholder="Provincia" :class="{'hasError': (v$?.selectedProvincia?.$error) }"/>
                 <drop-down class="dropdown" :options="cantones" v-model="selectedCanton" optionLabel="CantonName"
-                    optionValue="CantonId" @onChange="onCantonChange" placeholder="Cantón" />
+                    optionValue="CantonId" @onChange="onCantonChange" placeholder="Cantón" :class="{'hasError': (v$?.selectedCanton?.$error) }"/>
             </div>
             <div class="form-row">
                 <drop-down class="dropdown form-margin-right" :options="distritos" v-model="selectedDistrito"
-                    optionLabel="DistrictName" optionValue="DistrictId" placeholder="Distrito" />
+                    optionLabel="DistrictName" optionValue="DistrictId" placeholder="Distrito" :class="{'hasError': (v$?.selectedDistrito?.$error) }"/>
                 <input-text class="input-text" id="employee-zip" type="text" v-model="personalInfo.PostalCode"
-                    placeholder="Código postal" />
+                    placeholder="Código postal" :class="{'hasError': (v$?.PostalCode?.$error) }"/>
             </div>
         </div>
         <div class="actions">
@@ -259,6 +272,9 @@ const storeUser = async () => {
         margin-left: 6rem;
     }
 
+    .hasError  {
+    border-color: red;        
+    }
     .actions {
         display: flex;
         flex: 1;

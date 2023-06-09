@@ -10,21 +10,17 @@
         ref,
         computed
     } from 'vue';
-    //import {
-     //   useRouter
-    //} from 'vue-router';
     import {
         useToast
     } from 'primevue/usetoast';
-    // import useVuelidate from '@vuelidate/core'
-    // import {
-    //     email,
-    //     required
-    // } from '@vuelidate/validators'
+    import useVuelidate from '@vuelidate/core'
+    import {
+        email,
+        required
+    } from '@vuelidate/validators'
 
     import Stepper from '@/components/UI/Stepper.vue'
 import RegistrationConfirmation from '@/components/authentication/RegistrationConfirmation.vue';
-   // const router = useRouter();
 const store = useStore()
 const toast = useToast();
     
@@ -85,60 +81,33 @@ const toast = useToast();
         beneficiaryInfo.value = value
     }
 
-    // const rules = {
-    //     PersonId: {
-    //         required
-    //     },
-    //     NumberId: {
-    //         required
-    //     },
-    //     firstName: {
-    //         required
-    //     },
-    //     lastName1: {
-    //         required
-    //     },
-    //     Nationality: {
-    //         required
-    //     },
-    //     DateBirth: {
-    //         required
-    //     },
-    //     WorkStartDate: {
-    //         required
-    //     },
-    //     PhoneNumber: {
-    //         required
-    //     },
-    // EmailAddress: {
-    //     email,
-    //     required
-    // },
-    //     BankAccount: {
-    //         required
-    //     },
-    //     Address1: {
-    //         required
-    //     },
-    //     DistrictId: {
-    //         required
-    //     },
-    //     PostalCode: {
-    //         required
-    //     },
-    //     BeneficiaryName: {
-    //         required
-    //     },
-    //     BeneficiaryNumberId: {
-    //         required
-    //     },
-    //     BeneficiaryRelation: {
-    //         required
-    //     },
-    //     BeneficiaryPercentage: {
-    //         required
-    //     }
-    // }
+    const rules = {
+        personalInfo: {
+    PersonId: { required },
+    NumberId: { required },
+    firstName: { required },
+    lastName1: { required },
+    Nationality: { required },
+    DateBirth: { required },
+  },
+  workInfo: {
+    WorkStartDate: { required },
+    PhoneNumber: { required },
+    EmailAddress: { required, email },
+    BankAccount: { required },
+  },
+  addressInfo: {
+    Address1: { required },
+    DistrictId: { required },
+    PostalCode: { required },
+  },
+  beneficiaryInfo: {
+    BeneficiaryName: { required },
+    BeneficiaryNumberId: { required },
+    BeneficiaryRelation: { required },
+    BeneficiaryPercentage: { required },
+  },
+    }
 
     const loginResponse = computed(() => {
         return store.getters["auth/getErrorResponse"];
@@ -153,74 +122,64 @@ const toast = useToast();
         })
     }
 
+    const v$ = useVuelidate(rules, personalInfo, workInfo, addressInfo, beneficiaryInfo);
 
-//const resetValidation = () => {
-//     v$.value.$reset();
-// };
-//const v$ = useVuelidate(rules, personalInfo, workInfo, addressInfo, beneficiaryInfo);
-// const validateForm = async () => {      
-//     const result = await v$.value.$validate();
-//         if (!result) {
-//             if (
-//                 personalInfo.value.PersonId === null ||  
-//             personalInfo.value.NumberId === null ||
-//             personalInfo.value.firstName === null ||
-//             personalInfo.value.lastName1 === null ||
-//             personalInfo.value.Nationality === null ||
-//             personalInfo.value.DateBirth === null ||
-//             workInfo.value.WorkStartDate === null ||
-//             workInfo.value.PhoneNumber === null ||
-//             workInfo.value.EmailAddress === null ||
-//             workInfo.value.BankAccount === null ||
-//             addressInfo.value.Address1 === null ||
-//             addressInfo.value.DistrictId === null ||
-//             addressInfo.value.PostalCode === null ||
-//                 beneficiaryInfo.value.BeneficiaryName === null ||
-//             beneficiaryInfo.value.BeneficiaryName === undefined ||
-//                 beneficiaryInfo.value.BeneficiaryNumberId === null ||
-//              beneficiaryInfo.value.BeneficiaryNumberId === undefined ||
-//                 beneficiaryInfo.value.BeneficiaryRelation === null ||
-//              beneficiaryInfo.value.BeneficiaryRelation === undefined ||
-//                 beneficiaryInfo.value.BeneficiaryPercentage === null ||
-//              beneficiaryInfo.value.BeneficiaryPercentage === undefined) {
-//             toast.add({
-//                 severity: 'error',
-//                 summary: 'Error',
-//                 detail: 'Algunos campos requeridos están en blanco.',
-//                 life: 2000
-//             });
-//             return false; }
-       
-//     else if (v$.value.EmailAddress.$error) {
-//         toast.add({
-//             severity: 'error',
-//             summary: 'Error',
-//             detail: 'El formato del correo es incorrecto.',
-//             life: 2000
-//         });
-//         return false;
-//     }
-//     return true;
-//         }       
-// }
+    const validateForm = async () => {
+        const result = await v$.value.$validate();
+        console.log(v$)
+        console.log(result)
+  if (!result) {
+            if (v$.value.$errors[0].$validator === 'required') {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Por favor revisar los campos requeridos',
+                    life: 2000
+                });
+                return false
+            } else if (v$.value.$silentErrors[0].$validator === 'email')   {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'El formato del correo es incorrecto.',
+                    life: 2000
+                });}
+                return false                   
+        }
+        return true;
+    };
+
+    const isValiData =  ref(false)
+
 const submitData = async (event) => {
     event.preventDefault();
-   // resetValidation();   
-    //const isValid = await validateForm();
-    // console.log(isValid)
-   // if (isValid) {
+     console.log(v$)
+        const isValid = await validateForm();
+        if (isValid) {
+            try
+            {
         await storeUser();
         if (loginResponse.value !== null) {
+            isValiData.value = true
             toast.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: loginResponse.value,
                 life: 2000
             });
+            store.commit('auth/clearErrorResponse');
         } else {
             nextStep();
         }
-   // }
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Un error ocurrió.',
+        life: 2000
+      });
+        }
+    }
 }
         
 
@@ -264,7 +223,8 @@ const submitData = async (event) => {
             </div>
             <div>
                 <keep-alive>
-                    <PersonalInformation v-if="activeIndex === 1" @personal-info="getDataFromPersonalInfo" />
+                    <PersonalInformation v-if="activeIndex === 1" @personal-info="getDataFromPersonalInfo" 
+                    :class="{'hasError': v$.personalInfo.PersonId?.$error }" />
                 </keep-alive>
                 <keep-alive>
                     <WorkInformation v-if="activeIndex === 2" @work-info="getDataFromWorkInfo" />
@@ -313,14 +273,7 @@ const submitData = async (event) => {
         width: 100%;
     }
 
-    .steps .steps-item-active {
-        background-color: #007bff;
-        color: #fff;
-    }
-
-    .erros {
-        display: flex;
-        flex-direction: column;
-        color: red;
+    .hasError  {
+    border-color: red;        
     }
 </style>

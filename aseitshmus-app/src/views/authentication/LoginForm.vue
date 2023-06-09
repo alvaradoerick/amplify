@@ -42,7 +42,6 @@
         }
     }
 
-
     const storeLogin = async () => {
         await store.dispatch('auth/login', {
             formData: formData.value,
@@ -56,13 +55,17 @@
         return store.getters["auth/getErrorResponse"];
     });
 
+
     const role = computed(() => {
         return store.getters["auth/getRole"];
     });
 
     const v$ = useVuelidate(rules, formData);
+
+
     const validateForm = async () => {
         const result = await v$.value.$validate();
+       
         if (!result) {
             if (formData.value.email === null || formData.value.Pw === null) {
                 toast.add({
@@ -91,41 +94,57 @@
         }
         return true;
     }
+    const isValiData =  ref(false)
+
+
     const onSend = async (event) => {
         event.preventDefault();
+
         const isValid = await validateForm();
         if (isValid) {
             try{
             await storeLogin();
             if (token.value) {
-        formData.value.EmailAddress = null;
-        formData.value.Pw = null;
-
-        if (role.value === roles.PRESIDENT) {
-          router.push({ name: "dashboard" });
-        } else {
-          router.push({ name: "myDashboard" });
+        if (role.value === roles.ADMINISTRATOR) {
+            toast.add({
+                    severity: 'success',
+                    detail: "Bienvenid@",
+                    life: 2000
+                });
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+            router.push({ name: "dashboard" });
+        }
+         else {
+            toast.add({
+                    severity: 'success',
+                    detail: "Bienvenid@",
+                    life: 2000
+                });
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                router.push({ name: "myDashboard" });
         }
 
     } else {
+        isValiData.value = true
         toast.add({
           severity: 'error',
           summary: 'Error',
-          detail: loginResponse.value || 'An error occurred during login.',
-          life: 2000
+          detail: loginResponse.value || 'Un error ocurrió.',
+          life: 2000,         
         });
+        store.commit('auth/clearErrorResponse');
       }
     } catch (error) {
       toast.add({
         severity: 'error',
         summary: 'Error',
-        detail: 'An error occurred during login.',
+        detail: 'Un error ocurrió.',
         life: 2000
       });
         }
     }
     };
-
+   
     const forgotPassword = () => {
         router.push({
             name: "resetPassword"
@@ -136,13 +155,13 @@
     <div class="center-container">
         <toast-component />
         <div class="container">
-            <form>
-                <div class="form-row">
+            <form>              
+                <div class="form-row">               
                     <input-text class="input-text " type="email" id="email-address" v-model="formData.EmailAddress"
-                        placeholder="Correo eléctronico" />
-                </div>
+                        placeholder="Correo eléctronico" :class="{'hasError': (v$?.EmailAddress?.$error || isValiData) }" />           
+            </div>
                 <div class="form-row">
-                    <input-text class="input-text" id="password" type="password" v-model="formData.Pw"
+                    <input-text class="input-text" id="password" :class="{ 'hasError': (v$?.Pw?.$error || isValiData) }" type="password" v-model="formData.Pw"
                         autocomplete="formData.Pw" placeholder="Contraseña" />
                 </div>
                 <div class="form-row sign-in">
@@ -164,6 +183,9 @@
         justify-content: center;
         align-items: center;
         height: 50vh;
+    }
+    .hasError  {
+    border-color: red;        
     }
 
     .container {
