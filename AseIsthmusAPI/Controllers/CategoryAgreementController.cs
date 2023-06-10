@@ -21,12 +21,21 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<CategoryAgreement>> Get()
         {
-            return await _service.Getall();
+            return await _service.GetAll();
         }
 
+        
+        [HttpGet("active-categories")]
+        public async Task<IEnumerable<CategoryAgreement>> GetAllActiveCategories()
+        {
+            return await _service.GetAllActiveCategories();
+        }
+
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryAgreement>> GetById(int id)
         { 
@@ -43,7 +52,7 @@ namespace AseIsthmusAPI.Controllers
             
         }
 
-        [HttpPost]
+       [HttpPost]
         [Authorize]
         public async Task<IActionResult> Create(CategoryAgreement categoryAgreement)
         {

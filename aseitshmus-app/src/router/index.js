@@ -97,9 +97,25 @@ const routes = [
     component: () => import('../layouts/AdminView.vue' /* webpackChunkName: "AdminView" */),
     children: [
       {
+        path: '/',
+        name: 'categoryList',
+        component: () => import('../views/admin/AgreementCategory.vue' /* webpackChunkName: "AgreementCategory" */),
+        meta: {
+          title: 'Categorias',
+        }
+      },
+      {
+        path: '/',
+        name: 'agrementList',
+        component: () => import('../views/admin/AgreementList.vue' /* webpackChunkName: "AgreementList" */),
+        meta: {
+          title: 'Convenios',
+        }
+      },
+      {
         path: '/create-category',
         name: 'createCategory',
-        component: () => import('../views/admin/AgreementCategory.vue' /* webpackChunkName: "AgreementCategory" */),
+        component: () => import('../views/admin/CreateCategory.vue' /* webpackChunkName: "CreateCategory" */),
         meta: {
           title: 'Crear Categoria',
         }

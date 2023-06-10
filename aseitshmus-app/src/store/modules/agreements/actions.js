@@ -18,4 +18,19 @@ export default {
             )
             return response;
     },
+
+    async addAgreement({
+        rootGetters
+    }, payload) {
+        const token = rootGetters['auth/getToken'];
+            const response = await axios.post(
+                `${apiUrl}/agreement`,
+                payload.agreementData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            return response;
+    },
 };

@@ -20,10 +20,9 @@ public partial class Agreement
 
     public string? PersonId { get; set; }
 
+    [JsonIgnore]
     public virtual CategoryAgreement CategoryAgreement { get; set; } = null!;
 
-    public virtual User? Person { get; set; }
-
     [JsonIgnore]
-    public virtual CategoryAgreement CategoryAgreementDescriptionNavigation { get; set; } = null!;
+    public virtual User? Person { get; set; }
 }
