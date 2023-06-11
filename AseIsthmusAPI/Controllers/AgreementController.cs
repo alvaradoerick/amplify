@@ -20,7 +20,7 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
 
-       // [Authorize]
+        //[Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(AgreementDtoIn agreementDtoIn)
         {
@@ -42,7 +42,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByCategoryId(int id)
+        public async Task<IActionResult> GetByCategoryId([FromRoute] int id)
         {
             var agreement = await _service.GetAgreementByCategoryId(id);
 

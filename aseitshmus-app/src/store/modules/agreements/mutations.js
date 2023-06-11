@@ -6,4 +6,12 @@ export default {
     clearErrorResponse(state) {
         state.errorResponse = null;
     },
+
+    setCategories(state, categories) {
+        state.categories = categories;
+    },
+
+    setAgreements(state, agreements) {
+        state.agreements = agreements;
+    },
 }

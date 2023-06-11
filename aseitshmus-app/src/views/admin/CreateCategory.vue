@@ -23,7 +23,7 @@
     const backLabel = 'Cancelar';
     const homePage = () => {
         router.push({
-            name: "dashboard"
+            name: "categoryList"
         });
     }
     const sendLabel = 'Crear';
@@ -90,7 +90,7 @@
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 router.push({
-                    name: 'dashboard'
+                    name: 'categoryList'
                 });
             } catch (error) {
                 toast.add({

@@ -35,7 +35,7 @@
                             <a class="nav-link">Convenios</a>
                             <ul v-show="isSubMenu1Visible" class="sub-menu">
                                 <li>
-                                    <router-link class="nav-link" :to="{name:'createCategory'}">Crear Categoria</router-link>
+                                    <router-link class="nav-link" :to="{name:'categoryList'}">Lista de Categorias</router-link>
                                 </li>
                                 <li>
                                     <router-link class="nav-link" :to="{name:'createAgreement'}">Crear Convenio</router-link>

@@ -65,5 +65,12 @@ namespace AseIsthmusAPI.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<bool> HasAgreements(int id)
+        {
+            var agreementsCount = await _context.Agreements.Where(a => a.CategoryAgreementId == id).CountAsync();
+
+            return agreementsCount > 0;
+        }
     }
 }
