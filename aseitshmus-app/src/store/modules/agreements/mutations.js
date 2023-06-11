@@ -7,11 +7,11 @@ export default {
         state.errorResponse = null;
     },
 
-    setCategories(state, categories) {
+    setCategory(state, categories) {
         state.categories = categories;
     },
 
-    setAgreements(state, agreements) {
+    setAgreement(state, agreements) {
         state.agreements = agreements;
     },
 }

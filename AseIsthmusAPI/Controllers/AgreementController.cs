@@ -20,7 +20,7 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(AgreementDtoIn agreementDtoIn)
         {

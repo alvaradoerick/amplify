@@ -16,11 +16,11 @@ export default {
             }
         })
         const categoryData = response.data;
-        commit('setCategories', categoryData);
+        commit('setCategory', categoryData);
         return categoryData;
     },
 
-    async addCategoryAgreement({
+    async addCategory({
         rootGetters
     }, payload) {
         const token = rootGetters['auth/getToken'];
@@ -36,25 +36,61 @@ export default {
     },
 
     async deleteCategory({
-        commit,
+        commit,rootGetters
     }, payload) {
         try {
+            const token = rootGetters['auth/getToken'];
             const categoryId = payload.rowId;
-            console.log(payload)
-            console.log(payload.rowId)
             const response = await axios.delete(
-                `${apiUrl}/categoryagreement/${categoryId}`
+                `${apiUrl}/categoryagreement/${categoryId}`,{
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
             return response;
         } catch (error) {
-            console.lo
             const errorMessage = error.response.data.error;
             commit('setErrorResponse', errorMessage);
         }
     },
 
+    async getCategoryById({
+        commit,
+        rootGetters
+    },payload) {
+        const categoryId = payload.rowId;
+        const token = rootGetters['auth/getToken'];
+        const response = await axios.get(`${apiUrl}/categoryagreement/${categoryId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const categoryData = response.data;
+        commit('setCategory', categoryData);
+        return categoryData;
+    },
 
-
+    async updateCategory({
+        rootGetters
+    }, payload) {
+        try {
+            const categoryId = payload.categoryId;
+            const agreementCategory = payload.agreementCategory;
+            const token = rootGetters['auth/getToken'];
+            const response = await axios.put(
+                `${apiUrl}/categoryagreement/${categoryId}`,
+                agreementCategory, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    },
 
     async addAgreement({
         rootGetters

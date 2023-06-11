@@ -46,6 +46,8 @@ namespace AseIsthmusAPI.Controllers
                 return BadRequest(new { error = "El usuario con la identificación ingresada ya existe en el sistema. Contacte al administrador." });
             else if (validationResult.Equals("user exists by email"))
                 return BadRequest(new { error = "El usuario con el correo ingresado ya existe en el sistema. Contacte al administrador." });
+            else if (!ModelState.IsValid)
+                return BadRequest(new { error = "Faltan datos por ingresar." });
             else {
                 var newUser = await _service.Create(user);
 
