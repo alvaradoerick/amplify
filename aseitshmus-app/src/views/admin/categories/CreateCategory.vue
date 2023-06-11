@@ -21,7 +21,7 @@
     const router = useRouter();
     const toast = useToast();
     const backLabel = 'Cancelar';
-    const homePage = () => {
+    const categoryList = () => {
         router.push({
             name: "categoryList"
         });
@@ -120,7 +120,7 @@
 
     </div>
     <div class="actions">
-        <base-button :label="backLabel" @click="homePage" :type="'button'" />
+        <base-button :label="backLabel" @click="categoryList" :type="'button'" />
         <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
     </div>
 </template>

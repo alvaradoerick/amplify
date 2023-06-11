@@ -39,6 +39,7 @@
 const deleteResponse = computed(() => {
         return store.getters["agreements/getErrorResponse"];
     });
+
 const deleteRecord = async (rowData) => {    
     try {
               await  storeUser(rowData.data.CategoryAgreementId);
@@ -88,11 +89,14 @@ const deleteRecord = async (rowData) => {
         });
     }
 
-    const updateCategory = () => {
-        router.push({
-            name: "updateCategory"
-        });
+    const updateCategory = (rowData) => {
+  router.push({
+    name: "updateCategory",
+    params: {
+      id: rowData.data.CategoryAgreementId
     }
+  });
+};
     onMounted(fetchCategoryData);
 </script>
 
@@ -110,10 +114,12 @@ const deleteRecord = async (rowData) => {
         </template></Column>
         </DataTable>
     </div>
+    <div class="actions-container">
     <div class="actions">
             <base-button :label="backLabel" @click="cancel" :type="'button'" />
             <base-button :label="addLabel" @click="addCategory" :type="'button'" />
         </div>
+    </div>
 </template>
 
 <style scoped="scoped">
@@ -167,11 +173,17 @@ const deleteRecord = async (rowData) => {
         margin-left: 6rem;
     }
 
+    .actions-container {
+    position: static;
+    bottom: 0;
+    background-color: #fff;
+    padding: 3rem;
+}
     .actions {
         display: flex;
         flex: 1;
         align-items: center;
         justify-content: space-between;
-        margin-top: 5rem;
+
     }
 </style>

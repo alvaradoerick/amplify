@@ -99,7 +99,7 @@ const routes = [
       {
         path: '/all-categories',
         name: 'categoryList',
-        component: () => import('../views/admin/AgreementCategory.vue' /* webpackChunkName: "AgreementCategory" */),
+        component: () => import('../views/admin/categories/AgreementCategory.vue' /* webpackChunkName: "AgreementCategory" */),
         meta: {
           title: 'Categorias',
         }
@@ -107,7 +107,7 @@ const routes = [
       {
         path: '/',
         name: 'agrementList',
-        component: () => import('../views/admin/AgreementList.vue' /* webpackChunkName: "AgreementList" */),
+        component: () => import('../views/admin/agreements/AgreementList.vue' /* webpackChunkName: "AgreementList" */),
         meta: {
           title: 'Convenios',
         }
@@ -115,15 +115,15 @@ const routes = [
       {
         path: '/create-category',
         name: 'createCategory',
-        component: () => import('../views/admin/CreateCategory.vue' /* webpackChunkName: "CreateCategory" */),
+        component: () => import('../views/admin/categories/CreateCategory.vue' /* webpackChunkName: "CreateCategory" */),
         meta: {
           title: 'Crear Categoria',
         }
       },
       {
-        path: '/update-category',
+        path: '/update-category/:id',
         name: 'updateCategory',
-        component: () => import('../views/admin/CreateCategory.vue' /* webpackChunkName: "CreateCategory" */),
+        component: () => import('../views/admin/categories/CreateCategory.vue' /* webpackChunkName: "CreateCategory" */),
         meta: {
           title: 'Actualizar Categoria',
         }
@@ -131,7 +131,7 @@ const routes = [
       {
         path: '/create-agreement',
         name: 'createAgreement',
-        component: () => import('../views/admin/CreateAgreement.vue' /* webpackChunkName: "CreateAgreement" */),
+        component: () => import('../views/admin/agreements/CreateAgreement.vue' /* webpackChunkName: "CreateAgreement" */),
         meta: {
           title: 'Crear Convenio',
         }
