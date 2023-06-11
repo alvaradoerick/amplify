@@ -3,7 +3,7 @@
         useStore
     } from 'vuex'
     import {
-        useRouter
+        useRouter,useRoute 
     } from 'vue-router';
     import {
         ref,onMounted
@@ -11,10 +11,15 @@
     import {
         useToast
     } from 'primevue/usetoast';
-
+    import {
+        required
+    } from '@vuelidate/validators'
+    import useVuelidate from '@vuelidate/core'
     
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
+    const toast = useToast();
 
     
     const backLabel = 'Cancelar';
@@ -24,7 +29,7 @@
         });
     }
     const sendLabel = 'Actualizar';
-    const selectedState = ref(1);
+    const selectedState = ref();
     const status = ref([{
             name: 'Activo',
             value: 1
@@ -35,25 +40,91 @@
         }
     ]);
 
-    const agreementCategory = ref({
+    const agreementCategory = ref(
+    {
         Description: null,
         IsActive: selectedState
-    })
+       }
+    )
+    const categoryId = ref(route.params.id);
+    const rules = {
+        Description: {
+            required
+        },
+        IsActive: {
+            required
+        }
+    }
+    const storeUser = async () => {
+        await store.dispatch('agreements/updateCategory', {
+            categoryId: categoryId.value,
+            agreementCategory: agreementCategory.value
+        })
+    }
 
-    const categoryData = ref(null);
+    const v$ = useVuelidate(rules, agreementCategory);
+    const validateForm = async () => {
+        const result = await v$.value.$validate();
+        if (!result) {
+            if (v$.value.$errors[0].$validator === 'required') {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Por favor revisar los campos en rojo.',
+                    life: 2000
+                });
 
-    const fetchCategoryData = async () => {
-        console.log("texto"+props.params.id)
-        await store.dispatch('agreements/getCategoryById', {
-       rowId: props.params.id
-    });
+            }
+            return false
+        }
+        return true;
+    }
+
+
+    const fetchCategoryData = async () => {     
+      await store.dispatch('agreements/getCategoryById', {
+       rowId: categoryId.value
+    }
+    );
+    
+   const category = store.getters["agreements/getCategory"];
       try {
-        categoryData.value = response.data;
+        agreementCategory.value.Description = category.Description,
+        selectedState.value = category.IsActive ? 1 : 0;
       } catch (error) {
         console.error(error);
       }
     };
     
+    const submitData = async (event) => {
+        event.preventDefault();
+        const isValid = await validateForm();
+        if (isValid) {
+            if (isValid) {
+                try {
+                    await storeUser();
+                    toast.add({
+                        severity: 'success',
+                        summary: 'Felicidades',
+                        detail: "Sus cambios han sido guardados.",
+                        life: 2000
+                    });
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    router.push({
+                        name: 'categoryList'
+                    });
+                } catch (error) {
+                    toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Un error ocurrió.',
+                        life: 2000
+                    });
+                }
+            }
+        }
+    }
+
 
     onMounted(fetchCategoryData);
 </script>
@@ -62,7 +133,7 @@
 
     <div class="main">
         <toast-component />
-        <p>La categoría creada deberá ser asignada al convenio.</p>
+        <p>La categoría creada deberá ser asignada al convenio.eeee</p>
         <div class="header">
             <div class="form-row">
                 <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
@@ -75,7 +146,7 @@
     </div>
     <div class="actions">
         <base-button :label="backLabel" @click="categoryList" :type="'button'" />
-        <base-button :label="sendLabel" :type="'submit'" />
+        <base-button :label="sendLabel" @click="submitData" :type="'submit'" />
     </div>
 </template>
 

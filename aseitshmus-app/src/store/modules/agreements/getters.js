@@ -3,11 +3,11 @@ export default {
         return state.errorResponse;
     },
 
-    getCategories(state) {
+    getCategory(state) {
         return state.categories;
     },
 
-    getAgreements(state) {
+    getAgreement(state) {
         return state.agreements ;
     },
 

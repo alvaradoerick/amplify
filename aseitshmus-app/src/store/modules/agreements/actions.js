@@ -16,11 +16,11 @@ export default {
             }
         })
         const categoryData = response.data;
-        commit('setCategories', categoryData);
+        commit('setCategory', categoryData);
         return categoryData;
     },
 
-    async addCategoryAgreement({
+    async addCategory({
         rootGetters
     }, payload) {
         const token = rootGetters['auth/getToken'];
@@ -55,7 +55,6 @@ export default {
         }
     },
 
-
     async getCategoryById({
         commit,
         rootGetters
@@ -68,8 +67,29 @@ export default {
             }
         })
         const categoryData = response.data;
-        commit('setCategories', categoryData);
+        commit('setCategory', categoryData);
         return categoryData;
+    },
+
+    async updateCategory({
+        rootGetters
+    }, payload) {
+        try {
+            const categoryId = payload.categoryId;
+            const agreementCategory = payload.agreementCategory;
+            const token = rootGetters['auth/getToken'];
+            const response = await axios.put(
+                `${apiUrl}/categoryagreement/${categoryId}`,
+                agreementCategory, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            return response
+        } catch (error) {
+            console.log(error)
+        }
     },
 
     async addAgreement({

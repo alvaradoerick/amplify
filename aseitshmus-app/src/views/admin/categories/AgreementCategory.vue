@@ -15,13 +15,13 @@
     const toast = useToast();
 
     const categoryData = ref([]);
-    const backLabel = 'Cancelar';
+    const backLabel = 'Principal';
     const addLabel = 'Agregar';
     const deletionStatus = ref(false);
 
     const fetchCategoryData = async () => {
         await store.dispatch('agreements/getAllCategories');
-        const categories = store.getters['agreements/getCategories'];
+        const categories = store.getters['agreements/getCategory'];
         categoryData.value = categories.map(category => {
     return {
       ...category,
@@ -79,7 +79,7 @@ const deleteRecord = async (rowData) => {
 
     const cancel = () => {
         router.push({
-            name: "categoryList"
+            name: "dashboard"
         });
     }
 
@@ -94,7 +94,8 @@ const deleteRecord = async (rowData) => {
     name: "updateCategory",
     params: {
       id: rowData.data.CategoryAgreementId
-    }
+    },
+    props: true, 
   });
 };
     onMounted(fetchCategoryData);

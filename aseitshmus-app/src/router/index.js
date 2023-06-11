@@ -101,7 +101,7 @@ const routes = [
         name: 'categoryList',
         component: () => import('../views/admin/categories/AgreementCategory.vue' /* webpackChunkName: "AgreementCategory" */),
         meta: {
-          title: 'Categorias',
+          title: 'Categorías',
         }
       },
       {
@@ -116,16 +116,17 @@ const routes = [
         path: '/create-category',
         name: 'createCategory',
         component: () => import('../views/admin/categories/CreateCategory.vue' /* webpackChunkName: "CreateCategory" */),
+        props: true,
         meta: {
-          title: 'Crear Categoria',
+          title: 'Crear Categoría',
         }
       },
       {
         path: '/update-category/:id',
         name: 'updateCategory',
-        component: () => import('../views/admin/categories/CreateCategory.vue' /* webpackChunkName: "CreateCategory" */),
+        component: () => import('../views/admin/categories/UpdateCategory.vue' /* webpackChunkName: "UpdateCategory" */),
         meta: {
-          title: 'Actualizar Categoria',
+          title: 'Actualizar Categoría',
         }
       },
       {

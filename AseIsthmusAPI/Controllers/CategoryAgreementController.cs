@@ -35,7 +35,7 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAllActiveCategories();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryAgreement>> GetById([FromRoute] int id)
         {
@@ -53,7 +53,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpPost]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> Create(CategoryAgreement categoryAgreement)
         {
             var newCategoryAgreement = await _service.Create(categoryAgreement);
@@ -62,13 +62,9 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, CategoryAgreement categoryAgreement)
         {
-            if (id != categoryAgreement.CategoryAgreementId)
-            {
-                return BadRequest(new { error = "El ID de la URL no coincide con el ID del cuerpo de la solicitud" });
-            }
             var categoryAgreementToUpdate = await _service.GetById(id);
 
             if (categoryAgreementToUpdate is not null)
@@ -78,12 +74,12 @@ namespace AseIsthmusAPI.Controllers
             }
             else
             {
-                return NotFound(new { error = "No se pudo actualizar la categoría ." });
+                return NotFound(new { error = "No se pudo actualizar la categoría." });
             }
         }
 
         [HttpDelete("{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
 
