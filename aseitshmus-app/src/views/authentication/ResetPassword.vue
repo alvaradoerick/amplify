@@ -16,11 +16,11 @@
     } from 'primevue/usetoast';
     import {
         useRouter
-} from 'vue-router'
-    
+    } from 'vue-router'
+
     const store = useStore();
     const toast = useToast();
-const router = useRouter();
+    const router = useRouter();
     const passwordResponse = computed(() => {
         return store.getters["auth/getErrorResponse"];
     });
@@ -40,17 +40,15 @@ const router = useRouter();
         body: "<h1>Esto es una prueba</h1>"
     })
 
-const storeUser = async () => {
+    const storeUser = async () => {
         await store.dispatch('auth/resetPasswordUnauthenticated', {
             resetData: resetData.value,
             emailInformation: emailInformation.value
         })
-}
-    //const newPassword = "new pw"
+    }
     const v$ = useVuelidate(rules, resetData);
     const validateForm = async () => {
         const result = await v$.value.$validate();
-console.log(v$)
         if (!result) {
             if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
@@ -60,65 +58,66 @@ console.log(v$)
                     life: 2000
                 });
                 return false
-            } else if (v$.value.$errors[0].$validator === 'email')   {
+            } else if (v$.value.$errors[0].$validator === 'email') {
                 toast.add({
                     severity: 'error',
                     summary: 'Error',
                     detail: 'El formato del correo es incorrecto.',
                     life: 2000
-                });}
-                return false                   
+                });
+            }
+            return false
         }
         return true;
     }
-    
-    const isValiData =  ref(false)
+
+    const isValiData = ref(false)
     const resetPassword = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
         if (isValid) {
-            try
-            { 
+            try {
                 await storeUser();
-        if (passwordResponse.value !== null) {
-            isValiData.value = true
-            toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: passwordResponse.value,
-                life: 2000
-            });
-            store.commit('auth/clearErrorResponse');
-        } else {     
-            toast.add({
-                severity: 'success',
-                summary: 'Felicidades',
-                detail: "Su nueva contraseña ha sido enviada.",
-                life: 2000
-            });  
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-        router.push({ name: "login" });
-        }
-       
-    }
-    catch (error) {
-      toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Un error ocurrió.',
-        life: 2000
-      });
-        }
-    }}
+                if (passwordResponse.value !== null) {
+                    isValiData.value = true
+                    toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: passwordResponse.value,
+                        life: 2000
+                    });
+                    store.commit('auth/clearErrorResponse');
+                } else {
+                    toast.add({
+                        severity: 'success',
+                        summary: 'Felicidades',
+                        detail: "Su nueva contraseña ha sido enviada.",
+                        life: 2000
+                    });
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+                    router.push({
+                        name: "login"
+                    });
+                }
 
-const sendButton = ref('Enviar');
-const cancelButton = ref('Cancelar');
-const loginPage = () => {
+            } catch (error) {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Un error ocurrió.',
+                    life: 2000
+                });
+            }
+        }
+    }
+
+    const sendButton = ref('Enviar');
+    const cancelButton = ref('Cancelar');
+    const loginPage = () => {
         router.push({
             name: "login"
         });
     }
-
 </script>
 
 <template>
@@ -129,17 +128,17 @@ const loginPage = () => {
     </div>
     <div class="center-container">
         <div class="container">
-                <div class="form-row">
-                    <input-text class="input-text " type="email" id="email-address" v-model="resetData.EmailAddress"
-                        placeholder="Correo eléctronico" :class="{'hasError': v$?.EmailAddress?.$error || isValiData }"/>
-                </div>
+            <div class="form-row">
+                <input-text class="input-text " type="email" id="email-address" v-model="resetData.EmailAddress"
+                    placeholder="Correo eléctronico" :class="{'hasError': v$?.EmailAddress?.$error || isValiData }" />
+            </div>
         </div>
-        
+
     </div>
-    <div class="actions">           
-            <base-button :label="cancelButton" type="login" @click="loginPage" />
-            <base-button :label="sendButton" type="submit" @click="resetPassword" />
-        </div>
+    <div class="actions">
+        <base-button :label="cancelButton" type="login" @click="loginPage" />
+        <base-button :label="sendButton" type="submit" @click="resetPassword" />
+    </div>
 </template>
 
 <style scoped>
@@ -149,9 +148,11 @@ const loginPage = () => {
         align-items: center;
         height: 40vh;
     }
-    .hasError  {
-    border-color: red; 
+
+    .hasError {
+        border-color: red;
     }
+
     .container {
         display: flex;
         flex-direction: column;

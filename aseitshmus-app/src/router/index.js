@@ -62,7 +62,7 @@ const routes = [
         component: () => import('../views/home/AdminHome.vue' /* webpackChunkName: "AdminHome" */),
         meta: {
           auth: true,
-          title: 'Estado de Cuentas',
+          title: 'Resumen de Información',
 
         }
       },
@@ -97,11 +97,35 @@ const routes = [
     component: () => import('../layouts/AdminView.vue' /* webpackChunkName: "AdminView" */),
     children: [
       {
-        path: '/create-category',
-        name: 'createCategory',
+        path: '/all-categories',
+        name: 'categoryList',
         component: () => import('../views/admin/AgreementCategory.vue' /* webpackChunkName: "AgreementCategory" */),
         meta: {
+          title: 'Categorias',
+        }
+      },
+      {
+        path: '/',
+        name: 'agrementList',
+        component: () => import('../views/admin/AgreementList.vue' /* webpackChunkName: "AgreementList" */),
+        meta: {
+          title: 'Convenios',
+        }
+      },
+      {
+        path: '/create-category',
+        name: 'createCategory',
+        component: () => import('../views/admin/CreateCategory.vue' /* webpackChunkName: "CreateCategory" */),
+        meta: {
           title: 'Crear Categoria',
+        }
+      },
+      {
+        path: '/update-category',
+        name: 'updateCategory',
+        component: () => import('../views/admin/CreateCategory.vue' /* webpackChunkName: "CreateCategory" */),
+        meta: {
+          title: 'Actualizar Categoria',
         }
       },
       {

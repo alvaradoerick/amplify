@@ -3,7 +3,6 @@
     import {
         required
     } from '@vuelidate/validators'
-    import axios from "axios";
     import {
         useStore
     } from 'vuex'
@@ -11,26 +10,20 @@
         useRouter
     } from 'vue-router';
     import {
-        ref
+        ref,
     } from 'vue';
     import {
         useToast
     } from 'primevue/usetoast';
 
-    import Textarea from 'primevue/textarea';
-    import FileUpload from 'primevue/fileupload';
-
-    const apiUrl = process.env["VUE_APP_BASED_URL"]
-
-
-
+    
     const store = useStore();
     const router = useRouter();
     const toast = useToast();
     const backLabel = 'Cancelar';
-    const toReturn = () => {
+    const homePage = () => {
         router.push({
-            name: "agrementList"
+            name: "categoryList"
         });
     }
     const sendLabel = 'Crear';
@@ -44,61 +37,23 @@
             value: 0
         }
     ]);
-    const categories = ref([]);
-    const selectedCategory = ref(null);
-    const file = ref(null);
 
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const imageBytes = new Uint8Array(reader.result);
-                file.value = imageBytes;
-            };
-            reader.readAsArrayBuffer(file);
-        }
-    }
-
-    const agreementData = ref({
-        Title: null,
+    const agreementCategory = ref({
         Description: null,
-        Image: file.value,
-        CategoryAgreementId: selectedCategory,
         IsActive: selectedState
     })
 
-
-    const fetchData = async (url, target) => {
-        try {
-            const response = await axios.get(url);
-            target.value = response.data;
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-
-
-
-    fetchData(`${apiUrl}/categoryagreement/active-categories`, categories);
-
     const rules = {
-        Title: {
-            required
-        },
         Description: {
             required
         },
-        CategoryAgreementId: {
-            required
-        },
-        IsActive: {
+        IsActive:
+        {
             required
         }
     }
 
-    const v$ = useVuelidate(rules, agreementData);
+    const v$ = useVuelidate(rules, agreementCategory);
 
     const validateForm = async () => {
         const result = await v$.value.$validate();
@@ -109,7 +64,7 @@
                     summary: 'Error',
                     detail: 'Todos los campos son requeridos.',
                     life: 2000
-                });
+                });              
             }
             return false
         }
@@ -117,30 +72,25 @@
     }
 
     const storeCategory = async () => {
-        await store.dispatch('agreements/addAgreement', {
-            agreementData: agreementData.value,
+        await store.dispatch('agreements/addCategoryAgreement', {
+            agreementCategory: agreementCategory.value,
         })
     }
-
-
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
-        console.log(v$)
-
         if (isValid) {
             try {
-                console.log(agreementData.value)
-                await storeCategory();
+              await  storeCategory();
                 toast.add({
                     severity: 'success',
                     summary: 'Felicidades',
-                    detail: "Su convenio ha sido agregado.",
+                    detail: "Su categoría ha sido agregada.",
                     life: 2000
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 router.push({
-                    name: 'dashboard'
+                    name: 'categoryList'
                 });
             } catch (error) {
                 toast.add({
@@ -155,30 +105,22 @@
 </script>
 
 <template>
+
     <div class="main">
         <toast-component />
+        <p>La categoría creada deberá ser asignada al convenio.</p>
         <div class="header">
             <div class="form-row">
-                <input-text placeholder="Convenio" class=" input-text form-margin-right" id="agreementName" type="text"
-                    v-model="agreementData.Title" :class="{'hasError': v$?.Title?.$error}" />
+                <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
+                    v-model="agreementCategory.Description"  :class="{'hasError': v$?.Description?.$error}"/>
                 <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
-                    placeholder="Estado" class="dropdown" :class="{'hasError': v$?.selectedState?.$error}" />
-                <drop-down v-model="selectedCategory" :options="categories" optionLabel="Description"
-                    optionValue="CategoryAgreementId" placeholder="Categoría" class="dropdownLarger form-margin-left"
-                    :class="{'hasError': v$?.CategoryAgreementId?.$error}" />
-            </div>
-            <div class="form-row">
-                <Textarea id="description" placeholder="Descripción" v-model="agreementData.Description" rows="5"
-                    cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}"></Textarea>
-            </div>
-            <div class="form-row">
-                <FileUpload v-model="file" mode="basic" accept="image/*" :maxFileSize="1000000" type="file"
-                    @change="handleFileUpload" chooseLabel="Buscar" id="browse" />
+                    placeholder="Estado" class="dropdown" :class="{'hasError': v$?.selectedState?.$error}"/>
             </div>
         </div>
+
     </div>
     <div class="actions">
-        <base-button :label="backLabel" @click="toReturn" :type="'button'" />
+        <base-button :label="backLabel" @click="homePage" :type="'button'" />
         <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
     </div>
 </template>
@@ -186,17 +128,6 @@
     .main {
         display: flex;
         flex-direction: column;
-    }
-
-    .dropdownLarger {
-        display: flex;
-        width: 600px;
-    }
-
-    .input-text,
-    .dropdown {
-        display: flex;
-        width: 300px;
     }
 
     .header {
@@ -210,18 +141,17 @@
         flex-direction: column;
         min-height: 10vh;
     }
-
-    .hasError {
-        border-color: red;
+    .hasError  {
+    border-color: red; 
     }
 
     .form-row {
-        margin-top: 2rem;
+        margin-top: 6rem;
         display: flex;
         justify-content: space-between;
         align-self: center;
-        margin-bottom: 1rem;
-        width: 80%;
+        margin-bottom: 2rem;
+        width: 60%;
     }
 
     .form-margin-right {
@@ -237,6 +167,6 @@
         flex: 1;
         align-items: center;
         justify-content: space-between;
-        margin-top: 4rem;
+        margin-top: 14rem;
     }
 </style>

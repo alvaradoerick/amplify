@@ -1,97 +1,64 @@
 <script setup>
-    import useVuelidate from '@vuelidate/core'
-    import {
-        required
-    } from '@vuelidate/validators'
-    import {
-        useStore
-    } from 'vuex'
+    import DataTable from 'primevue/datatable';
+    import Column from 'primevue/column';
+    import {ref, onMounted, computed, watch} from 'vue';
+    import {useStore} from 'vuex';
     import {
         useRouter
     } from 'vue-router';
     import {
-        ref,
-    } from 'vue';
-    import {
         useToast
     } from 'primevue/usetoast';
 
-    
-    const store = useStore();
     const router = useRouter();
+    const store = useStore()
     const toast = useToast();
+
+    const categoryData = ref([]);
     const backLabel = 'Cancelar';
-    const homePage = () => {
-        router.push({
-            name: "dashboard"
-        });
-    }
-    const sendLabel = 'Crear';
-    const selectedState = ref(1);
-    const status = ref([{
-            name: 'Activo',
-            value: 1
-        },
-        {
-            name: 'Inactivo',
-            value: 0
-        }
-    ]);
+    const addLabel = 'Agregar';
+    const deletionStatus = ref(false);
 
-    const agreementCategory = ref({
-        Description: null,
-        IsActive: selectedState
+    const fetchCategoryData = async () => {
+        await store.dispatch('agreements/getAllCategories');
+        const categories = store.getters['agreements/getCategories'];
+        categoryData.value = categories.map(category => {
+    return {
+      ...category,
+      IsActive: category.IsActive ? "Activo" : "Inactivo"
+    };
+});
+    };
+
+    const storeUser = async (id) => {
+    await store.dispatch('agreements/deleteCategory', {
+       rowId: id
     })
+}
 
-    const rules = {
-        Description: {
-            required
-        },
-        IsActive:
-        {
-            required
-        }
-    }
-
-    const v$ = useVuelidate(rules, agreementCategory);
-
-    const validateForm = async () => {
-        const result = await v$.value.$validate();
-        if (!result) {
-            if (v$.value.$errors[0].$validator === 'required') {
+const deleteResponse = computed(() => {
+        return store.getters["agreements/getErrorResponse"];
+    });
+const deleteRecord = async (rowData) => {    
+    try {
+              await  storeUser(rowData.data.CategoryAgreementId);
+              if (deleteResponse.value === null) {
                 toast.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Todos los campos son requeridos.',
-                    life: 2000
-                });              
-            }
-            return false
-        }
-        return true;
-    }
-
-    const storeCategory = async () => {
-        await store.dispatch('agreements/addCategoryAgreement', {
-            agreementCategory: agreementCategory.value,
-        })
-    }
-    const onSend = async (event) => {
-        event.preventDefault();
-        const isValid = await validateForm();
-        if (isValid) {
-            try {
-              await  storeCategory();
-                toast.add({
-                    severity: 'success',
-                    summary: 'Felicidades',
-                    detail: "Su categoría ha sido agregada.",
-                    life: 2000
-                });
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                router.push({
-                    name: 'dashboard'
-                });
+                        severity: 'success',
+                        summary: 'Felicidades',
+                        detail: "Categoría ha sido eliminada.",
+                        life: 2000
+                    });
+                    deletionStatus.value = true;                                        
+        } else {     
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: deleteResponse.value,
+                life: 3000
+            });
+            store.commit('agreements/clearErrorResponse');
+            }               
             } catch (error) {
                 toast.add({
                     severity: 'error',
@@ -99,32 +66,70 @@
                     detail: 'Un error ocurrió.',
                     life: 2000
                 });
-            }
-        }
+            }   
+    };
+
+    watch(deletionStatus, (newStatus) => {
+  if (newStatus) {
+    fetchCategoryData();
+    deletionStatus.value = false; 
+  }
+});
+
+    const cancel = () => {
+        router.push({
+            name: "categoryList"
+        });
     }
+
+    const addCategory = () => {
+        router.push({
+            name: "createCategory"
+        });
+    }
+
+    const updateCategory = () => {
+        router.push({
+            name: "updateCategory"
+        });
+    }
+    onMounted(fetchCategoryData);
 </script>
 
 <template>
-
-    <div class="main">
+    <div >
         <toast-component />
-        <p>La categoría creada deberá ser asignada al convenio.</p>
-        <div class="header">
-            <div class="form-row">
-                <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
-                    v-model="agreementCategory.Description"  :class="{'hasError': v$?.Description?.$error}"/>
-                <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
-                    placeholder="Estado" class="dropdown" :class="{'hasError': v$?.selectedState?.$error}"/>
-            </div>
-        </div>
-
+        <DataTable :value="categoryData" paginator :rows="3"  tableStyle="min-width: 50rem">
+            <Column field="Description" header="Nombre" sortable></Column>
+      <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
+      <Column header="" style="width: 100px"> <template #body="rowData">
+          <base-button class="action-buttons" label="Editar" @click="updateCategory(rowData)" :type="'button'"/>
+        </template></Column>
+      <Column  header="" style="width: 100px"> <template #body="rowData">
+          <base-button class="action-buttons" label="Eliminar" @click="deleteRecord(rowData)" :type="'button'"/>
+        </template></Column>
+        </DataTable>
     </div>
     <div class="actions">
-        <base-button :label="backLabel" @click="homePage" :type="'button'" />
-        <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
-    </div>
+            <base-button :label="backLabel" @click="cancel" :type="'button'" />
+            <base-button :label="addLabel" @click="addCategory" :type="'button'" />
+        </div>
 </template>
+
 <style scoped="scoped">
+
+.action-buttons {
+        display: flex;
+        background-color: #253e8b;
+        border-color: #253e8b;
+        overflow: hidden;
+        width: 75px;
+        color: white;
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
     .main {
         display: flex;
         flex-direction: column;
@@ -167,6 +172,6 @@
         flex: 1;
         align-items: center;
         justify-content: space-between;
-        margin-top: 14rem;
+        margin-top: 5rem;
     }
 </style>

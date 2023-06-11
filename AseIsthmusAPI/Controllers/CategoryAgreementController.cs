@@ -11,7 +11,7 @@ namespace AseIsthmusAPI.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryAgreementController: ControllerBase
+    public class CategoryAgreementController : ControllerBase
     {
         private readonly CategoryAgreementService _service;
 
@@ -21,15 +21,24 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
 
+        // [Authorize]
         [HttpGet]
         public async Task<IEnumerable<CategoryAgreement>> Get()
         {
-            return await _service.Getall();
+            return await _service.GetAll();
         }
 
+        [Authorize]
+        [HttpGet("active-categories")]
+        public async Task<IEnumerable<CategoryAgreement>> GetAllActiveCategories()
+        {
+            return await _service.GetAllActiveCategories();
+        }
+
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryAgreement>> GetById(int id)
-        { 
+        {
             var categoryAgreement = await _service.GetById(id);
 
             if (categoryAgreement is null)
@@ -39,12 +48,12 @@ namespace AseIsthmusAPI.Controllers
             else
             {
                 return categoryAgreement;
-            }               
-            
+            }
+
         }
 
         [HttpPost]
-        [Authorize]
+        // [Authorize]
         public async Task<IActionResult> Create(CategoryAgreement categoryAgreement)
         {
             var newCategoryAgreement = await _service.Create(categoryAgreement);
@@ -58,7 +67,7 @@ namespace AseIsthmusAPI.Controllers
         {
             if (id != categoryAgreement.CategoryAgreementId)
             {
-                return BadRequest(new { message = "El ID de la URL no coincecide con el ID del cuerpo de la solicitud"});
+                return BadRequest(new { error = "El ID de la URL no coincecide con el ID del cuerpo de la solicitud" });
             }
             var categoryAgreementToUpdate = await _service.GetById(id);
 
@@ -74,19 +83,29 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            var categoryAgreementToDelete = await _service.GetById(id);
 
-            if (categoryAgreementToDelete is not null)
+            bool hasAgreements = await _service.HasAgreements(id);
+
+            if (hasAgreements)
             {
-                await _service.Delete(id);
-                return Ok();
+                return BadRequest(new { error = "No se puede eliminar la categoría porque tiene convenios asociados." });
             }
             else
             {
-                return NotFound();
+                var categoryAgreementToDelete = await _service.GetById(id);
+
+                if (categoryAgreementToDelete is not null)
+                {
+                    await _service.Delete(id);
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
         }
 
