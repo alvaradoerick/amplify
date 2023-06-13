@@ -69,37 +69,21 @@ export default {
     },
 
     async resetPasswordUnauthenticated({
-        dispatch,
         commit,
     }, payload) {
         try {
-            const emailInformation = payload.emailInformation;
             const resetData = payload.resetData;
             const response = await axios.patch(
                 `${apiUrl}/password/resetPassword`,
                 resetData
-            );
-            await dispatch('sendResetPasswordEmail', {
-                emailInformation
-            });
+            )
 
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
+            console.log(errorMessage)
             commit('setErrorResponse', errorMessage);
         }
-    },
-
-    async sendResetPasswordEmail({
-        _
-    }, payload) {
-        console.log(_)
-        const response = await axios.post(
-            `${apiUrl}/email/resetPassword`,
-            payload.emailInformation
-        )
-        return response;
-
     },
 
 

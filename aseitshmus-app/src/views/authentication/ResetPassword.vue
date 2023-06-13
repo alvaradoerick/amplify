@@ -34,16 +34,10 @@
             required
         }
     }
-    const emailInformation = ref({
-        to: "ear288@gmail.com",
-        subject: "Prueba desde vue",
-        body: "<h1>Esto es una prueba</h1>"
-    })
 
     const storeUser = async () => {
         await store.dispatch('auth/resetPasswordUnauthenticated', {
             resetData: resetData.value,
-            emailInformation: emailInformation.value
         })
     }
     const v$ = useVuelidate(rules, resetData);
