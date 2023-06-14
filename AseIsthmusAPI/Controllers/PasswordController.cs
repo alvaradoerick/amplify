@@ -3,7 +3,6 @@ using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using AseIsthmusAPI.Templates;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AseIsthmusAPI.Controllers

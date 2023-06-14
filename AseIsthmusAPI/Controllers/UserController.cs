@@ -18,14 +18,14 @@ namespace AseIsthmusAPI.Controllers
         {
             _service = service;
         }
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<IEnumerable<UserDtoOut>> Get()
         {
             return await _service.GetAll();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDtoOut>> GetById([FromRoute] string id)
         {
@@ -77,16 +77,24 @@ namespace AseIsthmusAPI.Controllers
             }
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var existingClient = await _service.GetById(id);
 
-            if (existingClient is not null)
+            if (existingClient is not null )
             {
-                await _service.DeleteUser(id);
-                return NoContent();
+                var result = await _service.DeleteUser(id);
+                if (string.IsNullOrEmpty(result))
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest(new { error = result }); 
+                }
+
             }
             else
             {

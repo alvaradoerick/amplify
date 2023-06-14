@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
-
 public partial class User
 {
     public string PersonId { get; set; } = null!;

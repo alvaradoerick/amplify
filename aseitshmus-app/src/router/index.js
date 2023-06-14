@@ -50,25 +50,6 @@ const routes = [
       
     ]
   },
-
-  {
-    path: '/dashboard',
-    name: 'adminDashboard',
-    component: () => import('../layouts/AdminView.vue' /* webpackChunkName: "AdminView" */),
-    children: [
-      {
-        path: '',
-        name: 'dashboard',
-        component: () => import('../views/home/AdminHome.vue' /* webpackChunkName: "AdminHome" */),
-        meta: {
-          auth: true,
-          title: 'Resumen de Información',
-
-        }
-      },
-
-    ]
-  },
   {
     path: '/profile',
     component: () => import('../layouts/UserView.vue' /* webpackChunkName: "UserView" */),
@@ -91,6 +72,26 @@ const routes = [
       },
     ]
   },
+
+  {
+    path: '/dashboard',
+    name: 'adminDashboard',
+    component: () => import('../layouts/AdminView.vue' /* webpackChunkName: "AdminView" */),
+    children: [
+      {
+        path: '/',
+        name: 'dashboard',
+        component: () => import('../views/home/AdminHome.vue' /* webpackChunkName: "AdminHome" */),
+        meta: {
+          auth: true,
+          title: 'Resumen de Información',
+
+        }
+      },
+
+    ]
+  },
+  
   {
     path: '/agreements',
     name: 'agreements',
@@ -105,7 +106,7 @@ const routes = [
         }
       },
       {
-        path: '/',
+        path: '/all-agreements',
         name: 'agrementList',
         component: () => import('../views/admin/agreements/AgreementList.vue' /* webpackChunkName: "AgreementList" */),
         meta: {
@@ -140,6 +141,30 @@ const routes = [
 
     ]
   },
+  {
+    path: '/users',
+    name: 'users',
+    component: () => import('../layouts/AdminView.vue' /* webpackChunkName: "AdminView" */),
+    children: [
+      {
+        path: '/all-users',
+        name: 'listUsers',
+        component: () => import('../views/admin/users/UserList.vue' /* webpackChunkName: "UserList" */),
+        meta: {
+          title: 'Usuarios',
+        }
+      },    
+      {
+        path: '/update-user/:id',
+        name: 'updateUser',
+        component: () => import('../views/admin/users/UpdateProfile.vue' /* webpackChunkName: "UpdateProfile" */),
+        meta: {
+          title: 'Actualizar Usuario',
+        }
+      },
+    ]
+  },
+
 ]
 
 const router = createRouter({

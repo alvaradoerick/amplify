@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
@@ -12,6 +11,5 @@ public partial class CategoryAgreement
 
     public bool IsActive { get; set; }
 
-    [JsonIgnore]
     public virtual ICollection<Agreement> Agreements { get; set; } = new List<Agreement>();
 }

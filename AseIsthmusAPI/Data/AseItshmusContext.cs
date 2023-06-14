@@ -84,7 +84,6 @@ public partial class AseItshmusContext : DbContext
 
             entity.HasOne(d => d.Person).WithMany(p => p.Beneficiaries)
                 .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Beneficiary_Person");
         });
 
@@ -213,7 +212,6 @@ public partial class AseItshmusContext : DbContext
 
             entity.HasOne(d => d.Person).WithMany(p => p.Logins)
                 .HasForeignKey(d => d.PersonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Login_Person");
         });
 
@@ -288,7 +286,13 @@ public partial class AseItshmusContext : DbContext
         {
             entity.HasKey(e => e.PersonId);
 
-            entity.ToTable(tb => tb.HasTrigger("AddUserLogin"));
+            entity.ToTable(tb =>
+                {
+                    tb.HasTrigger("PreventUserDeletion");
+                    tb.HasTrigger("trg_AddUserLogin");
+                    tb.HasTrigger("trg_DeleteUserAndBeneficiaries");
+                    tb.HasTrigger("trg_DeleteUserAndLogin");
+                });
 
             entity.HasIndex(e => e.EmailAddress, "IX_Email").IsUnique();
 

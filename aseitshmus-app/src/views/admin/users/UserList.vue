@@ -1,0 +1,141 @@
+<script setup>
+    import DataTable from 'primevue/datatable';
+    import Column from 'primevue/column';
+    import {
+        ref,
+        onMounted
+    } from 'vue';
+    import {
+        useStore
+    } from 'vuex';
+    import {
+        useRouter
+    } from 'vue-router';
+
+    const router = useRouter();
+    const store = useStore()
+
+    const usersData = ref([]);
+    const backLabel = 'Principal';
+    const dateFormat = {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    };
+    const fetchUsersData = async () => {
+        await store.dispatch('users/getAll');
+        const users = store.getters['users/getUsers'];
+        usersData.value = users.map(users => {
+            return {
+                ...users,
+                FullName: `${users.FirstName} ${users.LastName1} ${users.LastName2}`,
+                WorkStartDate: new Date(users.WorkStartDate).toLocaleString("es-ES", dateFormat),
+                IsActive: users.IsActive ? "Activo" : "Inactivo"
+            };
+        });
+    };
+
+    const cancel = () => {
+        router.push({
+            name: "dashboard"
+        });
+    }
+
+    const updateUser = (rowData) => {
+        router.push({
+            name: "updateUser",
+            params: {
+                id: rowData.data.PersonId
+            },
+            props: true,
+        });
+    };
+    onMounted(fetchUsersData);
+</script>
+
+<template>
+    <div>
+        <DataTable :value="usersData" paginator :rows="3" tableStyle="min-width: 50rem">
+            <Column field="FullName" header="Nombre" sortable></Column>
+            <Column field="NumberId" header="Identificación" sortable style="width: 160px"></Column>
+            <Column field="WorkStartDate" header="Fecha de ingreso" sortable style="width: 200px"></Column>
+            <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
+            <Column header="" style="width: 100px"> <template #body="rowData">
+                    <base-button class="action-buttons" label="Ver más" @click="updateUser(rowData)" :type="'button'" />
+                </template></Column>          
+        </DataTable>
+    </div>
+    <div class="actions-container">
+        <div class="actions">
+            <base-button :label="backLabel" @click="cancel" :type="'button'" />
+        </div>
+    </div>
+</template>
+
+<style scoped="scoped">
+    .action-buttons {
+        display: flex;
+        background-color: #253e8b;
+        border-color: #253e8b;
+        overflow: hidden;
+        width: 105px;
+        color: white;
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-column {
+        display: flex;
+        flex-direction: column;
+        min-height: 10vh;
+    }
+
+    .hasError {
+        border-color: red;
+    }
+
+    .form-row {
+        margin-top: 6rem;
+        display: flex;
+        justify-content: space-between;
+        align-self: center;
+        margin-bottom: 2rem;
+        width: 60%;
+    }
+
+    .form-margin-right {
+        margin-right: 6rem;
+    }
+
+    .form-margin-left {
+        margin-left: 6rem;
+    }
+
+    .actions-container {
+        position: static;
+        bottom: 0;
+        background-color: #fff;
+        padding: 3rem;
+    }
+
+    .actions {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+
+    }
+</style>
