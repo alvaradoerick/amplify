@@ -2,8 +2,10 @@
 using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+
 
 namespace AseIsthmusAPI.Services
 {
@@ -31,7 +33,7 @@ namespace AseIsthmusAPI.Services
                 EmailAddress = a.EmailAddress,
                 BankAccount = a.BankAccount,
                 IsActive = a.IsActive,
-                RoleId = a.Role.RoleDescription,
+                RoleDescription = a.Role.RoleDescription,
                 Address1 = a.Address1,
                 Address2 = a.Address2,
                 DistrictId = a.DistrictId,
@@ -57,7 +59,7 @@ namespace AseIsthmusAPI.Services
                     EmailAddress = a.EmailAddress,
                     BankAccount = a.BankAccount,
                     IsActive = a.IsActive,
-                    RoleId = a.Role.RoleDescription,
+                    RoleDescription = a.Role.RoleDescription,
                     Address1 = a.Address1,
                     Address2 = a.Address2,
                     DistrictId = a.DistrictId,
@@ -166,15 +168,38 @@ namespace AseIsthmusAPI.Services
             }
         }
 
-        public async Task DeleteUser(string id)
+        public async Task<string> DeleteUser(string id)
         {
             var existingClient = await GetById(id);
             if (existingClient is not null)
             {
-                _context.Users.Remove(existingClient);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Users.Remove(existingClient);
+                    await _context.SaveChangesAsync();
+                    return string.Empty;
+                }
+                catch (DbUpdateException ex)
+                {
+                    var errorMessages = new List<string>();
+                    if (ex.InnerException is SqlException sqlException)
+                    {
+                        foreach (SqlError error in sqlException.Errors)
+                        {
+                            if (error.Number == 50000) 
+                            {
+                                errorMessages.Add(error.Message);
+                            }
+                        }
+                    }
+                    return string.Join(Environment.NewLine, errorMessages);
+                }
             }
+            return "User not found.";
         }
+
+
+
 
         public async Task<string?> AccountExist(UserDtoIn user)
         {

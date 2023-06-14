@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
@@ -20,9 +19,7 @@ public partial class Agreement
 
     public string? PersonId { get; set; }
 
-    [JsonIgnore]
     public virtual CategoryAgreement CategoryAgreement { get; set; } = null!;
 
-    [JsonIgnore]
     public virtual User? Person { get; set; }
 }

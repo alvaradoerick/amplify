@@ -32,13 +32,21 @@
                             <router-link class="nav-link" :to="{name:'dashboard'}">Principal</router-link>
                         </li>
                         <li class="nav-item" @click="showSubMenu1" @mouseleave="hideSubMenu1">
+                            <a class="nav-link">Usuarios</a>
+                            <ul v-show="isSubMenu1Visible" class="sub-menu">
+                                <li>
+                                    <router-link class="nav-link" :to="{name:'listUsers'}">Lista de usuarios</router-link>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" @click="showSubMenu1" @mouseleave="hideSubMenu1">
                             <a class="nav-link">Convenios</a>
                             <ul v-show="isSubMenu1Visible" class="sub-menu">
                                 <li>
-                                    <router-link class="nav-link" :to="{name:'categoryList'}">Lista de Categorias</router-link>
+                                    <router-link class="nav-link" :to="{name:'categoryList'}">Lista de categorias</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="nav-link" :to="{name:'createAgreement'}">Crear Convenio</router-link>
+                                    <router-link class="nav-link" :to="{name:'agrementList'}">List de convenios</router-link>
                                 </li>
                             </ul>
                         </li>

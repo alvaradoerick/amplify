@@ -133,7 +133,6 @@
 
     <div class="main">
         <toast-component />
-        <p>La categoría creada deberá ser asignada al convenio.eeee</p>
         <div class="header">
             <div class="form-row">
                 <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
@@ -162,11 +161,6 @@
         align-items: center;
     }
 
-    .form-column {
-        display: flex;
-        flex-direction: column;
-        min-height: 10vh;
-    }
     .hasError  {
     border-color: red; 
     }

@@ -3,6 +3,7 @@ using MimeKit.Text;
 using MimeKit;
 using AseIsthmusAPI.Data.DTOs;
 using MailKit.Net.Smtp;
+using AseIsthmusAPI.Templates;
 
 namespace AseIsthmusAPI.Services
 {
@@ -14,14 +15,15 @@ namespace AseIsthmusAPI.Services
             _configuration = configuration;
 
         }
-        public void SendEmail(EmailDto emailDto) {
+        public void SendEmail(string emailTemplate,string subject, string emailTo) {
 
             var email = new MimeMessage();
             // se pone el coorreo, en este caso, se uso de thereal https://ethereal.email/create
             email.From.Add(MailboxAddress.Parse("krudin7.6@gmal.com"));
-            email.To.Add(MailboxAddress.Parse(emailDto.To));
-            email.Subject = emailDto.Subject;
-            email.Body = new TextPart(TextFormat.Html) { Text = emailDto.Body };
+            email.To.Add(MailboxAddress.Parse(emailTo));
+            email.Subject = subject;
+            email.Body = new TextPart(TextFormat.Html) { Text = emailTemplate};
+
 
             using var smtp = new SmtpClient();
             smtp.Connect(_configuration.GetSection("EmailHost").Value, 587, SecureSocketOptions.StartTls);// smtp.Connect("smtp.gmail.com")

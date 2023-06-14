@@ -1,8 +1,8 @@
 ﻿using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
+using AseIsthmusAPI.Templates;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AseIsthmusAPI.Controllers
@@ -13,11 +13,12 @@ namespace AseIsthmusAPI.Controllers
     public class PasswordController : ControllerBase
     {
         private readonly PasswordService _service;
-        private IConfiguration config;
+        private readonly EmailService _emailService;
 
-        public PasswordController(PasswordService service)
+        public PasswordController(PasswordService service, EmailService emailService)
         {
             _service = service;
+            _emailService = emailService;
         }
 
         [HttpPut]
@@ -42,12 +43,23 @@ namespace AseIsthmusAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// resets the password of an active user without having to log in
+        /// </summary>
+        /// <param name="updatePasswordRequestDto"></param>
+        /// <returns></returns>
         [HttpPatch("resetPassword")]
-        public async Task<IActionResult> ResetPasswordUnauthenticated(UpdatePasswordRequestDto updatePasswordRequestDto)
+        public async Task<IActionResult> ResetPasswordUnauthenticated( [FromBody]UpdatePasswordRequestDto updatePasswordRequestDto)
         {
+            HtmlContentProvider emailTemplate = new HtmlContentProvider();
+
+
             var newPassword = await _service.ResetPasswordUnauthenticated(updatePasswordRequestDto);
             if (newPassword != null && newPassword != "1")
             {
+                
+                
+                _emailService.SendEmail(emailTemplate.GeneratePasswordResetEmailContent(newPassword), "Restablecimiento de contraseña", updatePasswordRequestDto.EmailAddress);
                 return Ok(new UpdatePasswordResponseDto { NewPassword = newPassword });
             }
             else if (newPassword == "1")

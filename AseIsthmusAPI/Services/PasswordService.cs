@@ -1,5 +1,6 @@
 ﻿using AseIsthmusAPI.Data;
 using AseIsthmusAPI.Data.DTOs;
+using AseIsthmusAPI.Templates;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -67,7 +68,9 @@ namespace AseIsthmusAPI.Services
 
             else
             {
-                var newPassword = GenerateRandomPassword();
+
+               
+                                    var newPassword = GenerateRandomPassword();
 
                 login.Pw = HashPassword(newPassword);
                 await _context.SaveChangesAsync();

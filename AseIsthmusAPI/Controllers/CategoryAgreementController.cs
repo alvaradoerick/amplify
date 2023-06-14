@@ -5,6 +5,7 @@ using System.Collections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using AseIsthmusAPI.Data.AseIsthmusModels;
+using AseIsthmusAPI.Data;
 
 namespace AseIsthmusAPI.Controllers
 {

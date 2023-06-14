@@ -28,7 +28,7 @@
 
         public bool IsActive { get; set; }
 
-        public string RoleId { get; set; }
+        public string RoleDescription { get; set; }
 
         public string Address1 { get; set; } 
 

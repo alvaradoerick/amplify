@@ -208,7 +208,7 @@
             <div class="form-row">
                 <input-text class="input-text form-margin-right" id="employee-phone" type="text"
                     placeholder="Número telefónico" v-model="personalInfo.PhoneNumber"
-                    :class="{'hasError': (v$?.BankAccount?.$error) }" />
+                    :class="{'hasError': (v$?.PhoneNumber?.$error) }" />
                 <input-text class="input-text" id="employee-account" type="text" placeholder="Cuenta IBAN"
                     v-model="personalInfo.BankAccount" :class="{'hasError': (v$?.BankAccount?.$error) }" />
             </div>
