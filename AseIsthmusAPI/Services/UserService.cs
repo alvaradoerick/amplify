@@ -29,6 +29,7 @@ namespace AseIsthmusAPI.Services
                 Nationality = a.Nationality,
                 DateBirth = a.DateBirth,
                 WorkStartDate = a.WorkStartDate,
+                EnrollmentDate = a.EnrollmentDate,
                 PhoneNumber = a.PhoneNumber,
                 EmailAddress = a.EmailAddress,
                 BankAccount = a.BankAccount,
@@ -61,6 +62,7 @@ namespace AseIsthmusAPI.Services
                     BankAccount = a.BankAccount,
                     IsActive = a.IsActive,
                     RoleDescription = a.Role.RoleDescription,
+                    EnrollmentDate = a.EnrollmentDate,
                     RoleId = a.RoleId,
                     Address1 = a.Address1,
                     Address2 = a.Address2,
@@ -72,7 +74,8 @@ namespace AseIsthmusAPI.Services
 
         public async Task<User?> GetById(string id)
         {
-            return await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
+            return user;
         }
 
         public async Task<User?> GetByNumberId(string numberId)
@@ -130,7 +133,7 @@ namespace AseIsthmusAPI.Services
         /// </summary>
         /// <param name="userByAdmin"></param>
         /// <returns></returns>
-        public async Task UpdateUserByAdmin(UpdateProfileAdminDto userByAdmin)
+        public async Task UpdateUserByAdmin( UpdateProfileAdminDto userByAdmin)
         {
             var existingClient = await GetById(userByAdmin.PersonId);
 
@@ -145,7 +148,6 @@ namespace AseIsthmusAPI.Services
                 existingClient.WorkStartDate = userByAdmin.WorkStartDate;
                 existingClient.EnrollmentDate = userByAdmin.EnrollmentDate;
                 existingClient.RoleId = userByAdmin.RoleId;      
-
                 await _context.SaveChangesAsync();
             }
         }
@@ -155,7 +157,6 @@ namespace AseIsthmusAPI.Services
             var existingClient = await GetById(id);
             if (existingClient is not null)
             {
-  
                 existingClient.PhoneNumber = user.PhoneNumber;
                 existingClient.BankAccount = user.BankAccount;
                 existingClient.Address1 = user.Address1;
@@ -199,7 +200,7 @@ namespace AseIsthmusAPI.Services
 
 
 
-        public async Task<string?> AccountExist(UserDtoIn user)
+        public async Task<string?> DuplicateAccount(UserDtoIn user)
         {
             string result = "valid";
             var userExistById = await GetById(user.PersonId);
