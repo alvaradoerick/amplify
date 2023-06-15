@@ -20,7 +20,7 @@ export default {
                     ...workInfo,
                     ...addressInfo,
                     DateBirth: dayjs(personalInfo.DateBirth).format('YYYY-MM-DD'),
-                    WorkStartDate: dayjs(workInfo.WorkStartDate).format('YYYY-MM-DD'), //IdNumber: personalInfo.IdNumber.replaceAll('-', ''),
+                    WorkStartDate: dayjs(workInfo.WorkStartDate).format('YYYY-MM-DD')
                 }
             )
             const userId = response.data.PersonId

@@ -96,10 +96,8 @@
     }
     const isValiData =  ref(false)
 
-
     const onSend = async (event) => {
         event.preventDefault();
-
         const isValid = await validateForm();
         if (isValid) {
             try{

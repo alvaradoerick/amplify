@@ -29,7 +29,7 @@
         });
     }
     const sendLabel = 'Actualizar';
-    const selectedState = ref();
+    //const selectedState = ref();
     const status = ref([{
             name: 'Activo',
             value: 1
@@ -43,7 +43,7 @@
     const agreementCategory = ref(
     {
         Description: null,
-        IsActive: selectedState
+        IsActive: null
        }
     )
     const categoryId = ref(route.params.id);
@@ -90,9 +90,14 @@
    const category = store.getters["agreements/getCategory"];
       try {
         agreementCategory.value.Description = category.Description,
-        selectedState.value = category.IsActive ? 1 : 0;
+        agreementCategory.value.IsActive = category.IsActive ? 1 : 0;
       } catch (error) {
-        console.error(error);
+        toast.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Un error ocurrió.',
+                        life: 2000
+                    });
       }
     };
     
@@ -135,10 +140,16 @@
         <toast-component />
         <div class="header">
             <div class="form-row">
+                <span class="p-float-label">
                 <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
                     v-model="agreementCategory.Description"  :class="{'hasError': v$?.Description?.$error}"/>
-                <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
-                    placeholder="Estado" class="dropdown" :class="{'hasError': v$?.selectedState?.$error}"/>
+                    <label for="categoryName">Nombre</label>
+                </span>
+                <span class="p-float-label"  >
+    <drop-down v-model="agreementCategory.IsActive" :options="status" optionLabel="name" optionValue="value"
+      placeholder="Estado" class="dropdown" id="status" :class="{'hasError': v$?.IsActive?.$error}" />
+    <label for="status">Estado</label>
+</span>
             </div>
         </div>
 

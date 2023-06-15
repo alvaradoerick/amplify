@@ -20,6 +20,33 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
 
+        #region Get
+
+        [HttpGet]
+        public async Task<IEnumerable<AgreementDtoOut>> Get()
+        {
+            return await _service.GetAll();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByCategoryId([FromRoute] int id)
+        {
+            var agreement = await _service.GetAgreementByCategoryId(id);
+
+            if (!agreement.Any())
+            {
+                return NoContent();
+            }
+            else
+            {
+                return Ok(agreement);
+            }
+        }
+
+        #endregion
+
+        #region create
+        
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(AgreementDtoIn agreementDtoIn)
@@ -34,27 +61,8 @@ namespace AseIsthmusAPI.Controllers
                 return Ok(agreementDtoIn);
             }
         }
+        #endregion
 
-        [HttpGet]
-        public async Task<IEnumerable<AgreementDtoOut>> Get()
-        {
-            return await _service.GetAll();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByCategoryId([FromRoute] int id)
-        {
-            var agreement = await _service.GetAgreementByCategoryId(id);
-
-            if (!agreement.Any() )
-            {
-                return NoContent();
-            }
-            else
-            {
-                return Ok(agreement);  
-            }           
-        }
 
     }
 }
