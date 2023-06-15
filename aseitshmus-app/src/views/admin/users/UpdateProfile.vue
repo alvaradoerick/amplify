@@ -124,7 +124,7 @@
 
     const manageUser = async () => {
         await manageUserStatus();
-console.log(userResponse.value)
+        await fetchUserData();
         if (userResponse.value !== null) {
             toast.add({
                 severity: 'error',
@@ -133,22 +133,20 @@ console.log(userResponse.value)
                 life: 2000
             });
             store.commit('users/clearErrorResponse');
-        } else {
-            console.log(statusDB.value)
+        } else {       
             if (statusDB.value === 1) {
                 toast.add({
                     severity: 'success',
                     detail: "Usuario ha sido desactivado.",
                     life: 2000
                 });
-                fetchUserData();
+               
             } else {
                 toast.add({
                     severity: 'success',
                     detail: "Usuario ha sido activado.",
                     life: 2000
                 });
-                fetchUserData();
             }
 
         }
