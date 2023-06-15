@@ -2,6 +2,7 @@
     import {
         ref,
         onMounted,
+        computed
     } from 'vue';
     import {
         useStore
@@ -24,7 +25,8 @@
     const toast = useToast();
     const route = useRoute();
     const store = useStore()
-    const router = useRouter();
+    const router = useRouter()
+
 
     const rules = {
         PersonId: {
@@ -61,7 +63,8 @@
     const roleSelected = ref();
     const statusDB = ref();
 
-    const backLabel = 'Atras';
+
+    const backLabel = 'Atrás';
     const sendLabel = 'Actualizar';
     const beneficiariesLabel = 'Beneficiarios';
     const activeLabel = 'Activar';
@@ -107,6 +110,49 @@
             value: 0
         }
     ]);
+
+    const manageUserStatus = async () => {
+        await store.dispatch('users/patchUserStatus', {
+            personId: personId.value
+        })
+    }
+
+    const userResponse = computed(() => {
+        return store.getters["users/getErrorResponse"];
+    });
+
+
+    const manageUser = async () => {
+        await manageUserStatus();
+console.log(userResponse.value)
+        if (userResponse.value !== null) {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: userResponse.value,
+                life: 2000
+            });
+            store.commit('users/clearErrorResponse');
+        } else {
+            console.log(statusDB.value)
+            if (statusDB.value === 1) {
+                toast.add({
+                    severity: 'success',
+                    detail: "Usuario ha sido desactivado.",
+                    life: 2000
+                });
+                fetchUserData();
+            } else {
+                toast.add({
+                    severity: 'success',
+                    detail: "Usuario ha sido activado.",
+                    life: 2000
+                });
+                fetchUserData();
+            }
+
+        }
+    }
 
     const UserList = () => {
         router.push({
@@ -163,7 +209,6 @@
             console.error(error);
         }
     };
-
 
     const submitData = async (event) => {
         event.preventDefault();
@@ -264,8 +309,10 @@
         <div class="actions">
             <base-button class="action-buttons" :label="backLabel" @click="UserList" :type="'button'" />
             <base-button class="action-buttons" :label="beneficiariesLabel" :type="'button'" />
-            <base-button class="action-buttons green" v-if="statusDB === 0" :label="activeLabel" :type="'submit'" />
-            <base-button class="action-buttons red" v-if="statusDB === 1" :label="inactiveLabel" :type="'submit'" />
+            <base-button class="action-buttons green" v-if="statusDB === 0" @click="manageUser" :label="activeLabel"
+                :type="'submit'" />
+            <base-button class="action-buttons red" v-if="statusDB === 1" @click="manageUser" :label="inactiveLabel"
+                :type="'submit'" />
             <base-button class="action-buttons" :label="sendLabel" @click="submitData" :type="'submit'" />
         </div>
     </div>

@@ -120,5 +120,27 @@ export default {
         } catch (error) {
             console.log(error)
         }
+    },
+
+    async patchUserStatus({
+        rootGetters,commit
+    }, payload) {
+        try {
+            const personId = payload.personId;
+            const token = rootGetters['auth/getToken'];
+            const response = await axios.patch(
+                `${apiUrl}/user/activateuser/${personId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            return response
+        } catch (error) {
+            const errorMessage = error.response.data.error;
+            commit('setErrorResponse', errorMessage);
+        }
     }
 }

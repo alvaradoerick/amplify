@@ -159,6 +159,8 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Patch user status
+
+        [Authorize]
         [HttpPatch("activateuser/{id}")]
         public async Task<IActionResult> ManageUserStatus([FromRoute] string id)
         {
@@ -166,7 +168,7 @@ namespace AseIsthmusAPI.Controllers
 
             if (result is null)
             {
-                return UserNotFound(id);
+                return BadRequest(new { error = "No se pudo procesar su pedido." });
             }
             return Ok(result);
         }

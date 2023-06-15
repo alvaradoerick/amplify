@@ -81,7 +81,6 @@ export default {
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
-            console.log(errorMessage)
             commit('setErrorResponse', errorMessage);
         }
     },
