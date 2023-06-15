@@ -39,13 +39,13 @@ namespace AseIsthmusAPI.Controllers
         /// <param name="updatePasswordRequestDto"></param>
         /// <returns></returns>
         [HttpPatch("resetpassword")]
-        public async Task<IActionResult> ResetPasswordUnauthenticated( [FromBody]UpdatePasswordRequestDto updatePasswordRequestDto)
+        public async Task<IActionResult> ResetPasswordUnauthenticated([FromBody] UpdatePasswordRequestDto updatePasswordRequestDto)
         {
             HtmlContentProvider emailTemplate = new HtmlContentProvider();
 
             var newPassword = await _service.ResetPasswordUnauthenticated(updatePasswordRequestDto);
-            if (newPassword != null )
-            {                  
+            if (newPassword != null)
+            {
                 _emailService.SendEmail(emailTemplate.GeneratePasswordResetEmailContent(newPassword), "Restablecimiento de contraseña", updatePasswordRequestDto.EmailAddress);
                 return Ok(new UpdatePasswordResponseDto { NewPassword = newPassword });
             }
@@ -54,6 +54,7 @@ namespace AseIsthmusAPI.Controllers
                 return BadRequest(new { error = "Su solicitud no pudo enviarse." });
             }
         }
+
         #endregion
     }
 }

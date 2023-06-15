@@ -2,6 +2,7 @@
 using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
+using AseIsthmusAPI.Templates;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -13,10 +14,12 @@ namespace AseIsthmusAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _service;
+        private readonly EmailService _emailService;
 
-        public UserController(UserService service)
+        public UserController(UserService service, EmailService emailService)
         {
             _service = service;
+            _emailService = emailService;
         }
 
         #region Get
@@ -164,13 +167,28 @@ namespace AseIsthmusAPI.Controllers
         [HttpPatch("activateuser/{id}")]
         public async Task<IActionResult> ManageUserStatus([FromRoute] string id)
         {
-            var result = await _service.ManageUserStatus(id);
 
-            if (result is null)
+            var user = await _service.GetById(id);
+            HtmlContentProvider emailTemplate = new HtmlContentProvider();
+            var result = await _service.ManageUserStatus(id);
+        
+           if (user is not null && result is not null)
+            {
+                if (result.Equals("Activated"))
+                {
+                    string pdfFilePath = @"Templates/G1_SC603_J_Requerimientos.pdf";
+                    _emailService.SendEmail(emailTemplate.ApprovalEmailContent(), "Activación de usuario", user.EmailAddress, pdfFilePath);
+                    return Ok(result);
+                }
+                else { 
+                    return Ok(result); 
+                }
+            }
+            else
             {
                 return BadRequest(new { error = "No se pudo procesar su pedido." });
             }
-            return Ok(result);
+
         }
         #endregion
 
