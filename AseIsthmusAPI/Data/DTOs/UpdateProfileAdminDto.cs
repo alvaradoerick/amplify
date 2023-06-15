@@ -25,10 +25,6 @@ namespace AseIsthmusAPI.Data.DTOs
 
         public DateTime? EnrollmentDate { get; set; }
       
-        public bool IsActive { get; set; }
-
         public int RoleId { get; set; }
-
-        public DateTime? ApprovedDate { get; set; }
     }
 }

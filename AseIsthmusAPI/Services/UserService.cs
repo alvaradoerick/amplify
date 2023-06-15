@@ -124,31 +124,21 @@ namespace AseIsthmusAPI.Services
 
             return newUser;
         }
-        public async Task UpdateUser(UserDtoIn user)
+        public async Task UpdateUserByAdmin(UpdateProfileAdminDto userByAdmin)
         {
-            var existingClient = await GetById(user.PersonId);
+            var existingClient = await GetById(userByAdmin.PersonId);
 
             if (existingClient is not null)
             {
-
-                existingClient.PersonId = user.PersonId;
-                existingClient.NumberId = user.NumberId;
-                existingClient.FirstName = user.FirstName;
-                existingClient.LastName1 = user.LastName1;
-                existingClient.LastName2 = user.LastName2;
-                existingClient.Nationality = user.Nationality;
-                existingClient.DateBirth = user.DateBirth;
-                existingClient.WorkStartDate = user.WorkStartDate;
-                existingClient.PhoneNumber = user.PhoneNumber;
-                existingClient.EmailAddress = user.EmailAddress;
-                existingClient.BankAccount = user.BankAccount;
-                existingClient.IsActive = existingClient.IsActive;
-                existingClient.RoleId = user.RoleId;
-                existingClient.Address1 = user.Address1;
-                existingClient.Address2 = user.Address2;
-                existingClient.DistrictId = user.DistrictId;
-                existingClient.PostalCode = user.PostalCode;
-                existingClient.ApprovedDate = existingClient.ApprovedDate;
+                existingClient.PersonId = userByAdmin.PersonId;
+                existingClient.NumberId = userByAdmin.NumberId;
+                existingClient.FirstName = userByAdmin.FirstName;
+                existingClient.LastName1 = userByAdmin.LastName1;
+                existingClient.LastName2 = userByAdmin.LastName2;
+                existingClient.DateBirth = userByAdmin.DateBirth;
+                existingClient.WorkStartDate = userByAdmin.WorkStartDate;
+                existingClient.EnrollmentDate = userByAdmin.EnrollmentDate;
+                existingClient.RoleId = userByAdmin.RoleId;      
 
                 await _context.SaveChangesAsync();
             }
