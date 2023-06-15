@@ -44,6 +44,11 @@ namespace AseIsthmusAPI.Services
             }).ToListAsync();
         }
 
+        /// <summary>
+        /// gets user data by personId
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<UserDtoOut?> GetDtoById(string id)
         {
             return await _context.Users.Where(a => a.PersonId == id).
@@ -72,12 +77,22 @@ namespace AseIsthmusAPI.Services
                 }).SingleOrDefaultAsync();
         }
 
+        /// <summary>
+        /// finds user by employee code (personId)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<User?> GetById(string id)
         {
             var user = await _context.Users.FindAsync(id);
             return user;
         }
-
+        
+        /// <summary>
+        /// finds user by identification number (number Id)
+        /// </summary>
+        /// <param name="numberId"></param>
+        /// <returns></returns>
         public async Task<User?> GetByNumberId(string numberId)
         {
             var user = await _context.Users.FirstOrDefaultAsync(e => e.NumberId == numberId);
@@ -88,6 +103,11 @@ namespace AseIsthmusAPI.Services
             return user;
         }
 
+        /// <summary>
+        /// finds user by email address
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<User?> GetByEmail(string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(e => e.EmailAddress == email);
@@ -152,6 +172,12 @@ namespace AseIsthmusAPI.Services
             }
         }
 
+        /// <summary>
+        /// allows user to update their own profile
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task UpdateUserByUser(string id, UserUpdateDto user)
         {
             var existingClient = await GetById(id);
@@ -197,9 +223,11 @@ namespace AseIsthmusAPI.Services
             return "User not found.";
         }
 
-
-
-
+        /// <summary>
+        /// vaidation if user exists based on different checks
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<string?> DuplicateAccount(UserDtoIn user)
         {
             string result = "valid";
@@ -221,5 +249,29 @@ namespace AseIsthmusAPI.Services
             return result;
         }
 
+        /// <summary>
+        /// Updates the status of the user either inactivating it or activating it
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string?> ManageUserStatus(string id) {
+
+           var date = DateTime.Now.Date;
+            var existingClient = await GetById(id);
+            if (existingClient is not null && existingClient.IsActive == true)
+            {
+                existingClient.IsActive = false;
+                existingClient.ApprovedDate = existingClient.ApprovedDate;
+                await _context.SaveChangesAsync();
+                return "Deactivated";
+            }
+            else if (existingClient is not null && existingClient.IsActive == false)
+            {
+                existingClient.IsActive = true;
+                existingClient.ApprovedDate = DateTime.Now.Date;
+                await _context.SaveChangesAsync();
+                return "Activated";
+            }
+            else return null;
+        }
     }
 }

@@ -15,32 +15,6 @@ namespace AseIsthmusAPI.Services
             _context = context;
         }
 
-        /// <summary>
-        /// This method is executed when the admin approves the user for the first time
-        /// </summary>
-        /// <param name="updatePasswordRequestDto"></param>
-        /// <returns></returns>
-        public async Task<string?> SetNewPassword(UpdatePasswordRequestDto updatePasswordRequestDto)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == updatePasswordRequestDto.EmailAddress);
-            if (user == null)
-            {
-                return null;
-            }
-
-            var login = await _context.Logins.FirstOrDefaultAsync(l => l.PersonId == user.PersonId);
-            if (login == null)
-            {
-                return null;
-            }
-
-            var newPassword = GenerateRandomPassword();
-
-            login.Pw = HashPassword(newPassword);
-            await _context.SaveChangesAsync();
-
-            return newPassword;
-        }
 
         /// <summary>
         /// This method is executed when the user is already approved and wants to reset the password
@@ -55,11 +29,6 @@ namespace AseIsthmusAPI.Services
                 return null;
             }
 
-            else if (user.IsActive == false)
-            {
-                return "1";
-            }
-
             var login = await _context.Logins.FirstOrDefaultAsync(l => l.PersonId == user.PersonId);
             if (login == null)
             {
@@ -67,14 +36,10 @@ namespace AseIsthmusAPI.Services
             }
 
             else
-            {
-
-               
-                                    var newPassword = GenerateRandomPassword();
-
+            {             
+             var newPassword = GenerateRandomPassword();
                 login.Pw = HashPassword(newPassword);
                 await _context.SaveChangesAsync();
-
                 return newPassword;
             }
 

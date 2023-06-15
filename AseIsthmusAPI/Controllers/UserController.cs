@@ -20,7 +20,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         #region Get
-       
+
         //[Authorize]
         [HttpGet]
         public async Task<IEnumerable<UserDtoOut>> Get()
@@ -41,7 +41,7 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Create
-       
+
         [HttpPost]
         public async Task<IActionResult> Insert(UserDtoIn user)
         {
@@ -55,7 +55,8 @@ namespace AseIsthmusAPI.Controllers
                 return BadRequest(new { error = "El usuario con el correo ingresado ya existe en el sistema. Contacte al administrador." });
             else if (!ModelState.IsValid)
                 return BadRequest(new { error = "Faltan datos por ingresar." });
-            else {
+            else
+            {
                 var newUser = await _service.Create(user);
 
                 return CreatedAtAction(nameof(GetById), new { id = newUser.PersonId }, newUser);
@@ -65,7 +66,7 @@ namespace AseIsthmusAPI.Controllers
 
         #endregion
 
-        #region Update
+        #region Patch
         /// <summary>
         /// Update user by Admin
         /// </summary>
@@ -130,14 +131,14 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Delete
-       
+
         //[Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var existingClient = await _service.GetById(id);
 
-            if (existingClient is not null )
+            if (existingClient is not null)
             {
                 var result = await _service.DeleteUser(id);
                 if (string.IsNullOrEmpty(result))
@@ -146,7 +147,7 @@ namespace AseIsthmusAPI.Controllers
                 }
                 else
                 {
-                    return BadRequest(new { error = result }); 
+                    return BadRequest(new { error = result });
                 }
             }
             else
@@ -157,12 +158,26 @@ namespace AseIsthmusAPI.Controllers
 
         #endregion
 
+        #region Patch user status
+        [HttpPatch("activateuser/{id}")]
+        public async Task<IActionResult> ManageUserStatus([FromRoute] string id)
+        {
+            var result = await _service.ManageUserStatus(id);
+
+            if (result is null)
+            {
+                return UserNotFound(id);
+            }
+            return Ok(result);
+        }
+        #endregion
+
         #region Non Actions
         [NonAction]
         public NotFoundObjectResult UserNotFound(string id)
         {
             return NotFound(new { error = $"El usuario con código={id} no existe." });
-     
+
         }
 
         #endregion
