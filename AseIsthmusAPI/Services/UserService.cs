@@ -124,6 +124,12 @@ namespace AseIsthmusAPI.Services
 
             return newUser;
         }
+
+        /// <summary>
+        /// This method updates the profile by the admin; however it does not activate or inactivate the user
+        /// </summary>
+        /// <param name="userByAdmin"></param>
+        /// <returns></returns>
         public async Task UpdateUserByAdmin(UpdateProfileAdminDto userByAdmin)
         {
             var existingClient = await GetById(userByAdmin.PersonId);
