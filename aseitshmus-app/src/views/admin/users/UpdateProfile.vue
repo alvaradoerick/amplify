@@ -46,8 +46,10 @@
     const router = useRouter();
     const userId = ref(route.params.id);
 
-    const selectedState = ref();
+    
     const roleSelected = ref();
+    const statusDB = ref();
+    const selectedState = ref();
 
     const roleList = ref([{
             name: 'Administrador',
@@ -84,6 +86,9 @@
         });
     }
     const sendLabel = 'Actualizar';
+    const beneficiariesLabel = 'Beneficiarios';
+    const activeLabel = 'Activar';
+    const inactiveLabel = 'Inactivar';
 
     const store = useStore()
 
@@ -106,11 +111,6 @@
             userInfo: userInfo.value
         })
     }
-    // const dateFormat = {
-    //     day: '2-digit',
-    //   month: '2-digit',
-    //   year: '2-digit'
-    // };
 
 
     console.log(storeUser)
@@ -156,6 +156,7 @@
             userInfo.value.LastName1 = userData.LastName1;
             userInfo.value.LastName2 = userData.LastName2;
             userInfo.value.RoleDescription = userData.RoleDescription;
+            statusDB.value = userData.IsActive ? 1 : 0;
             selectedState.value = userData.IsActive ? 1 : 0;
             userInfo.value.DateBirth = formatDate(userData.DateBirth),
             userInfo.value.WorkStartDate = formatDate(userData.WorkStartDate),
@@ -241,10 +242,10 @@
                     <label for="employee-lastname2">Segundo apellido</label>
                 </span>
                 <span class="p-float-label">
-                    <drop-down v-model="selectedState" id="is-active" :options="status" optionLabel="name"
+                    <drop-down v-model="selectedState" id="status-list" :options="status" optionLabel="name"
                         optionValue="value" placeholder="Estado" class="dropdown"
                         :class="{'hasError': v$?.selectedState?.$error}" />
-                    <label for="is-active">Estado</label>
+                    <label for="status-list">Estado</label>
                 </span>
             </div>
             <div class="form-row">
@@ -269,15 +270,18 @@
                 </span>
                 <span class="p-float-label">
                     <drop-down v-model="roleSelected" :options="roleList" optionLabel="name" optionValue="value"
-                        id="role" placeholder="Rol" class="dropdown" :class="{'hasError': v$?.selectedState?.$error}" />
+                        id="role" placeholder="Rol" class="dropdown" :class="{'hasError': v$?.roleSelected?.$error}" />
                     <label for="role">Rol</label>
                 </span>
             </div>
 
         </div>
         <div class="actions">
-            <base-button :label="backLabel" @click="UserList" :type="'button'" />
-            <base-button :label="sendLabel" :type="'submit'" />
+            <base-button class="action-buttons" :label="backLabel" @click="UserList" :type="'button'" />
+            <base-button class="action-buttons"  :label="beneficiariesLabel" :type="'submit'" />
+            <base-button class="action-buttons green"  v-if="statusDB === 0"  :label="activeLabel" :type="'submit'" />
+            <base-button class="action-buttons red"  v-if="statusDB === 1" :label="inactiveLabel" :type="'submit'" />
+            <base-button class="action-buttons"  :label="sendLabel" :type="'submit'" />
         </div>
     </div>
 </template>
@@ -321,4 +325,25 @@
         justify-content: space-between;
         margin-top: 3rem;
     }
+    .action-buttons {
+        display: flex;
+        overflow: hidden;
+        width: 125px;
+        color: white;
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .green, .green:hover, .green:focus{
+        background-color: rgb(6, 100, 6) !important;
+        border-color: rgb(6, 100, 6) !important;
+    }
+
+    .red, .red:hover, .green:focus
+    {
+        background-color:  rgb(189, 90, 90) !important;
+         border-color: rgb(189, 90, 90) !important;
+        }
+
 </style>

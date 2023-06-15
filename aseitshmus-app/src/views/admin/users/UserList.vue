@@ -75,8 +75,6 @@
 <style scoped="scoped">
     .action-buttons {
         display: flex;
-        background-color: #253e8b;
-        border-color: #253e8b;
         overflow: hidden;
         width: 105px;
         color: white;
