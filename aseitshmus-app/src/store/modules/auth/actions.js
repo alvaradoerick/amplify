@@ -23,9 +23,9 @@ export default {
                     WorkStartDate: dayjs(workInfo.WorkStartDate).format('YYYY-MM-DD')
                 }
             )
-            const userId = response.data.PersonId
+            const PersonId = response.data.PersonId
             await dispatch('addBeneficiaries', {
-                userId,
+                PersonId,
                 beneficiaryInfo
             });
 
@@ -41,7 +41,7 @@ export default {
     }, payload) {
         try {
             const response = await axios.post(
-                `${apiUrl}/users/${payload.userId}/beneficiary`,
+                `${apiUrl}/users/${payload.PersonId}/beneficiary`,
                 payload.beneficiaryInfo
             )
             return response;
@@ -81,10 +81,8 @@ export default {
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
-            console.log(errorMessage)
             commit('setErrorResponse', errorMessage);
         }
     },
-
 
 };

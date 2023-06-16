@@ -13,11 +13,11 @@
     import {
         useToast
     } from 'primevue/usetoast';
-    import useVuelidate from '@vuelidate/core'
-    import {
-        email,
-        required
-    } from '@vuelidate/validators'
+    //import useVuelidate from '@vuelidate/core'
+    // import {
+    //     email,
+    //     required
+    // } from '@vuelidate/validators'
 
     import Stepper from '@/components/UI/Stepper.vue'
 import RegistrationConfirmation from '@/components/authentication/RegistrationConfirmation.vue';
@@ -81,33 +81,33 @@ const toast = useToast();
         beneficiaryInfo.value = value
     }
 
-    const rules = {
-        personalInfo: {
-    PersonId: { required },
-    NumberId: { required },
-    firstName: { required },
-    lastName1: { required },
-    Nationality: { required },
-    DateBirth: { required },
-  },
-  workInfo: {
-    WorkStartDate: { required },
-    PhoneNumber: { required },
-    EmailAddress: { required, email },
-    BankAccount: { required },
-  },
-  addressInfo: {
-    Address1: { required },
-    DistrictId: { required },
-    PostalCode: { required },
-  },
-  beneficiaryInfo: {
-    BeneficiaryName: { required },
-    BeneficiaryNumberId: { required },
-    BeneficiaryRelation: { required },
-    BeneficiaryPercentage: { required },
-  },
-    }
+//     const rules = {
+//         personalInfo: {
+//     PersonId: { required },
+//     NumberId: { required },
+//     firstName: { required },
+//     lastName1: { required },
+//     Nationality: { required },
+//     DateBirth: { required },
+//   },
+//   workInfo: {
+//     WorkStartDate: { required },
+//     PhoneNumber: { required },
+//     EmailAddress: { required, email },
+//     BankAccount: { required },
+//   },
+//   addressInfo: {
+//     Address1: { required },
+//     DistrictId: { required },
+//     PostalCode: { required },
+//   },
+//   beneficiaryInfo: {
+//     BeneficiaryName: { required },
+//     BeneficiaryNumberId: { required },
+//     BeneficiaryRelation: { required },
+//     BeneficiaryPercentage: { required },
+//   },
+//     }
 
     const loginResponse = computed(() => {
         return store.getters["auth/getErrorResponse"];
@@ -122,48 +122,45 @@ const toast = useToast();
         })
     }
 
-    const v$ = useVuelidate(rules, personalInfo, workInfo, addressInfo, beneficiaryInfo);
+//     const v$ = useVuelidate(rules, personalInfo, workInfo, addressInfo, beneficiaryInfo);
 
-    const validateForm = async () => {
-        const result = await v$.value.$validate();
-        console.log(v$)
-        console.log(result)
-  if (!result) {
-            if (v$.value.$errors[0].$validator === 'required') {
-                toast.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'Por favor revisar los campos requeridos',
-                    life: 2000
-                });
-                return false
-            } else if (v$.value.$silentErrors[0].$validator === 'email')   {
-                toast.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'El formato del correo es incorrecto.',
-                    life: 2000
-                });}
-                return false                   
-        }
-        return true;
-    };
+//     const validateForm = async () => {
+//         const result = await v$.value.$validate();
+//         console.log(v$)
+//         console.log(result)
+//   if (!result) {
+//             if (v$.value.$errors[0].$validator === 'required') {
+//                 toast.add({
+//                     severity: 'error',
+//                     detail: 'Por favor revisar los campos requeridos',
+//                     life: 2000
+//                 });
+//                 return false
+//             } else if (v$.value.$silentErrors[0].$validator === 'email')   {
+//                 toast.add({
+//                     severity: 'error',
+//                     detail: 'El formato del correo es incorrecto.',
+//                     life: 2000
+//                 });}
+//                 return false                   
+//         }
+//         return true;
+//     };
 
-    const isValiData =  ref(false)
+//     const isValiData =  ref(false)
 
 const submitData = async (event) => {
     event.preventDefault();
-     console.log(v$)
-        const isValid = await validateForm();
-        if (isValid) {
+     
+       // const isValid = await validateForm();
+    //    if (isValid) {
             try
             {
         await storeUser();
         if (loginResponse.value !== null) {
-            isValiData.value = true
+           // isValiData.value = true
             toast.add({
                 severity: 'error',
-                summary: 'Error',
                 detail: loginResponse.value,
                 life: 2000
             });
@@ -174,12 +171,11 @@ const submitData = async (event) => {
     } catch (error) {
       toast.add({
         severity: 'error',
-        summary: 'Error',
         detail: 'Un error ocurrió.',
         life: 2000
       });
         }
-    }
+   // }
 }
         
 
@@ -224,7 +220,7 @@ const submitData = async (event) => {
             <div>
                 <keep-alive>
                     <PersonalInformation v-if="activeIndex === 1" @personal-info="getDataFromPersonalInfo" 
-                    :class="{'hasError': v$.personalInfo.PersonId?.$error }" />
+                     />
                 </keep-alive>
                 <keep-alive>
                     <WorkInformation v-if="activeIndex === 2" @work-info="getDataFromWorkInfo" />

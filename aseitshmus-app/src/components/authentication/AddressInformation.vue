@@ -5,9 +5,12 @@
         ref,
     } from 'vue'
     import axios from "axios";
-
+    import {
+        useToast
+    } from 'primevue/usetoast';
+    
     const apiUrl = process.env["VUE_APP_BASED_URL"]
-
+    const toast = useToast();
 
     const provincias = ref([]);
     const cantones = ref([]);
@@ -22,7 +25,11 @@
             const response = await axios.get(url);
             target.value = response.data;
         } catch (error) {
-            console.error(error);
+            toast.add({
+                        severity: 'error',
+                        detail: error,
+                        life: 2000
+                    });
         }
     };
 
@@ -68,6 +75,7 @@
 <template>
     <div class="container">
         <div style="margin-top: 3rem;">
+            <toast-component />
             <div class="form-row">
                 <input-text placeholder="Dirección 1" class="dropdown form-margin-right-text" id="employee-address1"
                     type="text" v-model="addressInfo.Address1" />

@@ -162,6 +162,14 @@ const routes = [
           title: 'Actualizar Usuario',
         }
       },
+      {
+        path: '/update-beneficiaries/:id',
+        name: 'updateBeneficiary',
+        component: () => import('../views/admin/users/UpdateBeneficiaries.vue' /* webpackChunkName: "UpdateBeneficiaries" */),
+        meta: {
+          title: 'Actualizar Beneficiarios',
+        }
+      },
     ]
   },
 

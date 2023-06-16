@@ -70,7 +70,6 @@
             if (formData.value.email === null || formData.value.Pw === null) {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Correo y contraseña son requeridos.',
                     life: 2000
                 });
@@ -78,14 +77,12 @@
             } else if (v$?.value?.EmailAddress?.$error) {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'El formato del correo es incorrecto.',
                     life: 2000
                 });
             } else if (v$?.value?.Pw?.$error) {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'La contraseña es inválida.',
                     life: 2000
                 });
@@ -126,7 +123,6 @@
         isValiData.value = true
         toast.add({
           severity: 'error',
-          summary: 'Error',
           detail: loginResponse.value || 'Un error ocurrió.',
           life: 2000,         
         });
@@ -135,7 +131,6 @@
     } catch (error) {
       toast.add({
         severity: 'error',
-        summary: 'Error',
         detail: 'Un error ocurrió.',
         life: 2000
       });

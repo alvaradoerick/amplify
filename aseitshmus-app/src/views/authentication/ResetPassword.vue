@@ -47,7 +47,6 @@
             if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Correo es requerido.',
                     life: 2000
                 });
@@ -55,7 +54,6 @@
             } else if (v$.value.$errors[0].$validator === 'email') {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'El formato del correo es incorrecto.',
                     life: 2000
                 });
@@ -76,7 +74,6 @@
                     isValiData.value = true
                     toast.add({
                         severity: 'error',
-                        summary: 'Error',
                         detail: passwordResponse.value,
                         life: 2000
                     });
@@ -84,7 +81,6 @@
                 } else {
                     toast.add({
                         severity: 'success',
-                        summary: 'Felicidades',
                         detail: "Su nueva contraseña ha sido enviada.",
                         life: 2000
                     });
@@ -97,7 +93,6 @@
             } catch (error) {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Un error ocurrió.',
                     life: 2000
                 });

@@ -2,6 +2,7 @@
     import {
         ref,
         onMounted,
+        computed
     } from 'vue';
     import {
         useStore
@@ -24,7 +25,8 @@
     const toast = useToast();
     const route = useRoute();
     const store = useStore()
-    const router = useRouter();
+    const router = useRouter()
+
 
     const rules = {
         PersonId: {
@@ -57,11 +59,12 @@
     }
 
 
-    const personId = ref(route.params.id);
+    const PersonId = ref(route.params.id);
     const roleSelected = ref();
     const statusDB = ref();
 
-    const backLabel = 'Atras';
+
+    const backLabel = 'Atrás';
     const sendLabel = 'Actualizar';
     const beneficiariesLabel = 'Beneficiarios';
     const activeLabel = 'Activar';
@@ -108,18 +111,67 @@
         }
     ]);
 
+    const manageUserStatus = async () => {
+        await store.dispatch('users/patchUserStatus', {
+            PersonId: PersonId.value
+        })
+    }
+
+    const userResponse = computed(() => {
+        return store.getters["users/getErrorResponse"];
+    });
+
+    const manageUser = async () => {
+        await manageUserStatus();
+        await fetchUserData();
+        if (userResponse.value !== null) {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: userResponse.value,
+                life: 2000
+            });
+            store.commit('users/clearErrorResponse');
+        } else {       
+            if (statusDB.value === 0) {
+                toast.add({
+                    severity: 'warn',
+                    detail: "Usuario ha sido desactivado.",
+                    life: 2000
+                });              
+            } else {
+                toast.add({
+                    severity: 'success',
+                    detail: "Usuario ha sido activado.",
+                    life: 2000
+                });
+            }
+        }
+    }
+
     const UserList = () => {
         router.push({
             name: "listUsers"
         });
     }
 
+    const updateBeneficiaries = () => {
+        router.push({
+            name: "updateBeneficiary",
+            params: {
+                id: PersonId.value
+            },
+            props: true,
+        });
+    };
+
     const storeUser = async () => {
         await store.dispatch('users/patchUser', {
-            personId: personId.value,
+            PersonId: PersonId.value,
             userInfo: userInfo.value
         })
     }
+
 
     const v$ = useVuelidate(rules, userInfo);
     const validateForm = async () => {
@@ -128,7 +180,6 @@
             if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Por favor revisar los campos en rojo.',
                     life: 2000
                 });
@@ -140,7 +191,7 @@
 
     const fetchUserData = async () => {
         await store.dispatch('users/getUserById', {
-            rowId: personId.value
+            rowId: PersonId.value
         });
         const userData = store.getters["users/getUsers"];
         try {
@@ -164,30 +215,25 @@
         }
     };
 
-
     const submitData = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
-        if (isValid) {
             if (isValid) {
                 try {
                     await storeUser();
                     toast.add({
                         severity: 'success',
-                        summary: 'Felicidades',
                         detail: "Sus cambios han sido guardados.",
                         life: 2000
                     });
                 } catch (error) {
                     toast.add({
                         severity: 'error',
-                        summary: 'Error',
                         detail: 'Un error ocurrió.',
                         life: 2000
                     });
                 }
-            }
-        }
+            }  
     }
 
     onMounted(fetchUserData);
@@ -263,9 +309,11 @@
         </div>
         <div class="actions">
             <base-button class="action-buttons" :label="backLabel" @click="UserList" :type="'button'" />
-            <base-button class="action-buttons" :label="beneficiariesLabel" :type="'button'" />
-            <base-button class="action-buttons green" v-if="statusDB === 0" :label="activeLabel" :type="'submit'" />
-            <base-button class="action-buttons red" v-if="statusDB === 1" :label="inactiveLabel" :type="'submit'" />
+            <base-button class="action-buttons" :label="beneficiariesLabel" @click="updateBeneficiaries" :type="'button'" />
+            <base-button class="action-buttons green" v-if="statusDB === 0" @click="manageUser" :label="activeLabel"
+                :type="'submit'" />
+            <base-button class="action-buttons red" v-if="statusDB === 1" @click="manageUser" :label="inactiveLabel"
+                :type="'submit'" />
             <base-button class="action-buttons" :label="sendLabel" @click="submitData" :type="'submit'" />
         </div>
     </div>

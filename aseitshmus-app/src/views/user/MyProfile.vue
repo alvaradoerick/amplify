@@ -49,7 +49,7 @@
     const selectedCanton = ref(null);
     const selectedDistrito = ref(null);
 
-    const backLabel = 'Cancelar';
+    const backLabel = 'Atrás';
     const homePage = () => {
         router.push({
             name: "myDashboard"
@@ -62,7 +62,11 @@
             const response = await axios.get(url);
             target.value = response.data;
         } catch (error) {
-            console.error(error);
+            toast.add({
+                        severity: 'error',
+                        detail: error,
+                        life: 2000
+                    });
         }
     };
 
@@ -120,7 +124,6 @@
             if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Por favor revisar los campos en rojo.',
                     life: 2000
                 });
@@ -154,7 +157,11 @@
                 selectedDistrito.value = responseData.DistrictId;
             })
             .catch(error => {
-                console.error(error);
+                toast.add({
+                        severity: 'error',
+                        detail: error,
+                        life: 2000
+                    });
             });
     };
 
@@ -168,7 +175,6 @@
                     await storeUser();
                     toast.add({
                         severity: 'success',
-                        summary: 'Felicidades',
                         detail: "Sus cambios han sido guardados.",
                         life: 2000
                     });
@@ -179,7 +185,6 @@
                 } catch (error) {
                     toast.add({
                         severity: 'error',
-                        summary: 'Error',
                         detail: 'Un error ocurrió.',
                         life: 2000
                     });
@@ -206,32 +211,56 @@
         </div>
         <div class="header">
             <div class="form-row">
+                <span class="p-float-label">
                 <input-text class="input-text form-margin-right" id="employee-phone" type="text"
                     placeholder="Número telefónico" v-model="personalInfo.PhoneNumber"
                     :class="{'hasError': (v$?.PhoneNumber?.$error) }" />
+                    <label for="employee-code">Número telefónico</label>
+                </span>
+                <span class="p-float-label">
                 <input-text class="input-text" id="employee-account" type="text" placeholder="Cuenta IBAN"
                     v-model="personalInfo.BankAccount" :class="{'hasError': (v$?.BankAccount?.$error) }" />
+                    <label for="employee-code">Cuenta IBAN</label>
+                </span>
             </div>
             <div class="form-row">
+                <span class="p-float-label">
                 <input-text placeholder="Dirección 1" class="dropdown form-margin-right" id="employee-address1"
                     type="text" v-model="personalInfo.Address1" :class="{'hasError': (v$?.Address1?.$error ) }" />
+                    <label for="employee-code">Dirección 1</label>
+                </span>
+                <span class="p-float-label">
                 <input-text placeholder="Dirección 2" class="input-text" id="employee-address2" type="text"
                     v-model="personalInfo.Address2" />
+                    <label for="employee-code">Dirección 2</label>
+                </span>
             </div>
             <div class="form-row">
+                <span class="p-float-label">
                 <drop-down class="dropdown form-margin-right" :options="provincias" v-model="selectedProvincia"
                     optionLabel="ProvinceName" optionValue="ProvinceId" @onChange="onProvinciaChange"
                     placeholder="Provincia" :class="{'hasError': (v$?.selectedProvincia?.$error) }" />
+                    <label for="employee-code">Provincia</label>
+                </span>
+                <span class="p-float-label">
                 <drop-down class="dropdown" :options="cantones" v-model="selectedCanton" optionLabel="CantonName"
                     optionValue="CantonId" @onChange="onCantonChange" placeholder="Cantón"
                     :class="{'hasError': (v$?.selectedCanton?.$error) }" />
+                    <label for="employee-code">Cantón</label>
+                </span>
             </div>
             <div class="form-row">
+                <span class="p-float-label">
                 <drop-down class="dropdown form-margin-right" :options="distritos" v-model="selectedDistrito"
                     optionLabel="DistrictName" optionValue="DistrictId" placeholder="Distrito"
                     :class="{'hasError': (v$?.selectedDistrito?.$error) }" />
+                    <label for="employee-code">Distrito</label>
+                </span>
+                <span class="p-float-label">
                 <input-text class="input-text" id="employee-zip" type="text" v-model="personalInfo.PostalCode"
                     placeholder="Código postal" :class="{'hasError': (v$?.PostalCode?.$error) }" />
+                    <label for="employee-code">Código postal</label>
+                </span>
             </div>
         </div>
         <div class="actions">
@@ -255,7 +284,8 @@
     .form-column {
         display: flex;
         flex-direction: column;
-        min-height: 10vh;
+        min-height: 8vh;
+        align-items: center;
     }
 
 
@@ -263,7 +293,8 @@
         display: flex;
         justify-content: space-between;
         align-self: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1.2rem;
+        margin-top: 1rem;
         width: 60%;
     }
 

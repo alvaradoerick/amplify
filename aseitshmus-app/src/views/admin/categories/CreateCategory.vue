@@ -61,7 +61,6 @@
             if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Todos los campos son requeridos.',
                     life: 2000
                 });              
@@ -84,7 +83,6 @@
               await  storeCategory();
                 toast.add({
                     severity: 'success',
-                    summary: 'Felicidades',
                     detail: "Su categoría ha sido agregada.",
                     life: 2000
                 });
@@ -95,7 +93,6 @@
             } catch (error) {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Un error ocurrió.',
                     life: 2000
                 });

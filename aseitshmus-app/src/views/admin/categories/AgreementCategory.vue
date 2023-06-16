@@ -52,8 +52,7 @@
             await storeUser(rowData.data.CategoryAgreementId);
             if (deleteResponse.value === null) {
                 toast.add({
-                    severity: 'success',
-                    summary: 'Felicidades',
+                    severity: 'warn',
                     detail: "Categoría ha sido eliminada.",
                     life: 2000
                 });
@@ -61,7 +60,6 @@
             } else {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: deleteResponse.value,
                     life: 3000
                 });
@@ -70,7 +68,6 @@
         } catch (error) {
             toast.add({
                 severity: 'error',
-                summary: 'Error',
                 detail: 'Un error ocurrió.',
                 life: 2000
             });
