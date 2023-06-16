@@ -59,7 +59,7 @@
     }
 
 
-    const personId = ref(route.params.id);
+    const PersonId = ref(route.params.id);
     const roleSelected = ref();
     const statusDB = ref();
 
@@ -113,7 +113,7 @@
 
     const manageUserStatus = async () => {
         await store.dispatch('users/patchUserStatus', {
-            personId: personId.value
+            PersonId: PersonId.value
         })
     }
 
@@ -133,7 +133,7 @@
             });
             store.commit('users/clearErrorResponse');
         } else {       
-            if (statusDB.value === 1) {
+            if (statusDB.value === 0) {
                 toast.add({
                     severity: 'warn',
                     detail: "Usuario ha sido desactivado.",
@@ -159,7 +159,7 @@
         router.push({
             name: "updateBeneficiary",
             params: {
-                id: personId.value
+                id: PersonId.value
             },
             props: true,
         });
@@ -167,10 +167,11 @@
 
     const storeUser = async () => {
         await store.dispatch('users/patchUser', {
-            personId: personId.value,
+            PersonId: PersonId.value,
             userInfo: userInfo.value
         })
     }
+
 
     const v$ = useVuelidate(rules, userInfo);
     const validateForm = async () => {
@@ -190,7 +191,7 @@
 
     const fetchUserData = async () => {
         await store.dispatch('users/getUserById', {
-            rowId: personId.value
+            rowId: PersonId.value
         });
         const userData = store.getters["users/getUsers"];
         try {
@@ -217,7 +218,6 @@
     const submitData = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
-        if (isValid) {
             if (isValid) {
                 try {
                     await storeUser();
@@ -233,8 +233,7 @@
                         life: 2000
                     });
                 }
-            }
-        }
+            }  
     }
 
     onMounted(fetchUserData);

@@ -19,11 +19,13 @@ export default {
         return response;
     },
 
+    //gets data from the selected row. Admin purposes
     async getUserById({
         commit,
         rootGetters
-    }, payload) {
+    }, payload) {     
         const userId = payload.rowId;
+        console.log(userId)
         const token = rootGetters['auth/getToken'];
         const response = await axios.get(`${apiUrl}/user/${userId}`, {
             headers: {
@@ -35,6 +37,7 @@ export default {
         return userData;
     },
 
+    // gets the date for logged in user
     async getById({
         commit,
         rootGetters
@@ -68,19 +71,18 @@ export default {
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
-            console.log()
             commit('setErrorResponse', errorMessage);
         }
     },
 
+    //Method for user to update their own profile
     async patchProfile({
         rootGetters
     }, payload) {
         try {
             const personalInfo = payload.personalInfo;
             const token = rootGetters['auth/getToken'];
-            const userId = payload.personId;
-            console.log(personalInfo)
+            const userId = rootGetters['auth/getLoggedInUser'];
             const response = await axios.patch(
                 `${apiUrl}/user/${userId}`,
                 personalInfo, {
@@ -95,6 +97,7 @@ export default {
         }
     },
 
+    // Method for admin to update user
     async patchUser({
         rootGetters
     }, payload) {
@@ -122,6 +125,7 @@ export default {
         }
     },
 
+    // Activate or deactivate accounts
     async patchUserStatus({
         rootGetters,commit
     }, payload) {
@@ -142,5 +146,57 @@ export default {
             const errorMessage = error.response.data.error;
             commit('setErrorResponse', errorMessage);
         }
-    }
+    },
+
+    async getBeneficiaries({
+        commit,
+        rootGetters
+    },payload) {
+        const token = rootGetters['auth/getToken'];
+        const PersonId = payload.PersonId;
+        const response = await axios.get(`${apiUrl}/users/${PersonId}/beneficiary`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        const beneficiariesData = response.data;
+        commit('setBeneficiaries', beneficiariesData);
+        return beneficiariesData;
+    },
+
+    async deleteBeneficiaries({
+        commit,
+        rootGetters
+    }, payload) {
+        try {
+            const token = rootGetters['auth/getToken'];
+            const PersonId = payload.PersonId;
+            const response = await axios.delete(
+                `${apiUrl}/users/${PersonId}/beneficiary`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            return response;
+        } catch (error) {
+            const errorMessage = error.response.data.error;
+            commit('setErrorResponse', errorMessage);
+        }
+    },
+
+    async deleteAndInsertBeneficiaries({ dispatch, commit }, payload) {
+        try {
+          await dispatch('deleteBeneficiaries', { PersonId: payload.PersonId });     
+          const insertPayload = {
+            PersonId: payload.PersonId,
+            beneficiaryInfo: payload.beneficiaryInfo,
+          };
+          const response = await dispatch('auth/addBeneficiaries', insertPayload, { root: true });
+          return response;
+        } catch (error) {
+          const errorMessage = error.response.data.error;
+          commit('setErrorResponse', errorMessage);
+        }
+      },
 }

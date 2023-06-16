@@ -41,7 +41,7 @@ export default {
     }, payload) {
         try {
             const response = await axios.post(
-                `${apiUrl}/users/${payload.userId}/beneficiary`,
+                `${apiUrl}/users/${payload.PersonId}/beneficiary`,
                 payload.beneficiaryInfo
             )
             return response;
@@ -84,6 +84,5 @@ export default {
             commit('setErrorResponse', errorMessage);
         }
     },
-
 
 };
