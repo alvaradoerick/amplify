@@ -62,7 +62,11 @@
             const response = await axios.get(url);
             target.value = response.data;
         } catch (error) {
-            console.error(error);
+            toast.add({
+                        severity: 'error',
+                        detail: error,
+                        life: 2000
+                    });
         }
     };
 
@@ -120,7 +124,6 @@
             if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Por favor revisar los campos en rojo.',
                     life: 2000
                 });
@@ -154,7 +157,11 @@
                 selectedDistrito.value = responseData.DistrictId;
             })
             .catch(error => {
-                console.error(error);
+                toast.add({
+                        severity: 'error',
+                        detail: error,
+                        life: 2000
+                    });
             });
     };
 
@@ -168,7 +175,6 @@
                     await storeUser();
                     toast.add({
                         severity: 'success',
-                        summary: 'Felicidades',
                         detail: "Sus cambios han sido guardados.",
                         life: 2000
                     });
@@ -179,7 +185,6 @@
                 } catch (error) {
                     toast.add({
                         severity: 'error',
-                        summary: 'Error',
                         detail: 'Un error ocurrió.',
                         life: 2000
                     });

@@ -121,7 +121,6 @@
         return store.getters["users/getErrorResponse"];
     });
 
-
     const manageUser = async () => {
         await manageUserStatus();
         await fetchUserData();
@@ -136,11 +135,10 @@
         } else {       
             if (statusDB.value === 1) {
                 toast.add({
-                    severity: 'success',
+                    severity: 'warn',
                     detail: "Usuario ha sido desactivado.",
                     life: 2000
-                });
-               
+                });              
             } else {
                 toast.add({
                     severity: 'success',
@@ -148,7 +146,6 @@
                     life: 2000
                 });
             }
-
         }
     }
 
@@ -157,6 +154,16 @@
             name: "listUsers"
         });
     }
+
+    const updateBeneficiaries = () => {
+        router.push({
+            name: "updateBeneficiary",
+            params: {
+                id: personId.value
+            },
+            props: true,
+        });
+    };
 
     const storeUser = async () => {
         await store.dispatch('users/patchUser', {
@@ -172,7 +179,6 @@
             if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Por favor revisar los campos en rojo.',
                     life: 2000
                 });
@@ -217,14 +223,12 @@
                     await storeUser();
                     toast.add({
                         severity: 'success',
-                        summary: 'Felicidades',
                         detail: "Sus cambios han sido guardados.",
                         life: 2000
                     });
                 } catch (error) {
                     toast.add({
                         severity: 'error',
-                        summary: 'Error',
                         detail: 'Un error ocurrió.',
                         life: 2000
                     });
@@ -306,7 +310,7 @@
         </div>
         <div class="actions">
             <base-button class="action-buttons" :label="backLabel" @click="UserList" :type="'button'" />
-            <base-button class="action-buttons" :label="beneficiariesLabel" :type="'button'" />
+            <base-button class="action-buttons" :label="beneficiariesLabel" @click="updateBeneficiaries" :type="'button'" />
             <base-button class="action-buttons green" v-if="statusDB === 0" @click="manageUser" :label="activeLabel"
                 :type="'submit'" />
             <base-button class="action-buttons red" v-if="statusDB === 1" @click="manageUser" :label="inactiveLabel"

@@ -167,7 +167,6 @@ namespace AseIsthmusAPI.Controllers
         [HttpPatch("activateuser/{id}")]
         public async Task<IActionResult> ManageUserStatus([FromRoute] string id)
         {
-
             var user = await _service.GetById(id);
             HtmlContentProvider emailTemplate = new HtmlContentProvider();
             var result =  _service.ManageUserStatus(id);
