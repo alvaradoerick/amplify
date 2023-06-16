@@ -159,7 +159,7 @@
         router.push({
             name: "updateBeneficiary",
             params: {
-                id: PersonId.value
+                PersonId: PersonId.value
             },
             props: true,
         });

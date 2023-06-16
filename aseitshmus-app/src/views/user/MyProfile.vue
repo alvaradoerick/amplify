@@ -212,9 +212,9 @@
         <div class="header">
             <div class="form-row">
                 <span class="p-float-label">
-                <input-text class="input-text form-margin-right" id="employee-phone" type="text"
+                    <input-mask class="input-text form-margin-right" id="employee-phone" type="text"
                     placeholder="Número telefónico" v-model="personalInfo.PhoneNumber"
-                    :class="{'hasError': (v$?.PhoneNumber?.$error) }" />
+                    :class="{'hasError': (v$?.PhoneNumber?.$error) }"  mask="9999-9999" />
                     <label for="employee-code">Número telefónico</label>
                 </span>
                 <span class="p-float-label">
@@ -295,7 +295,7 @@
         align-self: center;
         margin-bottom: 1.2rem;
         margin-top: 1rem;
-        width: 60%;
+        width: 80%;
     }
 
     .form-margin-right {

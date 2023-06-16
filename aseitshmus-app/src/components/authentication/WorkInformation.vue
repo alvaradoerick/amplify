@@ -24,9 +24,8 @@
             <div class="form-row">
                 <date-picker v-model="workInfo.WorkStartDate" placeholder="Fecha de ingreso"
                     class="dropdown form-margin-right" showIcon/>
-
-                <input-text class="input-text" id="employee-phone" type="tel" v-model="workInfo.PhoneNumber"
-                    placeholder="Número telefónico" />
+                    <input-mask class="input-text" id="employee-phone" type="tel" v-model="workInfo.PhoneNumber"
+                    placeholder="Número telefónico" mask="9999-9999" />
             </div>
             <div class="form-row">
                 <input-text class="input-text form-margin-right" id="employee-email" type="email"
