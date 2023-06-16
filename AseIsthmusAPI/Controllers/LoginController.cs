@@ -36,7 +36,7 @@ namespace AseIsthmusAPI.Controllers
                 return BadRequest(new { error = "Sus credenciales son inválidas." });
 
            else if (login.Person.IsActive is false)
-                return BadRequest(new { error = "Su afiliación no está activada." });
+                return BadRequest(new { error = "Su cuenta no está activada." });
 
             string jwtToken = await GenerateToken(login.Person);
             var responseDto = new AuthenticationResponseDto
