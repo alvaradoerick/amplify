@@ -3,7 +3,7 @@
     import Column from 'primevue/column';
     import {
         ref,
-        onMounted
+        onMounted,computed
     } from 'vue';
     import {
         useStore
@@ -19,7 +19,7 @@
     const backLabel = 'Principal';
     const dateFormat = {
         day: "numeric",
-        month: "short",
+        month: "numeric",
         year: "numeric"
     };
     const fetchUsersData = async () => {
@@ -34,6 +34,17 @@
             };
         });
     };
+
+  
+    const sortedUsersData = computed(() => {
+    return [...usersData.value].sort((a, b) => {
+      if (a.IsActive === b.IsActive) {
+        return new Date(a.WorkStartDate) - new Date(b.WorkStartDate);
+      }
+      return a.IsActive === 'Inactivo' ? -1 : 1;
+    });
+  });
+
 
     const cancel = () => {
         router.push({
@@ -55,7 +66,7 @@
 
 <template>
     <div>
-        <DataTable :value="usersData" paginator :rows="3" tableStyle="min-width: 50rem">
+        <DataTable :value="sortedUsersData" paginator :rows="3" tableStyle="min-width: 50rem">
             <Column field="FullName" header="Nombre" sortable></Column>
             <Column field="NumberId" header="Identificación" sortable style="width: 160px"></Column>
             <Column field="WorkStartDate" header="Fecha de ingreso" sortable style="width: 200px"></Column>
