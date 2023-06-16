@@ -100,22 +100,10 @@
             try{
             await storeLogin();
             if (token.value) {
-        if (role.value === roles.ADMINISTRATOR) {
-            toast.add({
-                    severity: 'success',
-                    detail: "Bienvenid@",
-                    life: 2000
-                });
-                await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (role.value === roles.ADMINISTRATOR) {            
             router.push({ name: "dashboard" });
         }
-         else {
-            toast.add({
-                    severity: 'success',
-                    detail: "Bienvenid@",
-                    life: 2000
-                });
-                await new Promise((resolve) => setTimeout(resolve, 1000));
+         else {           
                 router.push({ name: "myDashboard" });
         }
 

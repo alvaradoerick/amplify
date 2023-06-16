@@ -1,6 +1,6 @@
 <script setup="setup">
     import countriesJson from '@/assets/countriesJson.json';
-    import InputMask from 'primevue/inputmask';
+   
     import {
         ref,
         defineEmits,
@@ -38,7 +38,7 @@
             <drop-down class=" input-text" placeholder="Identificación" :options="types" v-model="selectedType" />
         </div>
         <div class="form-row">
-            <InputMask v-if="selectedType === 'Cédula'" class="input-text form-margin-right" id="mask-input"
+            <input-mask v-if="selectedType === 'Cédula'" class="input-text form-margin-right" id="mask-input"
                 placeholder="Cedula" v-model="personalInfo.NumberId" mask="99-9999-9999" />
             <input-text v-else-if="selectedType === 'DIMEX'" class="input-text form-margin-right" placeholder="Dimex"
                 type="text" id="employee-dimex" v-model="personalInfo.NumberId" />

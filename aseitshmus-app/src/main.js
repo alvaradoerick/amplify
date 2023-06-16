@@ -17,6 +17,7 @@ import Calendar from 'primevue/calendar';
 import Tooltip from 'primevue/tooltip';
 import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
+import InputMask from 'primevue/inputmask';
 
 
 //bootstrap
@@ -46,6 +47,7 @@ app.component('drop-down', Dropdown);
 app.component('date-picker', Calendar);
 app.component('toast-component', Toast);
 app.directive('tooltip', Tooltip);
+app.component('input-mask', InputMask);
 
 
 app.use(store);
