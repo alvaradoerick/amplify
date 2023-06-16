@@ -102,7 +102,7 @@ export default {
         rootGetters
     }, payload) {
         try {
-            const personId = payload.personId;
+            const personId = payload.PersonId;
             const userInfo =payload.userInfo 
             const token = rootGetters['auth/getToken'];
 
@@ -130,7 +130,7 @@ export default {
         rootGetters,commit
     }, payload) {
         try {
-            const personId = payload.personId;
+            const personId = payload.PersonId;
             const token = rootGetters['auth/getToken'];
             const response = await axios.patch(
                 `${apiUrl}/user/activateuser/${personId}`,

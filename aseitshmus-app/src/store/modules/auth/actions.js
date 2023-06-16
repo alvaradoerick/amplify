@@ -23,9 +23,9 @@ export default {
                     WorkStartDate: dayjs(workInfo.WorkStartDate).format('YYYY-MM-DD')
                 }
             )
-            const userId = response.data.PersonId
+            const PersonId = response.data.PersonId
             await dispatch('addBeneficiaries', {
-                userId,
+                PersonId,
                 beneficiaryInfo
             });
 

@@ -169,7 +169,7 @@ namespace AseIsthmusAPI.Controllers
         {
             var user = await _service.GetById(id);
             HtmlContentProvider emailTemplate = new HtmlContentProvider();
-            var result =  _service.ManageUserStatus(id);
+            var result =  await _service.ManageUserStatus(id);
         
            if (user is not null && result is not null)
             {
