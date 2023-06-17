@@ -110,10 +110,6 @@
 
     onMounted(fetchBeneficiaryData);
 </script>
-
-
-
-
 <template>
     <toast-component />
     <div class="container">
@@ -122,14 +118,30 @@
         </div>
         <div class="body">
             <div v-for="(beneficiary, index) in beneficiaryInfo" :key="index" class="form-row">
-                <input-text placeholder="Nombre completo" class="input-text form-margin-right" id="beneficiary-name"
-                    type="text" v-model="beneficiary.BeneficiaryName" />
-                <input-text class="input-text form-margin-right" id="beneficiary-id" placeholder="Identificación"
-                    type="text" v-model="beneficiary.BeneficiaryNumberId" />
-                <input-text class="input-text form-margin-right" placeholder="Parentesco" id="beneficiary-keen"
-                    type="text" v-model="beneficiary.BeneficiaryRelation" />
-                <input-text class="input-text form-margin-right" placeholder="Porcentaje" id="beneficiary-percentage"
-                    type="number" v-model="beneficiary.BeneficiaryPercentage" />
+                <div class="p-float-label">
+                    <input-text placeholder="Nombre completo" class="input-text form-margin-right" :id="'beneficiary-name-' + index"
+                        type="text" v-model="beneficiary.BeneficiaryName"></input-text>
+                    <label :for="'beneficiary-name-' + index">Nombre completo</label>
+                </div>
+                <div class="p-float-label">
+                    <input-text class="input-text form-margin-right" id="beneficiary-id" placeholder="Identificación"
+                        type="text" v-model="beneficiary.BeneficiaryNumberId">
+
+                    </input-text>
+                    <label for="beneficiary-id">Identificación</label>
+                </div>
+                <div class="p-float-label">
+                    <input-text class="input-text form-margin-right" placeholder="Parentesco" id="beneficiary-keen"
+                        type="text" v-model="beneficiary.BeneficiaryRelation">
+                    </input-text>
+                    <label for="beneficiary-keen">Parentesco</label>
+                </div>
+                <div class="p-float-label">
+                    <input-text class="input-text form-margin-right" placeholder="Porcentaje"
+                        id="beneficiary-percentage" type="text" v-model="beneficiary.BeneficiaryPercentage">
+                    </input-text>
+                    <label for="beneficiary-percentage">Porcentaje</label>
+                </div>
                 <base-button :label="'-'" small class="buttons" v-if="showRemoveButton" @click="removeRow(index)"
                     :type="'button'"></base-button>
             </div>

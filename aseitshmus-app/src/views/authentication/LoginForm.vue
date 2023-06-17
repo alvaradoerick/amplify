@@ -137,13 +137,19 @@
         <toast-component />
         <div class="container">
             <form>              
-                <div class="form-row">               
+                <div class="form-row">   
+                    <div class="p-float-label">         
                     <input-text class="input-text " type="email" id="email-address" v-model="formData.EmailAddress"
-                        placeholder="Correo eléctronico" :class="{'hasError': (v$?.EmailAddress?.$error || isValiData) }" />           
+                        placeholder="Correo eléctronico" :class="{'hasError': (v$?.EmailAddress?.$error || isValiData) }" />  
+                        <label for="email-address">Correo eléctronico</label>
+                </div>         
             </div>
                 <div class="form-row">
+                    <div class="p-float-label">
                     <input-text class="input-text" id="password" :class="{ 'hasError': (v$?.Pw?.$error || isValiData) }" type="password" v-model="formData.Pw"
                         autocomplete="formData.Pw" placeholder="Contraseña" />
+                        <label for="password">Contraseña</label>
+                </div>
                 </div>
                 <div class="form-row sign-in">
                     <base-button :label="labelButton" type="submit" @click="onSend" />
