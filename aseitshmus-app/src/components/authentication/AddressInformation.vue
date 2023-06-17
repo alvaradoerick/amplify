@@ -77,23 +77,41 @@
         <div style="margin-top: 3rem;">
             <toast-component />
             <div class="form-row">
+                <div class="p-float-label">
                 <input-text placeholder="Dirección 1" class="dropdown form-margin-right-text" id="employee-address1"
                     type="text" v-model="addressInfo.Address1" />
+                    <label for="employee-address1">Dirección 1</label>
+            </div>
+            <div class="p-float-label">
                 <input-text placeholder="Dirección 2" class="input-text" id="employee-address2" type="text"
                     v-model="addressInfo.Address2" />
+                    <label for="employee-address2">Dirección 2</label>
+            </div>
             </div>
             <div class="form-row">
+                <div class="p-float-label">
                 <drop-down class="dropdown form-margin-right" :options="provincias" v-model="selectedProvincia"
                     optionLabel="ProvinceName" optionValue="ProvinceId" @onChange="onProvinciaChange"
-                    placeholder="Provincia" />
+                    placeholder="Provincia" id="province"/>
+                    <label for="province">Provincia</label>
+            </div>
+            <div class="p-float-label">
                 <drop-down class="dropdown" :options="cantones" v-model="selectedCanton" optionLabel="CantonName"
-                    optionValue="CantonId" @onChange="onCantonChange" placeholder="Cantón" />
+                    optionValue="CantonId" @onChange="onCantonChange" placeholder="Cantón" id="canton"/>
+                    <label for="canton">Cantón</label>
+            </div>
             </div>
             <div class="form-row">
+                <div class="p-float-label">
                 <drop-down class="dropdown form-margin-right" :options="distritos" v-model="selectedDistrito"
-                    optionLabel="DistrictName" optionValue="DistrictId" placeholder="Distrito" />
+                    optionLabel="DistrictName" optionValue="DistrictId" placeholder="Distrito" id="district" />
+                    <label for="district">Distrito</label>
+            </div>
+            <div class="p-float-label">
                 <input-text class="input-text" id="employee-zip" type="text" v-model="addressInfo.PostalCode"
                     placeholder="Código postal" />
+                    <label for="employee-zip">Código postal</label>
+            </div>
             </div>
         </div>
     </div>
@@ -111,7 +129,7 @@
     .form-row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
         width: 100%;
     }
 

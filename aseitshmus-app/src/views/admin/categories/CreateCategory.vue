@@ -108,10 +108,16 @@
         <p>La categoría creada deberá ser asignada al convenio.</p>
         <div class="header">
             <div class="form-row">
+                <div class="p-float-label">
                 <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
                     v-model="agreementCategory.Description"  :class="{'hasError': v$?.Description?.$error}"/>
-                <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
+                    <label for="categoryName">Nombre</label>
+                </div>
+                <div class="p-float-label">
+                <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value" id="state"
                     placeholder="Estado" class="dropdown" :class="{'hasError': v$?.selectedState?.$error}"/>
+                    <label for="state">Estado</label>
+                </div>
             </div>
         </div>
 

@@ -244,66 +244,66 @@
         <toast-component />
         <div class="header">
             <div class="form-row">
-                <span class="p-float-label">
+                <div class="p-float-label">
                     <input-text class="input-text form-margin-right" id="employee-code" type="text"
                         placeholder="Código de empleado" v-model="userInfo.PersonId"
                         :class="{'hasError': v$?.PersonId?.$error }" />
                     <label for="employee-code">Código de empleado</label>
-                </span>
-                <span class="p-float-label">
+                </div>
+                <div class="p-float-label">
                     <input-text class="input-text" id="employee-code" type="text" placeholder="Identificación"
                         v-model="userInfo.NumberId" :class="{'hasError': v$?.BankAccount?.$error }" />
                     <label for="employee-code">Identificación</label>
-                </span>
+                </div>
             </div>
             <div class="form-row">
-                <span class="p-float-label">
+                <div class="p-float-label">
                     <input-text placeholder="Nombre" class="input-text form-margin-right" id="employee-firstname"
                         type="text" v-model=" userInfo.FirstName" :class="{'hasError': v$?.FirstName?.$error }" />
                     <label for="employee-firstname">Nombre</label>
-                </span>
-                <span class="p-float-label">
+                </div>
+                <div class="p-float-label">
                     <input-text placeholder="Apellido 1" class="dropdown" id="employee-lastname1" type="text"
                         v-model="userInfo.LastName1" :class="{'hasError': v$?.LastName1?.$error  }" />
                     <label for="employee-lastname1">Primer apellido</label>
-                </span>
+                </div>
 
             </div>
             <div class="form-row">
-                <span class="p-float-label">
+                <div class="p-float-label">
                     <input-text placeholder="Apellido 2" class="input-text form-margin-right" id="employee-lastname2"
                         type="text" v-model="userInfo.LastName2" :class="{'hasError': v$?.LastName2?.$error }" />
                     <label for="employee-lastname2">Segundo apellido</label>
-                </span>
+                </div>
                 <drop-down v-model="statusDB" id="status-list" :options="status" optionLabel="name" optionValue="value"
                     placeholder="Estado" class="dropdown" disabled />
             </div>
             <div class="form-row">
-                <span class="p-float-label">
+                <div class="p-float-label">
                     <date-picker v-model="userInfo.DateBirth" placeholder="Nacimiento"
                         class="dropdown form-margin-right" dateFormat="dd-mm-yy" showIcon id="dob"
                         :class="{'hasError': v$?.DateBirth?.$error }" />
                     <label for="dob">Nacimiento</label>
-                </span>
-                <span class="p-float-label">
+                </div>
+                <div class="p-float-label">
                     <date-picker v-model="userInfo.WorkStartDate" placeholder="Ingreso empresa" class="dropdown "
                         dateFormat="dd-mm-yy" showIcon :class="{'hasError': v$?.WorkStartDate?.$error}"
                         id="work-start-date" />
                     <label for="work-start-date">Ingreso empresa</label>
-                </span>
+                </div>
             </div>
             <div class="form-row">
-                <span class="p-float-label">
+                <div class="p-float-label">
                     <date-picker v-model="userInfo.EnrollmentDate" placeholder="Ingreso asociación"
                         class="dropdown form-margin-right" dateFormat="dd-mm-yy" showIcon
                         :class="{'hasError': v$?.EnrollmentDate?.$error}" id="enrollment-date" />
                     <label for="enrollment-date">Ingreso asociación</label>
-                </span>
-                <span class="p-float-label">
+                </div>
+                <div class="p-float-label">
                     <drop-down v-model="roleSelected" :options="roleList" optionLabel="name" optionValue="value"
                         id="role" placeholder="Rol" class="dropdown" :class="{'hasError': v$?.roleSelected?.$error}" />
                     <label for="role">Rol</label>
-                </span>
+                </div>
             </div>
 
         </div>

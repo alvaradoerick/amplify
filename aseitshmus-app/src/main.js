@@ -46,8 +46,10 @@ app.component('inline-message', InlineMessage);
 app.component('drop-down', Dropdown);
 app.component('date-picker', Calendar);
 app.component('toast-component', Toast);
-app.directive('tooltip', Tooltip);
 app.component('input-mask', InputMask);
+
+app.directive('tooltip', Tooltip);
+
 
 
 app.use(store);
