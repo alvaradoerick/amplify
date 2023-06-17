@@ -24,10 +24,10 @@ export default {
                 }
             )
             const PersonId = response.data.PersonId
-            await dispatch('addBeneficiaries', {
+            await dispatch('beneficiaries/addBeneficiaries', {
                 PersonId,
                 beneficiaryInfo
-            });
+            },{ root: true });
 
             return response;
         } catch (error) {
@@ -36,20 +36,7 @@ export default {
         }
     },
 
-    async addBeneficiaries({
-        commit
-    }, payload) {
-        try {
-            const response = await axios.post(
-                `${apiUrl}/users/${payload.PersonId}/beneficiary`,
-                payload.beneficiaryInfo
-            )
-            return response;
-        } catch (error) {
-            const errorMessage = error.response.data.error;
-            commit('setErrorResponse', errorMessage);
-        }
-    },
+   
 
     async login({
         commit

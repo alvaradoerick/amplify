@@ -17,7 +17,7 @@ namespace AseIsthmusAPI.Services
 
 
         /// <summary>
-        /// This method is executed when the user is already approved and wants to reset the password
+        /// This method is executed when the user resets the password without being authenticated
         /// </summary>
         /// <param name="updatePasswordRequestDto"></param>
         /// <returns></returns>
@@ -36,14 +36,37 @@ namespace AseIsthmusAPI.Services
             }
 
             else
-            {             
-             var newPassword = GenerateRandomPassword();
+            {
+                var newPassword = GenerateRandomPassword();
                 login.Pw = HashPassword(newPassword);
                 await _context.SaveChangesAsync();
                 return newPassword;
             }
 
         }
+
+        /// <summary>
+        /// resets the password of a user who is authenticated
+        /// </summary>
+        /// <param name="updatePasswordRequestDto"></param>
+        /// <returns></returns>
+        public async Task<string?> ResetPasswordAuthenticated(UpdatePasswordRequestDto updatePasswordRequestDto) {
+
+            var login = await _context.Logins.FirstOrDefaultAsync(l => l.PersonId == updatePasswordRequestDto.PersonId);
+            if (login == null)
+            {
+                return null;
+            }
+
+            else
+            {
+                var newPassword = GenerateRandomPassword();
+                login.Pw = HashPassword(newPassword);
+                await _context.SaveChangesAsync();
+                return newPassword;
+            }
+        }
+
         public static string GenerateRandomPassword(int length = 8)
         {
             const string uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

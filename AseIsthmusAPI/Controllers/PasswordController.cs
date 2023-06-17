@@ -55,6 +55,28 @@ namespace AseIsthmusAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// resets the password of user after logged in
+        /// </summary>
+        /// <param name="updatePasswordRequestDto"></param>
+        /// <returns></returns>
+        [HttpPatch("resetpassword/{id}")]
+        public async Task<IActionResult> ResetPasswordAuthenticated([FromRoute] UpdatePasswordRequestDto updatePasswordRequestDto)
+        {
+            HtmlContentProvider emailTemplate = new HtmlContentProvider();
+
+            var newPassword = await _service.ResetPasswordUnauthenticated(updatePasswordRequestDto);
+            if (newPassword != null)
+            {
+               _emailService.SendEmail(emailTemplate.GeneratePasswordResetEmailContent(newPassword), "Restablecimiento de contraseña", updatePasswordRequestDto.EmailAddress);
+                return Ok(new UpdatePasswordResponseDto { NewPassword = newPassword });
+            }
+            else
+            {
+                return BadRequest(new { error = "Su solicitud no pudo enviarse." });
+            }
+        }
+
         #endregion
     }
 }
