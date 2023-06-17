@@ -67,7 +67,7 @@ const routes = [
         name: 'changePassword',
         component: () => import('../views/user/ResetPassword.vue' /* webpackChunkName: "ResetPassword" */),
         meta: {
-          title: 'Restablecer Contraseña',
+          title: 'Cambiar Contraseña',
         }
       },
     ]

@@ -135,8 +135,7 @@
 <template>
     <div class="center-container">
         <toast-component />
-        <div class="container">
-            <form>              
+        <div class="container">             
                 <div class="form-row">   
                     <div class="p-float-label">         
                     <input-text class="input-text " type="email" id="email-address" v-model="formData.EmailAddress"
@@ -159,7 +158,6 @@
                         ¿Olvidó su contraseña?
                     </a>
                 </div>
-            </form>
         </div>
     </div>
 </template>
@@ -191,7 +189,7 @@
         width: 100%;
     }
 
-    #sign-in {
-        margin-top: 60px;
+    .sign-in {
+        margin-top: 6rem;
     }
 </style>
