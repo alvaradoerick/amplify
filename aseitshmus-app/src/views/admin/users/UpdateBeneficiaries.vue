@@ -25,7 +25,6 @@
     const sendLabel = 'Actualizar';
     const beneficiaryInfo = ref([]);
 
-
     const addRow = () => {
         beneficiaryInfo.value.push({
             BeneficiaryName: null,
@@ -39,15 +38,16 @@
         beneficiaryInfo.value.splice(index, 1);
     };
 
+
     const showRemoveButton = computed(() => {
         return beneficiaryInfo.value.length > 1;
     });
 
     const fetchBeneficiaryData = async () => {
-        await store.dispatch('users/getBeneficiaries', {
+        await store.dispatch('beneficiaries/getBeneficiaries', {
             PersonId: PersonId.value
         });
-        const beneficiariesData = store.getters["users/getBeneficiaries"];
+        const beneficiariesData = store.getters["beneficiaries/getBeneficiaries"];
         try {
             beneficiaryInfo.value = beneficiariesData.map((beneficiary) => ({
                 BeneficiaryName: beneficiary.BeneficiaryName,
@@ -76,7 +76,7 @@
     }
 
     const storeBeneficiary = async () => {
-        await store.dispatch('users/deleteAndInsertBeneficiaries', {
+        await store.dispatch('beneficiaries/deleteAndInsertBeneficiaries', {
             PersonId: PersonId.value,
             beneficiaryInfo: beneficiaryInfo.value
         })
@@ -90,7 +90,6 @@
                 detail: "Los cambios han sido guardados.",
                 life: 2000
             });
-            console.log(PersonId.value)
             await new Promise((resolve) => setTimeout(resolve, 1000));
             router.push({
                 name: "updateUser",
@@ -107,7 +106,6 @@
             });            
         }
     }
-
     onMounted(fetchBeneficiaryData);
 </script>
 <template>
@@ -116,8 +114,8 @@
         <div class="header">
             <base-button :label="'+'" small class="buttons" @click="addRow" :type="'button'" />
         </div>
-        <div class="body">
-            <div v-for="(beneficiary, index) in beneficiaryInfo" :key="index" class="form-row">
+        <div class="body"  >  
+            <div v-for="(beneficiary, index) in beneficiaryInfo" :key="index"   class="form-row">
                 <div class="p-float-label">
                     <input-text placeholder="Nombre completo" class="input-text form-margin-right" :id="'beneficiary-name-' + index"
                         type="text" v-model="beneficiary.BeneficiaryName"></input-text>

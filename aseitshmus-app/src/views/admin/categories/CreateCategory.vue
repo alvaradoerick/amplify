@@ -105,7 +105,6 @@
 
     <div class="main">
         <toast-component />
-        <p>La categoría creada deberá ser asignada al convenio.</p>
         <div class="header">
             <div class="form-row">
                 <div class="p-float-label">
