@@ -23,7 +23,7 @@ export default {
     async getUserById({
         commit,
         rootGetters
-    }, payload) {     
+    }, payload) {
         const userId = payload.rowId;
         console.log(userId)
         const token = rootGetters['auth/getToken'];
@@ -103,7 +103,7 @@ export default {
     }, payload) {
         try {
             const personId = payload.PersonId;
-            const userInfo =payload.userInfo 
+            const userInfo = payload.userInfo
             const token = rootGetters['auth/getToken'];
 
             userInfo.DateBirth = dayjs(userInfo.DateBirth).format('YYYY-MM-DD');
@@ -127,15 +127,14 @@ export default {
 
     // Activate or deactivate accounts
     async patchUserStatus({
-        rootGetters,commit
+        rootGetters,
+        commit
     }, payload) {
         try {
             const personId = payload.PersonId;
             const token = rootGetters['auth/getToken'];
             const response = await axios.patch(
-                `${apiUrl}/user/activateuser/${personId}`,
-                {},
-                {
+                `${apiUrl}/user/activateuser/${personId}`, {}, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -148,55 +147,28 @@ export default {
         }
     },
 
-    async getBeneficiaries({
-        commit,
-        rootGetters
-    },payload) {
-        const token = rootGetters['auth/getToken'];
-        const PersonId = payload.PersonId;
-        const response = await axios.get(`${apiUrl}/users/${PersonId}/beneficiary`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        const beneficiariesData = response.data;
-        commit('setBeneficiaries', beneficiariesData);
-        return beneficiariesData;
-    },
-
-    async deleteBeneficiaries({
+    // User Resets password authenticated
+    async resetPasswordAuthenticated({
         commit,
         rootGetters
     }, payload) {
         try {
             const token = rootGetters['auth/getToken'];
-            const PersonId = payload.PersonId;
-            const response = await axios.delete(
-                `${apiUrl}/users/${PersonId}/beneficiary`, {
+            const userId = rootGetters['auth/getLoggedInUser'];
+            const resetData = payload.resetData;
+            const response = await axios.patch(
+                `${apiUrl}/password/resetPassword/${userId}`,
+                resetData, {
                     headers: {
                         Authorization: `Bearer ${token}`
+        
                     }
                 }
-            );
+            )
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
             commit('setErrorResponse', errorMessage);
         }
     },
-
-    async deleteAndInsertBeneficiaries({ dispatch, commit }, payload) {
-        try {
-          await dispatch('deleteBeneficiaries', { PersonId: payload.PersonId });     
-          const insertPayload = {
-            PersonId: payload.PersonId,
-            beneficiaryInfo: payload.beneficiaryInfo,
-          };
-          const response = await dispatch('auth/addBeneficiaries', insertPayload, { root: true });
-          return response;
-        } catch (error) {
-          const errorMessage = error.response.data.error;
-          commit('setErrorResponse', errorMessage);
-        }
-      },
 }

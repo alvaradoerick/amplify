@@ -40,7 +40,7 @@
                                     <router-link class="nav-link" to="/profile">Mi Perfil</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="nav-link" to="/password">Contraseña</router-link>
+                                    <router-link class="nav-link" to="/password">Cambiar Contraseña</router-link>
                                 </li>
                             </ul>
                         </li>
