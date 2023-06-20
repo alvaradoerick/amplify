@@ -1,12 +1,6 @@
 <script setup="setup">
     import countriesJson from '@/assets/countriesJson.json';
-    import {
-        useToast
-    } from 'primevue/usetoast';
-    import useVuelidate from '@vuelidate/core'
-    import {
-         required
-    } from '@vuelidate/validators'
+   
 
     import {
         ref,
@@ -15,7 +9,7 @@
     } from 'vue';
 
 
-    const toast = useToast();
+   
 
     const personalInfo = ref({
         PersonId: null,
@@ -26,14 +20,6 @@
         Nationality: null,
         DateBirth: null,
     });
-    const rules = {
-    PersonId: { required },
-    NumberId: { required },
-    firstName: { required },
-    lastName1: { required },
-    Nationality: { required },
-    DateBirth: { required },
-  }
 
     const countrySet = ref([]);
     const selectedType = ref('Cédula');
@@ -46,24 +32,7 @@
         emits('personal-info', newValue)
     })
 
-    const v$ = useVuelidate(rules, personalInfo);
-    const validateForm = async () => {
-        const result = await v$.value.$validate();
-        if (!result) {
-            if (v$.value.$errors[0].$validator === 'required') {
-                toast.add({
-                    severity: 'error',
-                    detail: 'Corregir los campos en rojo.',
-                    life: 2000
-                });
-                return false
-            } 
-            return false
-        }
-        return true;
-    }
-
-    const isValiData = ref(false)
+    
 </script>
 
 <template>
@@ -72,7 +41,7 @@
         <div class="form-row">
             <div class="p-float-label">
                 <input-text class="input-text form-margin-right" id="employee-code" placeholder="Código de empleado"
-                    type="text" v-model="personalInfo.PersonId" v-tooltip.focus="'Código localizado en Workday'"  :class="{'hasError': v$?.PersonId?.$error || isValiData }"/>
+                    type="text" v-model="personalInfo.PersonId" v-tooltip.focus="'Código localizado en Workday'" />
                 <label for="employee-code">Código de empleado</label>
             </div>
             <div class="p-float-label">
