@@ -1,11 +1,21 @@
 <script setup="setup">
     import countriesJson from '@/assets/countriesJson.json';
+    import {
+        useToast
+    } from 'primevue/usetoast';
+    import useVuelidate from '@vuelidate/core'
+    import {
+         required
+    } from '@vuelidate/validators'
 
     import {
         ref,
         defineEmits,
         watch
     } from 'vue';
+
+
+    const toast = useToast();
 
     const personalInfo = ref({
         PersonId: null,
@@ -16,6 +26,14 @@
         Nationality: null,
         DateBirth: null,
     });
+    const rules = {
+    PersonId: { required },
+    NumberId: { required },
+    firstName: { required },
+    lastName1: { required },
+    Nationality: { required },
+    DateBirth: { required },
+  }
 
     const countrySet = ref([]);
     const selectedType = ref('Cédula');
@@ -24,10 +42,28 @@
     countrySet.value = countriesJson;
     const emits = defineEmits(['personal-info'])
 
-
     watch(personalInfo.value, (newValue) => {
         emits('personal-info', newValue)
     })
+
+    const v$ = useVuelidate(rules, personalInfo);
+    const validateForm = async () => {
+        const result = await v$.value.$validate();
+        if (!result) {
+            if (v$.value.$errors[0].$validator === 'required') {
+                toast.add({
+                    severity: 'error',
+                    detail: 'Corregir los campos en rojo.',
+                    life: 2000
+                });
+                return false
+            } 
+            return false
+        }
+        return true;
+    }
+
+    const isValiData = ref(false)
 </script>
 
 <template>
@@ -36,7 +72,7 @@
         <div class="form-row">
             <div class="p-float-label">
                 <input-text class="input-text form-margin-right" id="employee-code" placeholder="Código de empleado"
-                    type="text" v-model="personalInfo.PersonId" v-tooltip.focus="'Código localizado en Workday'" />
+                    type="text" v-model="personalInfo.PersonId" v-tooltip.focus="'Código localizado en Workday'"  :class="{'hasError': v$?.PersonId?.$error || isValiData }"/>
                 <label for="employee-code">Código de empleado</label>
             </div>
             <div class="p-float-label">
@@ -88,6 +124,9 @@
     </div>
 </template>
 <style scoped="scoped">
+  .hasError {
+        border-color: red;
+    }
     .container {
         display: flex;
         flex-direction: column;
