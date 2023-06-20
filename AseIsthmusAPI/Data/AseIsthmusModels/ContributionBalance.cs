@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
+
 public partial class ContributionBalance
 {
     public int ContributionBalanceId { get; set; }

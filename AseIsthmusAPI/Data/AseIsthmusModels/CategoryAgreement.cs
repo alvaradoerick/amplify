@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
+
 public partial class CategoryAgreement
 {
     public int CategoryAgreementId { get; set; }

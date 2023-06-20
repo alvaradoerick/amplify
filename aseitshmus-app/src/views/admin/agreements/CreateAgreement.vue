@@ -17,9 +17,9 @@
         useToast
     } from 'primevue/usetoast';
 
-    import Textarea from 'primevue/textarea';
-    import FileUpload from 'primevue/fileupload';
 
+    import Textarea from 'primevue/textarea';
+    
     const apiUrl = process.env["VUE_APP_BASED_URL"]
 
     const store = useStore();
@@ -46,10 +46,8 @@
     ]);
     const categories = ref([]);
     const selectedCategory = ref(null);
-  //const fileInput = ref(null);
 
-  
-  
+
   const agreementData = ref({
         Title: null,
         Description: null,
@@ -76,27 +74,22 @@
     };
     
     fetchData(`${apiUrl}/categoryagreement/active-categories`, categories);
-    
-//     const customBase64Uploader = async (event) => {
-//   const file = event.files[0];
-//   console.log(file);
-//   const reader = new FileReader();
-//   let blob = await fetch(file.objectURL).then((r) => r.blob()); //blob:url
 
-//   reader.onloadend = function () {
-//     const base64data = reader.result;
-//     const byteCharacters = atob(base64data.split(',')[1]); // Extract base64 data
-//     const byteNumbers = new Array(byteCharacters.length);
-//     for (let i = 0; i < byteCharacters.length; i++) {
-//       byteNumbers[i] = byteCharacters.charCodeAt(i);
-//     }
-//     const byteArray = new Uint8Array(byteNumbers);
-//     agreementData.value.Image = Array.from(byteArray);
-    
-//   };
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  console.log(file);
+  if (!file) return;
 
-//   reader.readAsDataURL(blob);
-// };
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    const base64Data = reader.result;
+    agreementData.value.Image = base64Data; 
+    console.log(agreementData.value.Image)
+  };
+
+  reader.readAsDataURL(file);
+};
 
     const rules = {
         Title: {
@@ -132,10 +125,9 @@
     }
 
 
-
-
     const onSend = async (event) => {
         event.preventDefault();
+        console.log(agreementData.value)
         const isValid = await validateForm();
         if (isValid) {
             try {
@@ -179,8 +171,9 @@
                     cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}"></Textarea>
             </div>
             <div class="form-row">
-                <FileUpload  mode="basic" accept="image/*" :maxFileSize="1000000"  chooseLabel="Buscar" id="browse"  customUpload @uploader="customBase64Uploader"/>
-            </div>
+               <!-- <FileUpload  mode="basic" ref="file" type="file"  accept="image/*" :maxFileSize="1000000"  chooseLabel="Buscar" id="browse" @change="handleFileChange($event)"/>   -->            
+                <input ref="file" type="file" accept="image/*" @change="handleFileChange($event)" class="upload-button">
+            </div>    
         </div>
     </div>
     <div class="actions">
@@ -244,5 +237,26 @@
         align-items: center;
         justify-content: space-between;
         margin-top: 4rem;
+    }
+
+    .upload-button {
+        display: flex;
+        background-color: #253e8b;
+        border-color: #253e8b;
+        overflow: hidden;
+        width: 300px;
+        color: white;
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .upload-button:hover,
+    .upload-button:focus {
+        box-shadow: 0 0 0 2px white, 0 0 0 3px skyblue;
+        color: white;
+        background-color: #3f569b !important;
     }
 </style>
