@@ -11,22 +11,22 @@
         useRouter
     } from 'vue-router';
     import {
-        ref
+        ref, 
     } from 'vue';
     import {
         useToast
     } from 'primevue/usetoast';
 
+
     import Textarea from 'primevue/textarea';
-    import FileUpload from 'primevue/fileupload';
-
+    
     const apiUrl = process.env["VUE_APP_BASED_URL"]
-
-
 
     const store = useStore();
     const router = useRouter();
     const toast = useToast();
+
+
     const backLabel = 'Cancelar';
     const toReturn = () => {
         router.push({
@@ -46,27 +46,22 @@
     ]);
     const categories = ref([]);
     const selectedCategory = ref(null);
-    const file = ref(null);
 
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const imageBytes = new Uint8Array(reader.result);
-                file.value = imageBytes;
-            };
-            reader.readAsArrayBuffer(file);
-        }
-    }
 
-    const agreementData = ref({
+  const agreementData = ref({
         Title: null,
         Description: null,
-        Image: file.value,
+        Image:  null,
         CategoryAgreementId: selectedCategory,
         IsActive: selectedState
     })
+
+
+  const storeAgreement = async () => {
+    await store.dispatch('agreements/addAgreement', {
+      agreementData: agreementData.value,
+    });
+  };
 
 
     const fetchData = async (url, target) => {
@@ -77,11 +72,24 @@
             console.error(error);
         }
     };
-
-
-
-
+    
     fetchData(`${apiUrl}/categoryagreement/active-categories`, categories);
+
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  console.log(file);
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    const base64Data = reader.result;
+    agreementData.value.Image = base64Data; 
+    console.log(agreementData.value.Image)
+  };
+
+  reader.readAsDataURL(file);
+};
 
     const rules = {
         Title: {
@@ -116,36 +124,27 @@
         return true;
     }
 
-    const storeCategory = async () => {
-        await store.dispatch('agreements/addAgreement', {
-            agreementData: agreementData.value,
-        })
-    }
-
 
     const onSend = async (event) => {
         event.preventDefault();
+        console.log(agreementData.value)
         const isValid = await validateForm();
-        console.log(v$)
-
         if (isValid) {
             try {
-                console.log(agreementData.value)
-                await storeCategory();
+                
+                await storeAgreement();
                 toast.add({
                     severity: 'success',
-                    summary: 'Felicidades',
                     detail: "Su convenio ha sido agregado.",
                     life: 2000
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 router.push({
-                    name: 'dashboard'
+                    name: 'agrementList'
                 });
             } catch (error) {
-                toast.add({
+                toast.add({              
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Un error ocurrió.',
                     life: 2000
                 });
@@ -172,9 +171,9 @@
                     cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}"></Textarea>
             </div>
             <div class="form-row">
-                <FileUpload v-model="file" mode="basic" accept="image/*" :maxFileSize="1000000" type="file"
-                    @change="handleFileUpload" chooseLabel="Buscar" id="browse" />
-            </div>
+               <!-- <FileUpload  mode="basic" ref="file" type="file"  accept="image/*" :maxFileSize="1000000"  chooseLabel="Buscar" id="browse" @change="handleFileChange($event)"/>   -->            
+                <input ref="file" type="file" accept="image/*" @change="handleFileChange($event)" class="upload-button">
+            </div>    
         </div>
     </div>
     <div class="actions">
@@ -238,5 +237,26 @@
         align-items: center;
         justify-content: space-between;
         margin-top: 4rem;
+    }
+
+    .upload-button {
+        display: flex;
+        background-color: #253e8b;
+        border-color: #253e8b;
+        overflow: hidden;
+        width: 300px;
+        color: white;
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .upload-button:hover,
+    .upload-button:focus {
+        box-shadow: 0 0 0 2px white, 0 0 0 3px skyblue;
+        color: white;
+        background-color: #3f569b !important;
     }
 </style>

@@ -27,8 +27,8 @@
     const deletionStatus = ref(false);
 
     const fetchCategoryData = async () => {
-        await store.dispatch('agreements/getAllCategories');
-        const categories = store.getters['agreements/getCategory'];
+        await store.dispatch('categories/getAllCategories');
+        const categories = store.getters['categories/getCategory'];
         categoryData.value = categories.map(category => {
             return {
                 ...category,
@@ -38,13 +38,13 @@
     };
 
     const storeUser = async (id) => {
-        await store.dispatch('agreements/deleteCategory', {
+        await store.dispatch('categories/deleteCategory', {
             rowId: id
         })
     }
 
     const deleteResponse = computed(() => {
-        return store.getters["agreements/getErrorResponse"];
+        return store.getters["categories/getErrorResponse"];
     });
 
     const deleteRecord = async (rowData) => {
@@ -63,7 +63,7 @@
                     detail: deleteResponse.value,
                     life: 3000
                 });
-                store.commit('agreements/clearErrorResponse');
+                store.commit('categories/clearErrorResponse');
             }
         } catch (error) {
             toast.add({

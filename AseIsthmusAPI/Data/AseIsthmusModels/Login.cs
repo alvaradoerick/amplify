@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
+
 public partial class Login
 {
     public int LoginId { get; set; }

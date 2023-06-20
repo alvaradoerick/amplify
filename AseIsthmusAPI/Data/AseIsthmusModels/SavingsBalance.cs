@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
+
+
 public partial class SavingsBalance
 {
     public int SavingsBalanceId { get; set; }

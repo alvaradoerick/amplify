@@ -47,7 +47,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region create
         
-        [Authorize]
+       // [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(AgreementDtoIn agreementDtoIn)
         {
