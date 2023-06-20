@@ -6,7 +6,7 @@ import AdminNav from '@/components/UI/AdminNav.vue'
 <template>
     <div>
         <admin-nav class="menu"></admin-nav>
-        <base-card class="container">
+        <base-card class="container2">
             <router-view />
         </base-card>
     </div>
@@ -19,7 +19,7 @@ import AdminNav from '@/components/UI/AdminNav.vue'
     align-items: center;
 }
 
-.container {
+.container2 {
     display: flex;
     flex-direction: column;
     justify-content: center;

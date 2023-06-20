@@ -55,7 +55,7 @@
         }
     }
     const storeUser = async () => {
-        await store.dispatch('agreements/updateCategory', {
+        await store.dispatch('categories/updateCategory', {
             categoryId: categoryId.value,
             agreementCategory: agreementCategory.value
         })
@@ -80,11 +80,11 @@
 
 
     const fetchCategoryData = async () => {
-        await store.dispatch('agreements/getCategoryById', {
+        await store.dispatch('categories/getCategoryById', {
             rowId: categoryId.value
         });
 
-        const category = store.getters["agreements/getCategory"];
+        const category = store.getters["categories/getCategory"];
         try {
             agreementCategory.value.Description = category.Description,
                 agreementCategory.value.IsActive = category.IsActive ? 1 : 0;

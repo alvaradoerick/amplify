@@ -11,7 +11,7 @@
         useRouter
     } from 'vue-router';
     import {
-        ref
+        ref, 
     } from 'vue';
     import {
         useToast
@@ -22,11 +22,11 @@
 
     const apiUrl = process.env["VUE_APP_BASED_URL"]
 
-
-
     const store = useStore();
     const router = useRouter();
     const toast = useToast();
+
+
     const backLabel = 'Cancelar';
     const toReturn = () => {
         router.push({
@@ -46,27 +46,24 @@
     ]);
     const categories = ref([]);
     const selectedCategory = ref(null);
-    const file = ref(null);
+  //const fileInput = ref(null);
 
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const imageBytes = new Uint8Array(reader.result);
-                file.value = imageBytes;
-            };
-            reader.readAsArrayBuffer(file);
-        }
-    }
-
-    const agreementData = ref({
+  
+  
+  const agreementData = ref({
         Title: null,
         Description: null,
-        Image: file.value,
+        Image:  null,
         CategoryAgreementId: selectedCategory,
         IsActive: selectedState
     })
+
+
+  const storeAgreement = async () => {
+    await store.dispatch('agreements/addAgreement', {
+      agreementData: agreementData.value,
+    });
+  };
 
 
     const fetchData = async (url, target) => {
@@ -77,11 +74,29 @@
             console.error(error);
         }
     };
-
-
-
-
+    
     fetchData(`${apiUrl}/categoryagreement/active-categories`, categories);
+    
+//     const customBase64Uploader = async (event) => {
+//   const file = event.files[0];
+//   console.log(file);
+//   const reader = new FileReader();
+//   let blob = await fetch(file.objectURL).then((r) => r.blob()); //blob:url
+
+//   reader.onloadend = function () {
+//     const base64data = reader.result;
+//     const byteCharacters = atob(base64data.split(',')[1]); // Extract base64 data
+//     const byteNumbers = new Array(byteCharacters.length);
+//     for (let i = 0; i < byteCharacters.length; i++) {
+//       byteNumbers[i] = byteCharacters.charCodeAt(i);
+//     }
+//     const byteArray = new Uint8Array(byteNumbers);
+//     agreementData.value.Image = Array.from(byteArray);
+    
+//   };
+
+//   reader.readAsDataURL(blob);
+// };
 
     const rules = {
         Title: {
@@ -116,36 +131,28 @@
         return true;
     }
 
-    const storeCategory = async () => {
-        await store.dispatch('agreements/addAgreement', {
-            agreementData: agreementData.value,
-        })
-    }
+
 
 
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
-        console.log(v$)
-
         if (isValid) {
             try {
-                console.log(agreementData.value)
-                await storeCategory();
+                
+                await storeAgreement();
                 toast.add({
                     severity: 'success',
-                    summary: 'Felicidades',
                     detail: "Su convenio ha sido agregado.",
                     life: 2000
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 router.push({
-                    name: 'dashboard'
+                    name: 'agrementList'
                 });
             } catch (error) {
-                toast.add({
+                toast.add({              
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Un error ocurrió.',
                     life: 2000
                 });
@@ -172,8 +179,7 @@
                     cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}"></Textarea>
             </div>
             <div class="form-row">
-                <FileUpload v-model="file" mode="basic" accept="image/*" :maxFileSize="1000000" type="file"
-                    @change="handleFileUpload" chooseLabel="Buscar" id="browse" />
+                <FileUpload  mode="basic" accept="image/*" :maxFileSize="1000000"  chooseLabel="Buscar" id="browse"  customUpload @uploader="customBase64Uploader"/>
             </div>
         </div>
     </div>

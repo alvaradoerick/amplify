@@ -2,7 +2,7 @@ import auth from "./modules/auth";
 import users from "./modules/users";
 import agreements from "./modules/agreements";
 import beneficiaries from "./modules/beneficiaries";
-
+import categories from "./modules/categories";
 
 export default {
     namespaced: true,
@@ -12,6 +12,7 @@ export default {
         users,
         agreements,
         beneficiaries,
+        categories,
 
     },
 

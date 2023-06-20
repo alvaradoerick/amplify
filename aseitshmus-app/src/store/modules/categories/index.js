@@ -11,4 +11,5 @@ export default {
     getters,
     mutations,
     namespaced
+
 }

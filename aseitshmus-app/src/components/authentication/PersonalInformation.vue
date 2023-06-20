@@ -69,7 +69,7 @@
             <div class="p-float-label">
                 <input-text class="input-text" placeholder="Segundo apellido" id="employee-lastname2" type="text"
                     v-model="personalInfo.LastName2" />
-                <label for="employee-code">Código de empleado</label>
+                <label for="employee-lastname2">Segundo apellido</label>
             </div>
         </div>
         <div class="form-row">

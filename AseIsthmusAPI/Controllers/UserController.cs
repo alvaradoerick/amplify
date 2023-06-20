@@ -16,11 +16,15 @@ namespace AseIsthmusAPI.Controllers
         private readonly UserService _service;
         private readonly EmailService _emailService;
 
+        #region Constructors 
+
         public UserController(UserService service, EmailService emailService)
         {
             _service = service;
             _emailService = emailService;
         }
+
+        #endregion
 
         #region Get
 

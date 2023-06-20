@@ -7,6 +7,10 @@ export default {
         state.errorResponse = null;
     },
 
+    setCategory(state, categories) {
+        state.categories = categories;
+    },
+
     setAgreement(state, agreements) {
         state.agreements = agreements;
     },

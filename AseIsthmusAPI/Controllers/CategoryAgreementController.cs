@@ -29,14 +29,14 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAll();
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpGet("active-categories")]
         public async Task<IEnumerable<CategoryAgreement>> GetAllActiveCategories()
         {
             return await _service.GetAllActiveCategories();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryAgreement>> GetById([FromRoute] int id)
         {
@@ -52,9 +52,9 @@ namespace AseIsthmusAPI.Controllers
             }
 
         }
-
-        [HttpPost]
-        [Authorize]
+        
+        // [Authorize]
+        [HttpPost]      
         public async Task<IActionResult> Create(CategoryAgreement categoryAgreement)
         {
             var newCategoryAgreement = await _service.Create(categoryAgreement);
@@ -63,7 +63,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+       // [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, CategoryAgreement categoryAgreement)
         {
             var categoryAgreementToUpdate = await _service.GetById(id);
@@ -80,7 +80,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
 

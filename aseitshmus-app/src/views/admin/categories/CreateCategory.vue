@@ -71,7 +71,7 @@
     }
 
     const storeCategory = async () => {
-        await store.dispatch('agreements/addCategory', {
+        await store.dispatch('categories/addCategory', {
             agreementCategory: agreementCategory.value,
         })
     }

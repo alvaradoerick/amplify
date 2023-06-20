@@ -136,6 +136,7 @@ const routes = [
         component: () => import('../views/admin/agreements/CreateAgreement.vue' /* webpackChunkName: "CreateAgreement" */),
         meta: {
           title: 'Crear Convenio',
+          authentication: true // buscar ocmo hacer push si no tiene token logueado before each
         }
       },
 
