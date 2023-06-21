@@ -5,7 +5,7 @@
 
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public byte[]? Image { get; set; } = null!;
+        public string? Image { get; set; }
         public int CategoryAgreementId { get; set; }
         public bool IsActive { get; set; }
 

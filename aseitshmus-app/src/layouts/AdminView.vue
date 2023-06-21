@@ -1,7 +1,5 @@
 <script setup>
 import AdminNav from '@/components/UI/AdminNav.vue'
-
-
 </script>
 <template>
     <div>

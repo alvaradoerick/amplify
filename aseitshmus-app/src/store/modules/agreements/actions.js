@@ -51,6 +51,8 @@ export default {
             )
             return response;
     },
-
     
+    setActiveCategory({ commit }, category) {
+        commit('setActiveCategory', category);
+    },
 };

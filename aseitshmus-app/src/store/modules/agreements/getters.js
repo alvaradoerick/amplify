@@ -8,10 +8,14 @@ export default {
     },
 
     filteredAgreements(state){
-        if(state.activeCategory === null || state.activeCategory ===0){
+        console.log(state.activeCategory.id)
+        if(state.activeCategory.id === null || state.activeCategory.id ===0){
             return state.agreements
         }
-        return state.agreements.filter(agreement => agreement.CategoryAgreementId === state.activeCategory.id)
+        return state.agreements.filter(agreement => {
+            
+            return agreement.CategoryAgreementId === state.activeCategory?.id
+        })
     }
 
 }

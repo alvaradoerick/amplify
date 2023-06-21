@@ -80,7 +80,7 @@
         const isValid = await validateForm();
         if (isValid) {
             try {
-              await  storeCategory();
+              await storeCategory();
                 toast.add({
                     severity: 'success',
                     detail: "Su categoría ha sido agregada.",

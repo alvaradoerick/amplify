@@ -34,17 +34,12 @@
     const fetchAgreementData = async () => {
         await store.dispatch('agreements/getAllAgreements');
         const agreements = store.getters['agreements/getAgreement'];
-        console.log(agreements)
         agreementData.value = agreements.map(agreement => {
             return {
                 ...agreement,
                 IsActive: agreement.IsActive ? "Activo" : "Inactivo"
-            };
-
-            
-         
+            };         
         });
-        console.log( agreementData.value)
     };
 
     onMounted(fetchAgreementData);

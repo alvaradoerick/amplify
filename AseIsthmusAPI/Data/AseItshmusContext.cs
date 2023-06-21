@@ -60,6 +60,7 @@ public partial class AseItshmusContext : DbContext
     {
         modelBuilder.Entity<Agreement>(entity =>
         {
+            entity.Property(e => e.Image).HasColumnType("text");
             entity.Property(e => e.PersonId).HasMaxLength(12);
             entity.Property(e => e.Title).HasMaxLength(100);
 
