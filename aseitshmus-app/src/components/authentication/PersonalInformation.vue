@@ -1,11 +1,15 @@
 <script setup="setup">
     import countriesJson from '@/assets/countriesJson.json';
+   
 
     import {
         ref,
         defineEmits,
         watch
     } from 'vue';
+
+
+   
 
     const personalInfo = ref({
         PersonId: null,
@@ -24,10 +28,11 @@
     countrySet.value = countriesJson;
     const emits = defineEmits(['personal-info'])
 
-
     watch(personalInfo.value, (newValue) => {
         emits('personal-info', newValue)
     })
+
+    
 </script>
 
 <template>
@@ -88,6 +93,9 @@
     </div>
 </template>
 <style scoped="scoped">
+  .hasError {
+        border-color: red;
+    }
     .container {
         display: flex;
         flex-direction: column;

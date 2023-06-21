@@ -45,24 +45,19 @@ namespace AseIsthmusAPI.Services
                 Description = a.Description,
                 Image = a.Image,
                 CategoryAgreementId = a.CategoryAgreementId,    
-                CategoryName = a.CategoryAgreement.Description
+                CategoryName = a.CategoryAgreement.Description,
+                IsActive = a.IsActive
             }).ToListAsync();
         }
 
-        public async Task<IEnumerable<AgreementDtoOut>> GetAgreementByCategoryId(int id)
+        public async Task<IEnumerable<Agreement>> GetAllActiveAgreements()
         {
-            var agreementByCategory =  await _context.Agreements.Where(a => a.CategoryAgreementId == id).               
-                Select(a => new AgreementDtoOut
-                {
-                    AgreementId = a.AgreementId,
-                    Title = a.Title,
-                    Description = a.Description,
-                    Image = a.Image,
-                    CategoryName = a.CategoryAgreement.Description
-                }).ToListAsync();
+            return await _context.Agreements.Where(a => a.IsActive == true).ToListAsync();
            
-            return agreementByCategory;
         }
+
+
+
 
     }
 }

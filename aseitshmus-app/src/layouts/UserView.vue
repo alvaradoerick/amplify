@@ -2,7 +2,7 @@
     import UserNav from '@/components/UI/UserNav.vue'
 </script>
 <template>
-    <div >
+    <div class="test">
         <user-nav class="menu"></user-nav>
         <base-card class="container">
             <router-view />
@@ -10,6 +10,9 @@
     </div>
 </template>
 <style scoped>
+.test {
+    height: 100%;
+}
     .menu {
         display: flex;
         flex-direction: column;
@@ -19,11 +22,12 @@
 
     .container {
         display: flex;
+
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        min-height: 37vh;
-        height: 39rem;
+         min-height: 37vh; 
+        height: 100%;
         margin-top: 50px;
     }
 

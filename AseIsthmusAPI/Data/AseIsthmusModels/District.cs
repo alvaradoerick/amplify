@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
-
 public partial class District
 {
     public int DistrictId { get; set; }

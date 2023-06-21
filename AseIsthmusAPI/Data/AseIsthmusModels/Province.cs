@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
-
 public partial class Province
 {
     public int ProvinceId { get; set; }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
-
 public partial class Role
 {
     public int RoleId { get; set; }

@@ -10,4 +10,7 @@ export default {
     setAgreement(state, agreements) {
         state.agreements = agreements;
     },
+    setActiveCategory(state, activeCategory ){
+        state.activeCategory = activeCategory
+    }
 }

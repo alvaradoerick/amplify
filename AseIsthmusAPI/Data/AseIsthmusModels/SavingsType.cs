@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
-
 public partial class SavingsType
 {
     public int SavingsTypeId { get; set; }

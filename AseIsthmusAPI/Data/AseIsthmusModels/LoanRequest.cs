@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace AseIsthmusAPI.Data.AseIsthmusModels;
 
-
 public partial class LoanRequest
 {
     public int LoanRequestId { get; set; }

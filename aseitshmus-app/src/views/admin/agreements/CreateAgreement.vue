@@ -1,7 +1,7 @@
 <script setup>
     import useVuelidate from '@vuelidate/core'
     import {
-        required
+        required,url
     } from '@vuelidate/validators'
     import axios from "axios";
     import {
@@ -58,11 +58,13 @@
 
 
   const storeAgreement = async () => {
-    await store.dispatch('agreements/addAgreement', {
-      agreementData: agreementData.value,
-    });
+    const agreement = {
+    ...agreementData.value,
   };
-
+  await store.dispatch('agreements/addAgreement', {
+    agreementData: agreement,
+  });
+};
 
     const fetchData = async (url, target) => {
         try {
@@ -75,21 +77,6 @@
     
     fetchData(`${apiUrl}/categoryagreement/active-categories`, categories);
 
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  console.log(file);
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    const base64Data = reader.result;
-    agreementData.value.Image = base64Data; 
-    console.log(agreementData.value.Image)
-  };
-
-  reader.readAsDataURL(file);
-};
 
     const rules = {
         Title: {
@@ -100,6 +87,9 @@ const handleFileChange = (event) => {
         },
         CategoryAgreementId: {
             required
+        },
+        Image: {
+            url
         },
         IsActive: {
             required
@@ -127,7 +117,6 @@ const handleFileChange = (event) => {
 
     const onSend = async (event) => {
         event.preventDefault();
-        console.log(agreementData.value)
         const isValid = await validateForm();
         if (isValid) {
             try {
@@ -171,9 +160,9 @@ const handleFileChange = (event) => {
                     cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}"></Textarea>
             </div>
             <div class="form-row">
-               <!-- <FileUpload  mode="basic" ref="file" type="file"  accept="image/*" :maxFileSize="1000000"  chooseLabel="Buscar" id="browse" @change="handleFileChange($event)"/>   -->            
-                <input ref="file" type="file" accept="image/*" @change="handleFileChange($event)" class="upload-button">
-            </div>    
+                <input-text placeholder="URL" class=" input-text form-margin-right" id="url-image" type="text"
+                    v-model="agreementData.Image" :class="{'hasError': v$?.Image?.$error}" />
+              </div>    
         </div>
     </div>
     <div class="actions">
