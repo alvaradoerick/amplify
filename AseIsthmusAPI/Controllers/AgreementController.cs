@@ -6,6 +6,7 @@ using System.Collections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 
 namespace AseIsthmusAPI.Controllers
 {
@@ -28,26 +29,17 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAll();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetByCategoryId([FromRoute] int id)
+        [HttpGet("active-agreements")]
+        public async Task<IEnumerable<Agreement>> GetAllActiveAgreements()
         {
-            var agreement = await _service.GetAgreementByCategoryId(id);
-
-            if (!agreement.Any())
-            {
-                return NoContent();
-            }
-            else
-            {
-                return Ok(agreement);
-            }
+            return await _service.GetAllActiveAgreements();
         }
 
         #endregion
 
         #region create
-        
-       // [Authorize]
+
+        // [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(AgreementDtoIn agreementDtoIn)
         {

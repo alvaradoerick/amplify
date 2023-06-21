@@ -1,5 +1,5 @@
 export default {
     errorResponse: null,
-    activeAgreement: null,
+    activeCategory: null,
     agreements: [],
 }

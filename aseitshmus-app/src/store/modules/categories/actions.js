@@ -20,6 +20,38 @@ export default {
         return categoryData;
     },
 
+    async getActiveCategories({
+        commit,
+        rootGetters
+    }) {
+        const token = rootGetters['auth/getToken'];
+        const response = await axios.get(`${apiUrl}/categoryagreement/active-categories`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const categoryData = response.data;
+        commit('setCategory', categoryData);
+        return categoryData;
+    },
+
+    async getCategoryById({
+        commit,
+        rootGetters
+    },payload) {
+        const categoryId = payload.rowId;
+        const token = rootGetters['auth/getToken'];
+        const response = await axios.get(`${apiUrl}/categoryagreement/${categoryId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const categoryData = response.data;
+        commit('setCategory', categoryData);
+        return categoryData;
+    },
+
+    //Post
     async addCategory({
         rootGetters
     }, payload) {
@@ -35,6 +67,7 @@ export default {
             return response;
     },
 
+    //Delete
     async deleteCategory({
         commit,rootGetters
     }, payload) {
@@ -55,22 +88,7 @@ export default {
         }
     },
 
-    async getCategoryById({
-        commit,
-        rootGetters
-    },payload) {
-        const categoryId = payload.rowId;
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/categoryagreement/${categoryId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-        const categoryData = response.data;
-        commit('setCategory', categoryData);
-        return categoryData;
-    },
-
+    //Put or Patch
     async updateCategory({
         rootGetters
     }, payload) {
@@ -92,18 +110,4 @@ export default {
         }
     },
 
-    async addAgreement({
-        rootGetters
-    }, payload) {
-        const token = rootGetters['auth/getToken'];
-            const response = await axios.post(
-                `${apiUrl}/agreement`,
-                payload.agreementData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
-            return response;
-    },
 };

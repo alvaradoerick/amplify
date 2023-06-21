@@ -35,26 +35,34 @@ const routes = [{
   },
 
   {
-    path: '/dashboard',
-    name: 'adminDashboard',
+    path: '/my-dashboard',
+    name: 'myDashboard',
     component: () => import('../layouts/UserView.vue' /* webpackChunkName: "UserView" */ ),
-    children: [
-      //dashboard
-      {
-        path: '/my-dashboard',
-        name: 'userDashboard',
+    children: [{
+        //dashboard
+        path: '',
+        name: 'myDashboard',
+        component: () => import('../views/home/UserHome.vue' /* webpackChunkName: "UserHome" */ ),
+        meta: {
+          title: 'Resumen de Cuenta',
+        },
         children: [{
-            path: '',
-            name: 'myDashboard',
-            component: () => import('../views/home/UserHome.vue' /* webpackChunkName: "UserHome" */ ),
-            meta: {
-              auth: true,
-              title: 'Estado de Cuentas',
-
-            }
-          },
-
-        ]
+          path: '',
+          name: 'myProfile',
+          component: () => import('../views/user/MyProfile.vue' /* webpackChunkName: "MyProfile" */ ),
+          meta: {
+            title: 'Mi Perfíl',
+          }
+        }]
+      },
+      //agreements
+      {
+        path: '/agreements',
+        name: 'allAgreements',
+        component: () => import('../views/agreements/AllAgreements.vue' /* webpackChunkName: "AllAgreements" */ ),
+          meta: {
+            title: 'Convenios Activos',
+          }
       },
       //profile
       {

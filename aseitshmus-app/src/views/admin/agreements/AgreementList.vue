@@ -34,13 +34,17 @@
     const fetchAgreementData = async () => {
         await store.dispatch('agreements/getAllAgreements');
         const agreements = store.getters['agreements/getAgreement'];
-        agreementData.value = agreements.map(agreements => {
+        console.log(agreements)
+        agreementData.value = agreements.map(agreement => {
             return {
-                ...agreements,
-                IsActive: agreements.IsActive ? "Activo" : "Inactivo"
+                ...agreement,
+                IsActive: agreement.IsActive ? "Activo" : "Inactivo"
             };
+
+            
          
         });
+        console.log( agreementData.value)
     };
 
     onMounted(fetchAgreementData);
@@ -51,7 +55,8 @@
     <div>
         <DataTable :value="agreementData"  tableStyle="min-width: 50rem" paginator :rows="3">
             <Column field="Title" header="Convenio" sortable></Column>
-            <Column field="CategoryName" header="Categoría" sortable style="width: 280px"></Column>
+            <Column field="CategoryName" header="Categoría" sortable style="width: 200px"></Column>
+            <Column field="IsActive" header="Estado" sortable style="width: 80px"></Column>
             <Column header="" style="width: 100px"> <template #body="">
                     <base-button class="action-buttons" label="Editar" :type="'button'" />
                 </template></Column>

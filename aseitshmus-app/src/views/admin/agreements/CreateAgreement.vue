@@ -58,10 +58,14 @@
 
 
   const storeAgreement = async () => {
-    await store.dispatch('agreements/addAgreement', {
-      agreementData: agreementData.value,
-    });
+    const agreement = {
+    ...agreementData.value,
+    Image: agreementData.value.Image ? agreementData.value.Image.split(',')[1] : null
   };
+  await store.dispatch('agreements/addAgreement', {
+    agreementData: agreement,
+  });
+};
 
 
     const fetchData = async (url, target) => {
@@ -79,13 +83,10 @@ const handleFileChange = (event) => {
   const file = event.target.files[0];
   console.log(file);
   if (!file) return;
-
   const reader = new FileReader();
-
   reader.onload = () => {
     const base64Data = reader.result;
     agreementData.value.Image = base64Data; 
-    console.log(agreementData.value.Image)
   };
 
   reader.readAsDataURL(file);
@@ -172,7 +173,7 @@ const handleFileChange = (event) => {
             </div>
             <div class="form-row">
                <!-- <FileUpload  mode="basic" ref="file" type="file"  accept="image/*" :maxFileSize="1000000"  chooseLabel="Buscar" id="browse" @change="handleFileChange($event)"/>   -->            
-                <input ref="file" type="file" accept="image/*" @change="handleFileChange($event)" class="upload-button">
+                <input ref="file" type="file" accept="image/jpeg, image/gif, image/png" @change="handleFileChange($event)" class="upload-button" :maxFileSize="1000000" >
             </div>    
         </div>
     </div>

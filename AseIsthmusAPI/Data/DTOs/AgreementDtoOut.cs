@@ -12,6 +12,7 @@ namespace AseIsthmusAPI.Data.DTOs
         public byte[]? Image { get; set; } = null!;      
         public int CategoryAgreementId { get; set; }
         public string CategoryName { get; set; } = null!;
+        public bool IsActive { get; set; }
 
     }
 }
