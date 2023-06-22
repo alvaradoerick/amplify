@@ -151,7 +151,7 @@ const toast = useToast();
 
 const submitData = async (event) => {
     event.preventDefault();
-     
+     console.log(personalInfo.value)
        const isValid = await validateForm();
        if (isValid) {
             try
