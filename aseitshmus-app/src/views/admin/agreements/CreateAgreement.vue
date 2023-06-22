@@ -1,7 +1,7 @@
 <script setup>
     import useVuelidate from '@vuelidate/core'
     import {
-        required,url
+        required
     } from '@vuelidate/validators'
     import axios from "axios";
     import {
@@ -11,7 +11,7 @@
         useRouter
     } from 'vue-router';
     import {
-        ref, 
+        ref, onMounted
     } from 'vue';
     import {
         useToast
@@ -47,7 +47,6 @@
     const categories = ref([]);
     const selectedCategory = ref(null);
 
-
   const agreementData = ref({
         Title: null,
         Description: null,
@@ -56,27 +55,40 @@
         IsActive: selectedState
     })
 
-
-  const storeAgreement = async () => {
+    const storeAgreement = async () => {
+       // const base64Image = agreementData.value.Image.split(',')[1];
+        //console.log(base64Image)
     const agreement = {
-    ...agreementData.value,
-  };
-  await store.dispatch('agreements/addAgreement', {
-    agreementData: agreement,
-  });
-};
+      ...agreementData.value,
+     //Image: base64Image
+ 
+    };
 
-    const fetchData = async (url, target) => {
+    await store.dispatch('agreements/addAgreement', {
+      agreementData: agreement,
+    });
+  };
+
+  
+  const handleFileUpload = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      agreementData.value.Image = e.target.result; 
+    };
+    reader.readAsDataURL(file);
+  }
+    };
+
+    const fetchActiveCategories = async () => {
         try {
-            const response = await axios.get(url);
-            target.value = response.data;
+            const response = await axios.get(`${apiUrl}/categoryagreement/active-categories`);
+            categories.value = response.data;
         } catch (error) {
             console.error(error);
         }
     };
-    
-    fetchData(`${apiUrl}/categoryagreement/active-categories`, categories);
-
 
     const rules = {
         Title: {
@@ -87,9 +99,6 @@
         },
         CategoryAgreementId: {
             required
-        },
-        Image: {
-            url
         },
         IsActive: {
             required
@@ -121,6 +130,7 @@
             try {
                 
                 await storeAgreement();
+                console.log(agreementData.value)
                 toast.add({
                     severity: 'success',
                     detail: "Su convenio ha sido agregado.",
@@ -136,9 +146,12 @@
                     detail: 'Un error ocurrió.',
                     life: 2000
                 });
+                console.log(error)
             }
         }
     }
+
+    onMounted(fetchActiveCategories)
 </script>
 
 <template>
@@ -154,11 +167,11 @@
                     <div class="p-float-label">
                 <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
                     placeholder="Estado" class="dropdown" id="status" :class="{'hasError': v$?.selectedState?.$error}" />
-                    <label for="status">Estado</label>
+                    <label or="status">Estado</label>
                 </div>
                     <div class="p-float-label">
                 <drop-down v-model="selectedCategory" :options="categories" optionLabel="Description"
-                    optionValue="CategoryAgreementId" placeholder="Categoría" class="dropdownLarger form-margin-left" id="category"
+                    optionValue="CategoryAgreementId" class="dropdownLarger form-margin-left" id="category"
                     :class="{'hasError': v$?.CategoryAgreementId?.$error}" />
                     <label for="category">Categoría</label>
                 </div>
@@ -169,20 +182,17 @@
                     cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}" ></Textarea>
                     <label for="description">Descripción</label>
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="p-float-label">
-                <input-text placeholder="Enlace de imagen" class=" input-text form-margin-right" id="url-image" type="text"
-                    v-model="agreementData.Image" :class="{'hasError': v$?.Image?.$error}" />
-                    <label for="url-image">Enlace de imagen</label>
-                </div>
-              </div>    
+            </div>             
+              <div class="form-row">     
+                <input type="file" id="myfile" name="myfile" class="upload-button" @change="handleFileUpload" />
+
         </div>
     </div>
     <div class="actions">
         <base-button :label="backLabel" @click="toReturn" :type="'button'" />
         <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
     </div>
+</div>
 </template>
 <style scoped="scoped">
     .main {
