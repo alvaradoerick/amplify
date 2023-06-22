@@ -97,7 +97,7 @@ namespace AseIsthmusAPI.Controllers
                 if (categoryAgreementToDelete is not null)
                 {
                     await _service.Delete(id);
-                    return Ok();
+                    return NoContent();
                 }
                 else
                 {

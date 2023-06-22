@@ -55,8 +55,16 @@ namespace AseIsthmusAPI.Services
             return await _context.Agreements.Where(a => a.IsActive == true).ToListAsync();
            
         }
+        public async Task Delete(int id)
+        {
+            var agreementToDelete = await _context.Agreements.Where(a => a.AgreementId ==  id).FirstOrDefaultAsync();
 
-
+            if (agreementToDelete is not null)
+            {
+                _context.Agreements.Remove(agreementToDelete);
+                await _context.SaveChangesAsync();
+            }
+        }
 
 
     }

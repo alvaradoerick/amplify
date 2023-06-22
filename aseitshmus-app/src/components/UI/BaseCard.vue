@@ -22,10 +22,10 @@
 
 <style scoped>
     .default {
-        width: 950px;
+        width: 80rem;
         margin-top: 50px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        height: 100%;
+        height: 46rem;
     }
 
     h2 {

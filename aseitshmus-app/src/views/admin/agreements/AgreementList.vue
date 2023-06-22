@@ -4,6 +4,8 @@
     import {
         ref,
         onMounted,
+        computed,
+        watch
     } from 'vue';
     import {
         useStore
@@ -11,25 +13,22 @@
     import {
         useRouter
     } from 'vue-router';
+
+    import {
+        useToast
+    } from 'primevue/usetoast';
+
     
     const router = useRouter();
     const store = useStore()
+    const toast = useToast();
 
     const backLabel = 'Principal';
     const addLabel = 'Agregar';
     const agreementData = ref([]);
+    const deletionStatus = ref(false);
 
-    const cancel = () => {
-        router.push({
-            name: "dashboard"
-        });
-    }
-
-    const addAgreement = () => {
-        router.push({
-            name: "createAgreement"
-        });
-    }
+ 
 
     const fetchAgreementData = async () => {
         await store.dispatch('agreements/getAllAgreements');
@@ -42,27 +41,98 @@
         });
     };
 
+    const storeAgreement = async (id) => {
+        await store.dispatch('agreements/deleteAgreement', {
+            rowId: id
+        })
+    }
+
+    const deleteResponse = computed(() => {
+        return store.getters["agreements/getErrorResponse"];
+    });
+
+    const deleteRecord = async (rowData) => {
+        console.log(rowData)
+        try {
+            await storeAgreement(rowData.data.AgreementId);
+            if (deleteResponse.value === null) {
+                toast.add({
+                    severity: 'warn',
+                    detail: "El convenio ha sido eliminado.",
+                    life: 2000
+                });
+                deletionStatus.value = true;
+            } else {
+                toast.add({
+                    severity: 'error',
+                    detail: deleteResponse.value,
+                    life: 3000
+                });
+                store.commit('agreements/clearErrorResponse');
+            }
+        } catch (error) {
+            console.log(error)
+            toast.add({
+                severity: 'error',
+                detail: `Un error ocurrió. ${error}`,
+                life: 2000
+            });
+        }
+    };
+
+    watch(deletionStatus, (newStatus) => {
+        if (newStatus) {
+            fetchAgreementData();
+            deletionStatus.value = false;
+        }
+    });
+
+
+    const goBack = () => {
+        router.push({
+            name: "dashboard"
+        });
+    }
+
+    const addAgreement = () => {
+        router.push({
+            name: "createAgreement"
+        });
+    }
+    const updateCategory = (rowData) => {
+        router.push({
+            name: "updateAgreement",
+            params: {
+                id: rowData.data.AgreementId
+            },
+            props: true,
+        });
+    };
+
+
     onMounted(fetchAgreementData);
+ 
     
 </script>
 
 <template>
     <div>
+        <toast-component />
         <DataTable :value="agreementData"  tableStyle="min-width: 50rem" paginator :rows="3">
             <Column field="Title" header="Convenio" sortable></Column>
             <Column field="CategoryName" header="Categoría" sortable style="width: 200px"></Column>
             <Column field="IsActive" header="Estado" sortable style="width: 80px"></Column>
-            <Column header="" style="width: 100px"> <template #body="">
-                    <base-button class="action-buttons" label="Editar" :type="'button'" />
+            <Column header="" style="width: 100px"> <template #body="rowData">
+                    <base-button class="action-buttons" label="Editar" :type="'button'" @click="updateCategory(rowData)"/>
                 </template></Column>
-            <Column header="" style="width: 100px"> <template #body="">
-                    <base-button class="action-buttons" label="Eliminar" :type="'button'" />
+            <Column header="" style="width: 100px"> <template #body="rowData">
+                    <base-button class="action-buttons" label="Eliminar"  @click="deleteRecord(rowData)" :type="'button'" />
                 </template></Column>
         </DataTable>
     </div>
     <div class="actions-container">
         <div class="actions">
-            <base-button :label="backLabel" @click="cancel" :type="'button'" />
+            <base-button :label="backLabel" @click="goBack" :type="'button'" />
             <base-button :label="addLabel" @click="addAgreement" :type="'button'" />
         </div>
     </div>

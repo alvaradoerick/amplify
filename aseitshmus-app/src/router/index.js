@@ -46,14 +46,14 @@ const routes = [{
         meta: {
           title: 'Resumen de Cuenta',
         },
-        children: [{
+      },
+        {
           path: '',
           name: 'myProfile',
           component: () => import('../views/user/MyProfile.vue' /* webpackChunkName: "MyProfile" */ ),
           meta: {
             title: 'Mi Perfíl',
           }
-        }]
       },
       //agreements
       {
@@ -64,18 +64,7 @@ const routes = [{
             title: 'Convenios Activos',
           }
       },
-      //profile
-      {
-        path: '/profile',
-        component: () => import('../layouts/UserView.vue' /* webpackChunkName: "UserView" */ ),
-        children: [{
-            path: '',
-            name: 'myProfile',
-            component: () => import('../views/user/MyProfile.vue' /* webpackChunkName: "MyProfile" */ ),
-            meta: {
-              title: 'Mi Perfíl',
-            }
-          },
+
           {
             path: '/password',
             name: 'changePassword',
@@ -83,8 +72,7 @@ const routes = [{
             meta: {
               title: 'Cambiar Contraseña',
             }
-          },
-        ]
+
       }
     ]
   },
@@ -119,6 +107,15 @@ const routes = [{
           {
             path: '/create-agreement',
             name: 'createAgreement',
+            component: () => import('../views/admin/agreements/CreateAgreement.vue' /* webpackChunkName: "CreateAgreement" */ ),
+            meta: {
+              title: 'Crear Convenio',
+              authentication: true // buscar ocmo hacer push si no tiene token logueado before each
+            }
+          },
+          {
+            path: '/update-agreement',
+            name: 'updateAgreement',
             component: () => import('../views/admin/agreements/CreateAgreement.vue' /* webpackChunkName: "CreateAgreement" */ ),
             meta: {
               title: 'Crear Convenio',

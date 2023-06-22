@@ -104,7 +104,6 @@
             if (v$.value.$errors[0].$validator === 'required') {
                 toast.add({
                     severity: 'error',
-                    summary: 'Error',
                     detail: 'Todos los campos son requeridos.',
                     life: 2000
                 });
@@ -147,21 +146,36 @@
         <toast-component />
         <div class="header">
             <div class="form-row">
+                <div class="p-float-label">
                 <input-text placeholder="Convenio" class=" input-text form-margin-right" id="agreementName" type="text"
                     v-model="agreementData.Title" :class="{'hasError': v$?.Title?.$error}" />
+                    <label for="agreementName">Convenio</label>
+                </div>
+                    <div class="p-float-label">
                 <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
-                    placeholder="Estado" class="dropdown" :class="{'hasError': v$?.selectedState?.$error}" />
+                    placeholder="Estado" class="dropdown" id="status" :class="{'hasError': v$?.selectedState?.$error}" />
+                    <label for="status">Estado</label>
+                </div>
+                    <div class="p-float-label">
                 <drop-down v-model="selectedCategory" :options="categories" optionLabel="Description"
-                    optionValue="CategoryAgreementId" placeholder="Categoría" class="dropdownLarger form-margin-left"
+                    optionValue="CategoryAgreementId" placeholder="Categoría" class="dropdownLarger form-margin-left" id="category"
                     :class="{'hasError': v$?.CategoryAgreementId?.$error}" />
+                    <label for="category">Categoría</label>
+                </div>
             </div>
             <div class="form-row">
+                <div class="p-float-label">
                 <Textarea id="description" placeholder="Descripción" v-model="agreementData.Description" rows="5"
-                    cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}"></Textarea>
+                    cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}" ></Textarea>
+                    <label for="description">Descripción</label>
+                </div>
             </div>
             <div class="form-row">
-                <input-text placeholder="URL" class=" input-text form-margin-right" id="url-image" type="text"
+                <div class="p-float-label">
+                <input-text placeholder="Enlace de imagen" class=" input-text form-margin-right" id="url-image" type="text"
                     v-model="agreementData.Image" :class="{'hasError': v$?.Image?.$error}" />
+                    <label for="url-image">Enlace de imagen</label>
+                </div>
               </div>    
         </div>
     </div>
@@ -178,11 +192,11 @@
 
     .dropdownLarger {
         display: flex;
-        width: 600px;
+        width: 300px;
     }
 
-    .input-text,
-    .dropdown {
+    .input-text
+     {
         display: flex;
         width: 300px;
     }
