@@ -114,12 +114,12 @@ const routes = [{
             }
           },
           {
-            path: '/update-agreement',
+            path: '/update-agreement/:id',
             name: 'updateAgreement',
-            component: () => import('../views/admin/agreements/CreateAgreement.vue' /* webpackChunkName: "CreateAgreement" */ ),
+            component: () => import('../views/admin/agreements/UpdateAgreement.vue' /* webpackChunkName: "UpdateAgreement" */ ),
             meta: {
-              title: 'Crear Convenio',
-              authentication: true // buscar ocmo hacer push si no tiene token logueado before each
+              title: 'Editar Convenio',
+              authentication: true 
             }
           },
 
