@@ -5,7 +5,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.HttpResults;
 using AseIsthmusAPI.Data.DTOs;
-using System.Collections;
+
 
 namespace AseIsthmusAPI.Services
 {
@@ -21,7 +21,9 @@ namespace AseIsthmusAPI.Services
 
         public async Task<Agreement> Create(AgreementDtoIn newAgreementDto)
         {
-                var agreement = new Agreement
+           // byte[]? imageData = string.IsNullOrEmpty(newAgreementDto.Image) ? null : Convert.FromBase64String(newAgreementDto.Image);
+     
+            var agreement = new Agreement
                 {
                     Title = newAgreementDto.Title,
                     Description = newAgreementDto.Description,
@@ -52,8 +54,12 @@ namespace AseIsthmusAPI.Services
 
         public async Task<IEnumerable<Agreement>> GetAllActiveAgreements()
         {
-            return await _context.Agreements.Where(a => a.IsActive == true).ToListAsync();
-           
+            var agreementList =  await _context.Agreements.Where(a => a.IsActive == true).ToListAsync();
+         
+
+            return agreementList;
+
+
         }
         public async Task Delete(int id)
         {

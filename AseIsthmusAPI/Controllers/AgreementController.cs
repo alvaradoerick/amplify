@@ -43,6 +43,7 @@ namespace AseIsthmusAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AgreementDtoIn agreementDtoIn)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
