@@ -9,11 +9,6 @@
         watch
     } from 'vue';
 
-    
-    // import {
-    //         useToast
-    //     } from 'primevue/usetoast';
-
     import TabView from 'primevue/tabview';
     import TabPanel from 'primevue/tabpanel';
     import Card from 'primevue/card';
@@ -23,7 +18,6 @@
         dispatch,
         getters
     } = useStore();
-    //const toast = useToast();
     
     const ALL = {
         title: 'Mostrar todos',
@@ -33,7 +27,7 @@
     const categories = computed(() => getters['categories/getCategory']);
     const agreements = computed(() => getters['agreements/filteredAgreements']);
     const activeTab = ref(ALL.id);
-    
+    const moreInfo = 'Me interesa';
     const tabs = ref([ALL]);
 
     //methods
@@ -74,7 +68,7 @@
                         </p>
                     </template>
                     <template #content>
-                        <!--agregar boton aqui-->
+                       <base-button :label="moreInfo"  :type="'button'" class="button"></base-button>
                     </template>
                     </Card>
                 </div>
@@ -89,14 +83,29 @@
         flex-wrap: wrap;
         justify-content: space-between;
         overflow: auto;
-        height: 30vh;
+        height: 48vh;
     }
     
+    .button {
+        display: flex;
+        background-color: #253e8b;
+        border-color: #253e8b;
+        overflow: hidden;
+        width: 10rem;
+        color: white;
+        text-align: center;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+
     .card {
         display: flex;
-        width: 15rem;
+        width: 14rem;
         flex-direction: column;
         margin-bottom: 2rem;
+        margin-right: 2rem;
     }
     
     .card-image {

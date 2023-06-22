@@ -37,7 +37,7 @@
         });
     };
 
-    const storeUser = async (id) => {
+    const storeCategory = async (id) => {
         await store.dispatch('categories/deleteCategory', {
             rowId: id
         })
@@ -49,7 +49,7 @@
 
     const deleteRecord = async (rowData) => {
         try {
-            await storeUser(rowData.data.CategoryAgreementId);
+            await storeCategory(rowData.data.CategoryAgreementId);
             if (deleteResponse.value === null) {
                 toast.add({
                     severity: 'warn',

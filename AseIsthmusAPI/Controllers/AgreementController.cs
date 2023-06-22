@@ -37,7 +37,7 @@ namespace AseIsthmusAPI.Controllers
 
         #endregion
 
-        #region create
+        #region Create
 
         // [Authorize]
         [HttpPost]
@@ -55,6 +55,22 @@ namespace AseIsthmusAPI.Controllers
         }
         #endregion
 
+        #region Delete
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            try {
+                await _service.Delete(id);
+                return NoContent();
+            } catch (Exception) {
+                return BadRequest(new { error = "No se pudo eliminar el convenio." });
+            }
+        
+            
+        }
+
+        #endregion
 
     }
 }

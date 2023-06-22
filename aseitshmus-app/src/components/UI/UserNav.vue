@@ -37,10 +37,10 @@
                             <a class="nav-link">Mi Cuenta</a>
                             <ul v-show="isSubMenu1Visible" class="sub-menu">
                                 <li>
-                                    <router-link class="nav-link" to="/profile">Mi Perfil</router-link>
+                                    <router-link class="nav-link" :to="{name:'myProfile'}">Mi Perfil</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="nav-link" to="/password">Cambiar Contraseña</router-link>
+                                    <router-link class="nav-link" :to="{name:'changePassword'}">Cambiar Contraseña</router-link>
                                 </li>
                             </ul>
                         </li>

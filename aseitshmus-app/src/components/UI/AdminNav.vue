@@ -46,7 +46,7 @@
                                     <router-link class="nav-link" :to="{name:'categoryList'}">Lista de categorias</router-link>
                                 </li>
                                 <li>
-                                    <router-link class="nav-link" :to="{name:'agrementList'}">List de convenios</router-link>
+                                    <router-link class="nav-link" :to="{name:'agrementList'}">Lista de convenios</router-link>
                                 </li>
                             </ul>
                         </li>
