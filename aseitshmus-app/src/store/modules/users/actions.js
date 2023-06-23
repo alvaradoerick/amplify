@@ -25,7 +25,6 @@ export default {
         rootGetters
     }, payload) {
         const userId = payload.rowId;
-        console.log(userId)
         const token = rootGetters['auth/getToken'];
         const response = await axios.get(`${apiUrl}/user/${userId}`, {
             headers: {

@@ -35,6 +35,23 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAllActiveAgreements();
         }
 
+
+        //[Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AgreementDtoOut>> GetById([FromRoute] int id)
+        {
+            var agreement = await _service.GetById(id);
+
+            if (agreement is null)
+            {
+                return NotFound(new { error = "No se pudo encontrar ninguna categoría." });
+            }
+            else
+            {
+                return agreement;
+            }
+        }
+
         #endregion
 
         #region Create
@@ -73,5 +90,23 @@ namespace AseIsthmusAPI.Controllers
 
         #endregion
 
+        #region Update
+        // [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AgreementDtoIn agreement)
+        {
+            var agreementToUpdate = await _service.GetById(id);
+
+            if (agreementToUpdate is not null)
+            {
+                await _service.Update(id, agreement);
+                return NoContent();
+            }
+            else
+            {
+                return NotFound(new { error = "No se pudo actualizar el convenio." });
+            }
+        }
+        #endregion
     }
 }

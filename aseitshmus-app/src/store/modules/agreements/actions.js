@@ -36,6 +36,22 @@ export default {
         return agreementData;
     },
 
+    async getAgreementById({
+        commit,
+        rootGetters
+    },payload) {
+        const agreementId = payload.rowId;
+        const token = rootGetters['auth/getToken'];
+        const response = await axios.get(`${apiUrl}/agreement/${agreementId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const agreementData = response.data;
+        commit('setAgreement', agreementData);
+        return agreementData;
+    },
+
     //Post
     async addAgreement({
         rootGetters
@@ -77,4 +93,27 @@ export default {
             commit('setErrorResponse', errorMessage);
         }
     },
+
+     //Put or Patch
+     async updateAgreement({
+        rootGetters
+    }, payload) {
+        try {
+            const agreementId = payload.AgreementId;
+            const agreement = payload.agreementData;
+            const token = rootGetters['auth/getToken'];
+            const response = await axios.put(
+                `${apiUrl}/categoryagreement/${agreementId}`,
+                agreement, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
 };

@@ -23,11 +23,14 @@
     const route = useRoute();
     const toast = useToast();
 
-
+    const AgreementId = ref(route.params.id);
+    const selectedState = ref();
+    const selectedCategory = ref();
+    const categoryName = ref([]);
     const backLabel = 'Cancelar';
-    const categoryList = () => {
+    const agreementList = () => {
         router.push({
-            name: "categoryList"
+            name: "agrementList"
         });
     }
     const sendLabel = 'Actualizar';
@@ -41,27 +44,39 @@
         }
     ]);
 
-    const agreementCategory = ref({
+    const agreementData = ref({
+        Title: null,
         Description: null,
-        IsActive: null
+        Image:  null,
+        CategoryAgreementId: selectedCategory,
+        IsActive: selectedState
     })
-    const categoryId = ref(route.params.id);
+
+ 
+
     const rules = {
+        Title: {
+            required
+        },
         Description: {
+            required
+        },
+        CategoryAgreementId: {
             required
         },
         IsActive: {
             required
         }
     }
-    const storeUser = async () => {
-        await store.dispatch('categories/updateCategory', {
-            categoryId: categoryId.value,
-            agreementCategory: agreementCategory.value
+
+    const storeAgreement = async () => {
+        await store.dispatch('agreements/updateAgreement', {
+            AgreementId: AgreementId.value,
+            agreementData: agreementData.value
         })
     }
 
-    const v$ = useVuelidate(rules, agreementCategory);
+    const v$ = useVuelidate(rules, agreementData);
     const validateForm = async () => {
         const result = await v$.value.$validate();
         if (!result) {
@@ -78,23 +93,30 @@
         return true;
     }
 
+    const fetchAgreementData = async () => {
 
-    const fetchCategoryData = async () => {
-        await store.dispatch('categories/getCategoryById', {
-            rowId: categoryId.value
-        });
+        await store.dispatch('agreements/getAgreementById', {
+            rowId: AgreementId.value
+            
+        }        );
 
-        const category = store.getters["categories/getCategory"];
+        const agreements = store.getters["categories/getAgreement"];
         try {
-            agreementCategory.value.Description = category.Description,
-                agreementCategory.value.IsActive = category.IsActive ? 1 : 0;
+            agreementData.value.Title = agreements.Title;
+            agreementData.value.Description = agreements.Description;
+            selectedCategory.value = agreements.CategoryAgreementId;
+            categoryName.value = agreements.categoryName;
+                agreementData.value.IsActive = agreements.IsActive ? 1 : 0;
+
         } catch (error) {
             toast.add({
                 severity: 'error',
-                detail: 'Un error ocurrió.',
+                detail: `Un error ocurrió. ${error}`,
                 life: 2000
             });
         }
+        console.log(agreementData.value)
+  
     };
 
     const submitData = async (event) => {
@@ -103,7 +125,7 @@
         if (isValid) {
             if (isValid) {
                 try {
-                    await storeUser();
+                    await storeAgreement();
                     toast.add({
                         severity: 'success',
                         detail: "Sus cambios han sido guardados.",
@@ -125,34 +147,47 @@
     }
 
 
-    onMounted(fetchCategoryData);
+    onMounted(fetchAgreementData);
 </script>
 
 <template>
-
     <div class="main">
         <toast-component />
         <div class="header">
             <div class="form-row">
-                <span class="p-float-label">
-                    <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
-                        v-model="agreementCategory.Description" :class="{'hasError': v$?.Description?.$error}" />
-                    <label for="categoryName">Nombre</label>
-                </span>
-                <span class="p-float-label">
-                    <drop-down v-model="agreementCategory.IsActive" :options="status" optionLabel="name"
-                        optionValue="value" placeholder="Estado" class="dropdown" id="status"
-                        :class="{'hasError': v$?.IsActive?.$error}" />
-                    <label for="status">Estado</label>
-                </span>
+                <div class="p-float-label">
+                <input-text placeholder="Convenio" class=" input-text form-margin-right" id="agreementName" type="text"
+                    v-model="agreementData.Title" :class="{'hasError': v$?.Title?.$error}" />
+                    <label for="agreementName">Convenio</label>
+                </div>
+                    <div class="p-float-label">
+                <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
+                    placeholder="Estado" class="dropdown" id="status" :class="{'hasError': v$?.selectedState?.$error}" />
+                    <label or="status">Estado</label>
+                </div>
+                    <div class="p-float-label">
+                <drop-down v-model="selectedCategory" :options="categoryName" optionLabel="Description"
+                    optionValue="CategoryAgreementId" class="dropdownLarger form-margin-left" id="category"
+                    :class="{'hasError': v$?.CategoryAgreementId?.$error}" />
+                    <label for="category">Categoría</label>
+                </div>
             </div>
+            <div class="form-row">
+                <div class="p-float-label">
+                <Textarea id="description" placeholder="Descripción" v-model="agreementData.Description" rows="5"
+                    cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}" ></Textarea>
+                    <label for="description">Descripción</label>
+                </div>
+            </div>             
+              <div class="form-row">     
+                <input type="file" id="myfile" name="myfile" class="upload-button" @change="handleFileUpload" />
         </div>
-
     </div>
     <div class="actions">
-        <base-button :label="backLabel" @click="categoryList" :type="'button'" />
+        <base-button :label="backLabel" @click="agreementList" :type="'button'" />
         <base-button :label="sendLabel" @click="submitData" :type="'submit'" />
     </div>
+</div>
 </template>
 
 <style scoped="scoped">
@@ -172,7 +207,7 @@
     }
 
     .form-row {
-        margin-top: 6rem;
+        margin-top: 2rem;
         display: flex;
         justify-content: space-between;
         align-self: center;
@@ -193,6 +228,6 @@
         flex: 1;
         align-items: center;
         justify-content: space-between;
-        margin-top: 14rem;
+        margin-top: 8rem;
     }
 </style>

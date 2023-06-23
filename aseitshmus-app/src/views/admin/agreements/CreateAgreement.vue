@@ -56,12 +56,8 @@
     })
 
     const storeAgreement = async () => {
-       // const base64Image = agreementData.value.Image.split(',')[1];
-        //console.log(base64Image)
     const agreement = {
       ...agreementData.value,
-     //Image: base64Image
- 
     };
 
     await store.dispatch('agreements/addAgreement', {
@@ -185,7 +181,6 @@
             </div>             
               <div class="form-row">     
                 <input type="file" id="myfile" name="myfile" class="upload-button" @change="handleFileUpload" />
-
         </div>
     </div>
     <div class="actions">
