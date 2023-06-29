@@ -94,11 +94,10 @@ namespace AseIsthmusAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AgreementDtoIn agreement)
         {
-            var agreementToUpdate = await _service.GetById(id);
+            var agreementToUpdate = await _service.Update(id, agreement);
 
             if (agreementToUpdate is not null)
-            {
-                await _service.Update(id, agreement);
+            {               
                 return NoContent();
             }
             else

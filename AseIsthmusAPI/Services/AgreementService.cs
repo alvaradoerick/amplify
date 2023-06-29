@@ -21,22 +21,18 @@ namespace AseIsthmusAPI.Services
 
         public async Task<AgreementDtoOut?> GetById(int id)
         {
-           var existingAgreement =  await _context.Agreements.Include(c => c.CategoryAgreement).Where(a => a.AgreementId == id).FirstOrDefaultAsync();
-            if (existingAgreement != null)
-            {
-                return new AgreementDtoOut
+            return await _context.Agreements.Where(a => a.AgreementId == id).
+                Select(a => new AgreementDtoOut
                 {
-                    AgreementId = existingAgreement.AgreementId,
-                    Title = existingAgreement.Title,
-                    Description = existingAgreement.Description,
-                    CategoryAgreementId = existingAgreement.CategoryAgreementId,
-                    CategoryName = existingAgreement.CategoryAgreement.Description,
-                    IsActive = existingAgreement.IsActive
-                };
-            }
-
-            return null;
+                    AgreementId = a.AgreementId,
+                    Title = a.Title,
+                    Description = a.Description,
+                    CategoryAgreementId = a.CategoryAgreementId,
+                    CategoryName = a.CategoryAgreement.Description,
+                    IsActive = a.IsActive
+                }).SingleOrDefaultAsync();
         }
+
         public async Task<Agreement> Create(AgreementDtoIn newAgreementDto)
         {
             var agreement = new Agreement
@@ -85,9 +81,10 @@ namespace AseIsthmusAPI.Services
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task Update(int id, AgreementDtoIn agreement)
+        public async Task<Agreement?> Update(int id, AgreementDtoIn agreement)
         {
-            var existingAgreement = await GetById(id);
+            var existingAgreement = await _context.Agreements.FindAsync(id);
+
             if (existingAgreement is not null)
             {
                 existingAgreement.Title = agreement.Title;
@@ -95,8 +92,12 @@ namespace AseIsthmusAPI.Services
                 existingAgreement.Image = agreement.Image;
                 existingAgreement.CategoryAgreementId = agreement.CategoryAgreementId;
                 existingAgreement.IsActive = agreement.IsActive;
+
                 await _context.SaveChangesAsync();
+                return existingAgreement;
             }
+            else return null;
+
         }
     }
 }
