@@ -108,7 +108,7 @@
 <template>
     <div>
         <toast-component />
-        <DataTable :value="categoryData" paginator :rows="3" tableStyle="min-width: 50rem">
+        <DataTable :value="categoryData" paginator :rows="3" tableStyle="min-width: 80rem">
             <Column field="Description" header="Nombre" sortable></Column>
             <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
             <Column header="" style="width: 100px"> <template #body="rowData">

@@ -56,12 +56,8 @@
     })
 
     const storeAgreement = async () => {
-       // const base64Image = agreementData.value.Image.split(',')[1];
-        //console.log(base64Image)
     const agreement = {
       ...agreementData.value,
-     //Image: base64Image
- 
     };
 
     await store.dispatch('agreements/addAgreement', {
@@ -155,8 +151,9 @@
 </script>
 
 <template>
-    <div class="main">
+   <div class="main">
         <toast-component />
+        <div class="form">
         <div class="header">
             <div class="form-row">
                 <div class="p-float-label">
@@ -169,9 +166,9 @@
                     placeholder="Estado" class="dropdown" id="status" :class="{'hasError': v$?.selectedState?.$error}" />
                     <label or="status">Estado</label>
                 </div>
-                    <div class="p-float-label">
+                    <div class="p-float-label form-margin-left">
                 <drop-down v-model="selectedCategory" :options="categories" optionLabel="Description"
-                    optionValue="CategoryAgreementId" class="dropdownLarger form-margin-left" id="category"
+                    optionValue="CategoryAgreementId" class="dropdownLarger " id="category"
                     :class="{'hasError': v$?.CategoryAgreementId?.$error}" />
                     <label for="category">Categoría</label>
                 </div>
@@ -185,44 +182,35 @@
             </div>             
               <div class="form-row">     
                 <input type="file" id="myfile" name="myfile" class="upload-button" @change="handleFileUpload" />
-
         </div>
     </div>
     <div class="actions">
         <base-button :label="backLabel" @click="toReturn" :type="'button'" />
         <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
-    </div>
+    </div> 
+</div>
 </div>
 </template>
 <style scoped="scoped">
     .main {
         display: flex;
-        flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+    margin: 1rem;
+    padding: 2rem;
     }
-
+.form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
     .dropdownLarger {
         display: flex;
         width: 300px;
     }
-
-    .input-text
-     {
-        display: flex;
-        width: 300px;
-    }
-
-    .header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .form-column {
-        display: flex;
-        flex-direction: column;
-        min-height: 10vh;
-    }
-
     .hasError {
         border-color: red;
     }
@@ -232,8 +220,8 @@
         display: flex;
         justify-content: space-between;
         align-self: center;
-        margin-bottom: 1rem;
-        width: 80%;
+        margin-bottom: 2rem;
+        width: 60%;
     }
 
     .form-margin-right {
@@ -245,12 +233,20 @@
     }
 
     .actions {
-        display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 4rem;
-    }
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.actions button {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.actions button:last-child {
+  margin-right: 0;
+}
 
     .upload-button {
         display: flex;

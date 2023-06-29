@@ -64,9 +64,9 @@
     onMounted(fetchUsersData);
 </script>
 
-<template>
-    <div>
-        <DataTable :value="sortedUsersData" paginator :rows="3" tableStyle="min-width: 50rem">
+<template> 
+    <div class="user-list">
+        <DataTable :value="sortedUsersData" paginator :rows="3" tableStyle="min-width: 80rem">
             <Column field="FullName" header="Nombre" sortable></Column>
             <Column field="NumberId" header="Identificación" sortable style="width: 160px"></Column>
             <Column field="WorkStartDate" header="Fecha de ingreso" sortable style="width: 200px"></Column>
@@ -75,15 +75,23 @@
                     <base-button class="action-buttons" label="Ver más" @click="updateUser(rowData)" :type="'button'" />
                 </template></Column>          
         </DataTable>
-    </div>
-    <div class="actions-container">
+        <div class="actions-container">
         <div class="actions">
-            <base-button :label="backLabel" @click="cancel" :type="'button'" />
+            <base-button :label="backLabel" @click="cancel" :type="'button'"  />
         </div>
     </div>
+    </div>
+    
 </template>
 
 <style scoped="scoped">
+
+.user-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
     .action-buttons {
         display: flex;
         overflow: hidden;
@@ -137,14 +145,14 @@
         position: static;
         bottom: 0;
         background-color: #fff;
-        padding: 3rem;
+width: 100%;
+
     }
 
     .actions {
         display: flex;
         flex: 1;
         align-items: center;
-        justify-content: space-between;
-
+        margin-top: 2rem;
     }
 </style>

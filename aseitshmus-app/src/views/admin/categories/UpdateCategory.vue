@@ -54,7 +54,7 @@
             required
         }
     }
-    const storeUser = async () => {
+    const storeCategory = async () => {
         await store.dispatch('categories/updateCategory', {
             categoryId: categoryId.value,
             agreementCategory: agreementCategory.value
@@ -103,7 +103,7 @@
         if (isValid) {
             if (isValid) {
                 try {
-                    await storeUser();
+                    await storeCategory();
                     toast.add({
                         severity: 'success',
                         detail: "Sus cambios han sido guardados.",

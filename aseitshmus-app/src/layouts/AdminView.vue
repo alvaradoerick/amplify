@@ -4,7 +4,7 @@ import AdminNav from '@/components/UI/AdminNav.vue'
 <template>
     <div>
         <admin-nav class="menu"></admin-nav>
-        <base-card class="container2">
+        <base-card class="container">
             <router-view />
         </base-card>
     </div>
@@ -14,37 +14,44 @@ import AdminNav from '@/components/UI/AdminNav.vue'
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: center;
-}
+    align-items: flex-end;
+    width: 100%;
+    margin-top: .5rem;
+    margin-bottom: 4rem;
+  }
 
-.container2 {
+  .container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
 
-html {
+  }
+
+  html {
     height: 100%;
     font-family: "Roboto", sans-serif;
     font-size: 16px;
-}
+  }
 
-h1,
-h2,
-h3 {
+  h1,
+  h2,
+  h3 {
     color: #fab03f;
     flex: auto;
     align-items: center;
-}
+  }
 
-h2 {
+  h2 {
     text-align: center;
-}
+  }
 
+  .input-text {
+    width: 300px;
+    margin-bottom: 20px;
+  }
 
-
-body {
+  body {
     margin: 0;
     padding: 0;
     font-size: 0.9rem;
@@ -53,13 +60,13 @@ body {
     color: #212529;
     text-align: left;
     background-color: white;
-}
+  }
 
 
 
-.center_component {
+  .center_component {
     display: flex;
     justify-items: center;
     justify-content: center;
-}
+  }
 </style>

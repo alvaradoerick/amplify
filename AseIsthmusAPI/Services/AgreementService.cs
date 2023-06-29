@@ -19,10 +19,22 @@ namespace AseIsthmusAPI.Services
             _context = context;
         }
 
+        public async Task<AgreementDtoOut?> GetById(int id)
+        {
+            return await _context.Agreements.Where(a => a.AgreementId == id).
+                Select(a => new AgreementDtoOut
+                {
+                    AgreementId = a.AgreementId,
+                    Title = a.Title,
+                    Description = a.Description,
+                    CategoryAgreementId = a.CategoryAgreementId,
+                    CategoryName = a.CategoryAgreement.Description,
+                    IsActive = a.IsActive
+                }).SingleOrDefaultAsync();
+        }
+
         public async Task<Agreement> Create(AgreementDtoIn newAgreementDto)
         {
-           // byte[]? imageData = string.IsNullOrEmpty(newAgreementDto.Image) ? null : Convert.FromBase64String(newAgreementDto.Image);
-     
             var agreement = new Agreement
                 {
                     Title = newAgreementDto.Title,
@@ -37,7 +49,6 @@ namespace AseIsthmusAPI.Services
 
                 return agreement;
         }
-
         public async Task<IEnumerable<AgreementDtoOut>> GetAll()
         { 
             return await _context.Agreements.Select(a => new AgreementDtoOut
@@ -51,7 +62,6 @@ namespace AseIsthmusAPI.Services
                 IsActive = a.IsActive
             }).ToListAsync();
         }
-
         public async Task<IEnumerable<Agreement>> GetAllActiveAgreements()
         {
             var agreementList =  await _context.Agreements.Where(a => a.IsActive == true).ToListAsync();
@@ -71,7 +81,23 @@ namespace AseIsthmusAPI.Services
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<Agreement?> Update(int id, AgreementDtoIn agreement)
+        {
+            var existingAgreement = await _context.Agreements.FindAsync(id);
 
+            if (existingAgreement is not null)
+            {
+                existingAgreement.Title = agreement.Title;
+                existingAgreement.Description = agreement.Description;
+                existingAgreement.Image = agreement.Image;
+                existingAgreement.CategoryAgreementId = agreement.CategoryAgreementId;
+                existingAgreement.IsActive = agreement.IsActive;
 
+                await _context.SaveChangesAsync();
+                return existingAgreement;
+            }
+            else return null;
+
+        }
     }
 }

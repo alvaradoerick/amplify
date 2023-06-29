@@ -118,10 +118,10 @@
 <template>
     <div>
         <toast-component />
-        <DataTable :value="agreementData"  tableStyle="min-width: 50rem" paginator :rows="3">
+        <DataTable :value="agreementData"  tableStyle="min-width: 80rem" paginator :rows="3">
             <Column field="Title" header="Convenio" sortable></Column>
-            <Column field="CategoryName" header="Categoría" sortable style="width: 200px"></Column>
-            <Column field="IsActive" header="Estado" sortable style="width: 80px"></Column>
+            <Column field="CategoryName" header="Categoría" sortable style="width: 300px"></Column>
+            <Column field="IsActive" header="Estado" sortable style="width: 100px"></Column>
             <Column header="" style="width: 100px"> <template #body="rowData">
                     <base-button class="action-buttons" label="Editar" :type="'button'" @click="updateCategory(rowData)"/>
                 </template></Column>

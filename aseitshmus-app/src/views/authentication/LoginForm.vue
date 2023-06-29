@@ -133,18 +133,21 @@
     }
 </script>
 <template>
-    <div class="center-container">
+    <div class="login-container">
         <toast-component />
-        <div class="container">             
+        <div class="login-form">
+            <h2 class="title">
+                INICIO DE SESIÓN
+            </h2>             
                 <div class="form-row">   
-                    <div class="p-float-label">         
+                    <div class="p-float-label">       
                     <input-text class="input-text " type="email" id="email-address" v-model="formData.EmailAddress"
-                        placeholder="Correo eléctronico" :class="{'hasError': (v$?.EmailAddress?.$error || isInvalidData) }" />  
+                        placeholder="Correo eléctronico" :class="{'hasError': (v$?.EmailAddress?.$error || isInvalidData) }" />
                         <label for="email-address">Correo eléctronico</label>
-                </div>         
+                </div>  
             </div>
                 <div class="form-row">
-                    <div class="p-float-label">
+                    <div class="p-float-label"> 
                     <input-text class="input-text" id="password" :class="{ 'hasError': (v$?.Pw?.$error || isInvalidData) }" type="password" v-model="formData.Pw"
                         autocomplete="formData.Pw" placeholder="Contraseña" />
                         <label for="password">Contraseña</label>
@@ -163,22 +166,26 @@
 </template>
 
 <style scoped>
-    .center-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 50vh;
-    }
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+    margin: 1rem;
+    padding: 2rem;
+}
+.title{
+    margin-bottom: 3rem;
+}
     .hasError  {
     border-color: red;        
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        margin: auto;
     }
 
     .form-row {
@@ -190,6 +197,10 @@
     }
 
     .sign-in {
-        margin-top: 6rem;
+        margin-top: 3rem;
+    }
+    
+    .input-text {
+        width: 100%;
     }
 </style>

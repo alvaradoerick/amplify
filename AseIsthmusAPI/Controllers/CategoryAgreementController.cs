@@ -22,6 +22,7 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
 
+        #region Get
         // [Authorize]
         [HttpGet]
         public async Task<IEnumerable<CategoryAgreement>> Get()
@@ -29,7 +30,7 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAll();
         }
 
-       // [Authorize]
+        // [Authorize]
         [HttpGet("active-categories")]
         public async Task<IEnumerable<CategoryAgreement>> GetAllActiveCategories()
         {
@@ -50,21 +51,26 @@ namespace AseIsthmusAPI.Controllers
             {
                 return categoryAgreement;
             }
-
         }
-        
+
+        #endregion
+
+        #region Create
         // [Authorize]
-        [HttpPost]      
-        public async Task<IActionResult> Create(CategoryAgreement categoryAgreement)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CategoryAgreement categoryAgreement)
         {
             var newCategoryAgreement = await _service.Create(categoryAgreement);
 
             return CreatedAtAction(nameof(GetById), new { id = newCategoryAgreement.CategoryAgreementId }, newCategoryAgreement);
         }
+        #endregion
+
+        #region Update
 
         [HttpPut("{id}")]
-       // [Authorize]
-        public async Task<IActionResult> Update([FromRoute] int id, CategoryAgreement categoryAgreement)
+        // [Authorize]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryAgreement categoryAgreement)
         {
             var categoryAgreementToUpdate = await _service.GetById(id);
 
@@ -78,6 +84,9 @@ namespace AseIsthmusAPI.Controllers
                 return NotFound(new { error = "No se pudo actualizar la categoría." });
             }
         }
+        #endregion
+
+        #region Delete
 
         [HttpDelete("{id}")]
         //[Authorize]
@@ -105,7 +114,6 @@ namespace AseIsthmusAPI.Controllers
                 }
             }
         }
-
+        #endregion
     }
-
 }
