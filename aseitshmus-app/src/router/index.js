@@ -11,9 +11,7 @@ const routes = [{
         path: '',
         name: 'login',
         component: () => import('../views/authentication/LoginForm.vue' /* webpackChunkName: "LoginForm" */ ),
-        meta: {
-          title: 'Inicio de Sesión',
-        }
+        meta: {}
       },
       {
         path: '/register',

@@ -52,7 +52,6 @@
         IsActive: selectedState
     })
 
- 
 
     const rules = {
         Title: {
@@ -68,6 +67,7 @@
             required
         }
     }
+ 
 
     const storeAgreement = async () => {
         await store.dispatch('agreements/updateAgreement', {
@@ -75,6 +75,17 @@
             agreementData: agreementData.value
         })
     }
+
+    const handleFileUpload = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      agreementData.value.Image = e.target.result; 
+    };
+    reader.readAsDataURL(file);
+  }
+    };
 
     const v$ = useVuelidate(rules, agreementData);
     const validateForm = async () => {
@@ -94,19 +105,19 @@
     }
 
     const fetchAgreementData = async () => {
-
         await store.dispatch('agreements/getAgreementById', {
-            rowId: AgreementId.value
-            
-        }        );
+            rowId: AgreementId.value 
+         }        
+         );
 
-        const agreements = store.getters["categories/getAgreement"];
+        const agreements = store.getters["agreements/getAgreement"];
+        console.log(agreements)
         try {
             agreementData.value.Title = agreements.Title;
             agreementData.value.Description = agreements.Description;
             selectedCategory.value = agreements.CategoryAgreementId;
             categoryName.value = agreements.categoryName;
-                agreementData.value.IsActive = agreements.IsActive ? 1 : 0;
+            selectedState.value = agreements.IsActive ? 1 : 0;
 
         } catch (error) {
             toast.add({
@@ -115,7 +126,6 @@
                 life: 2000
             });
         }
-        console.log(agreementData.value)
   
     };
 

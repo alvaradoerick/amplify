@@ -23,11 +23,12 @@
 </script>
 <template>
     <div class="menu">
-        <nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
-            <div class="container">
-                <router-link class="nav-link" to="/"><img src="../../assets/logo.png" alt="Logo" /></router-link>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto">
+        <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="menu collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <router-link class="nav-link" to="/"><img src="../../assets/logo.png" alt="Logo" /></router-link>                    
+                </li>
                         <li class="nav-item">
                             <router-link class="nav-link" :to="{name:'dashboard'}">Principal</router-link>
                         </li>
@@ -54,30 +55,39 @@
                             <router-link class="nav-link" to="/" @click="logout">Salir</router-link>
                         </li>
                     </ul>
-                </div>
-            </div>
+                </div>          
         </nav>
-
     </div>
 </template>
 
 <style scoped>
-li {
-    list-style: none;
-}
+.menu {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+    }
+    
+    li {
+        list-style: none;
+    }
 
+    img {
+        height: 30px;
+        width: 40px;
+        margin-left: 10px
+    }
 
-img {
-    height: 30px;
-    width: 40px;
-    margin-left: 10px
-}
+    a {
+        color: #060123 !important;
+    }
 
-a {
-    color: #253E8B !important;
-}
-
-a:hover {
-    color: #fab03f !important;
-}
+    a:hover {
+        color: #fab03f !important;
+    }
+    
+    .nav-link {
+        text-transform: uppercase;
+        font-family: nunito;
+    }
 </style>

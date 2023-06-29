@@ -124,8 +124,7 @@
                         <label for="email-address">Correo eléctronico</label>
                 </div> 
             </div>
-        </div>
-
+        </div>     
     </div>
     <div class="actions">
         <base-button :label="cancelButton" type="login" @click="loginPage" />
@@ -172,5 +171,6 @@
         flex: 1;
         align-items: center;
         justify-content: space-between;
+        gap: 10%;
     }
 </style>

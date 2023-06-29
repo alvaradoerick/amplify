@@ -217,7 +217,7 @@ const submitData = async (event) => {
             <div class="steps">
                 <stepper :items="items" :active="activeIndex" aria-label="Form Steps" />
             </div>
-            <div>
+            <div class="body">
                 <keep-alive>
                     <PersonalInformation v-if="activeIndex === 1" @personal-info="getDataFromPersonalInfo" 
                      />
@@ -248,13 +248,18 @@ const submitData = async (event) => {
     .register {
         display: flex;
         flex-direction: column;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 2rem;
+        width: 100%;
     }
 
     .header {
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-height: 28vh;
+    }
+    .body {
     }
 
     .actions {
@@ -266,7 +271,7 @@ const submitData = async (event) => {
 
     .steps {
         margin-bottom: 25px;
-        width: 100%;
+        width: 75%;
     }
 
     .hasError  {
