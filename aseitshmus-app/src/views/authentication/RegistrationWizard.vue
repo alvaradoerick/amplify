@@ -259,8 +259,7 @@ const submitData = async (event) => {
         flex-direction: column;
         align-items: center;
     }
-    .body {
-    }
+  
 
     .actions {
         display: flex;

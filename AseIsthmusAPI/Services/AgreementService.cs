@@ -21,17 +21,21 @@ namespace AseIsthmusAPI.Services
 
         public async Task<AgreementDtoOut?> GetById(int id)
         {
-           var existingAGreement =  await _context.Agreements.FindAsync(id);
-            return await _context.Agreements.Select(a => new AgreementDtoOut
+           var existingAgreement =  await _context.Agreements.Include(c => c.CategoryAgreement).Where(a => a.AgreementId == id).FirstOrDefaultAsync();
+            if (existingAgreement != null)
             {
-                AgreementId = a.AgreementId,
-                Title = a.Title,
-                Description = a.Description,
-                Image = a.Image,
-                CategoryAgreementId = a.CategoryAgreementId,
-                CategoryName = a.CategoryAgreement.Description,
-                IsActive = a.IsActive
-            }).FirstOrDefaultAsync();
+                return new AgreementDtoOut
+                {
+                    AgreementId = existingAgreement.AgreementId,
+                    Title = existingAgreement.Title,
+                    Description = existingAgreement.Description,
+                    CategoryAgreementId = existingAgreement.CategoryAgreementId,
+                    CategoryName = existingAgreement.CategoryAgreement.Description,
+                    IsActive = existingAgreement.IsActive
+                };
+            }
+
+            return null;
         }
         public async Task<Agreement> Create(AgreementDtoIn newAgreementDto)
         {
@@ -84,7 +88,6 @@ namespace AseIsthmusAPI.Services
         public async Task Update(int id, AgreementDtoIn agreement)
         {
             var existingAgreement = await GetById(id);
-
             if (existingAgreement is not null)
             {
                 existingAgreement.Title = agreement.Title;
@@ -92,7 +95,6 @@ namespace AseIsthmusAPI.Services
                 existingAgreement.Image = agreement.Image;
                 existingAgreement.CategoryAgreementId = agreement.CategoryAgreementId;
                 existingAgreement.IsActive = agreement.IsActive;
-
                 await _context.SaveChangesAsync();
             }
         }

@@ -41,6 +41,7 @@ export default {
         rootGetters
     },payload) {
         const agreementId = payload.rowId;
+
         const token = rootGetters['auth/getToken'];
         const response = await axios.get(`${apiUrl}/agreement/${agreementId}`, {
             headers: {
@@ -103,7 +104,7 @@ export default {
             const agreement = payload.agreementData;
             const token = rootGetters['auth/getToken'];
             const response = await axios.put(
-                `${apiUrl}/categoryagreement/${agreementId}`,
+                `${apiUrl}/agreement/${agreementId}`,
                 agreement, {
                     headers: {
                         Authorization: `Bearer ${token}`

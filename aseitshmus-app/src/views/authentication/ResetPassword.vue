@@ -110,7 +110,9 @@
 </script>
 
 <template>
+     <div class="password-container">
     <toast-component />
+    <div class="password-form">
     <div style="margin-left: 40px;">
         <p>Por favor ingrese el correo eléctronico con el que está asociada su cuenta.</p>
         <p>Recibirá un correo con su nueva contraseña.</p>
@@ -130,9 +132,28 @@
         <base-button :label="cancelButton" type="login" @click="loginPage" />
         <base-button :label="sendButton" type="submit" @click="resetPassword" />
     </div>
+</div>
+</div>
 </template>
 
 <style scoped>
+
+.password-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+    margin: 1rem;
+    padding: 2rem;
+}
+
+.password-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
     .center-container {
         display: flex;
         justify-content: center;

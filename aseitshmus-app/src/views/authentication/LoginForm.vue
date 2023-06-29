@@ -139,13 +139,19 @@
             <h2 class="title">
                 INICIO DE SESIÓN
             </h2>             
-                <div class="form-row">         
+                <div class="form-row">   
+                    <div class="p-float-label">       
                     <input-text class="input-text " type="email" id="email-address" v-model="formData.EmailAddress"
-                        placeholder="Correo eléctronico" :class="{'hasError': (v$?.EmailAddress?.$error || isInvalidData) }" />  
+                        placeholder="Correo eléctronico" :class="{'hasError': (v$?.EmailAddress?.$error || isInvalidData) }" />
+                        <label for="email-address">Correo eléctronico</label>
+                </div>  
             </div>
                 <div class="form-row">
+                    <div class="p-float-label"> 
                     <input-text class="input-text" id="password" :class="{ 'hasError': (v$?.Pw?.$error || isInvalidData) }" type="password" v-model="formData.Pw"
                         autocomplete="formData.Pw" placeholder="Contraseña" />
+                        <label for="password">Contraseña</label>
+                </div>
                 </div>
                 <div class="form-row sign-in">
                     <base-button :label="labelButton" type="submit" @click="onSend" />
@@ -174,6 +180,9 @@
     border-radius: 5px;
     margin: 1rem;
     padding: 2rem;
+}
+.title{
+    margin-bottom: 3rem;
 }
     .hasError  {
     border-color: red;        

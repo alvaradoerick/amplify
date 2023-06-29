@@ -8,7 +8,7 @@
     } from 'vue-router';
     import {
         ref,
-        onMounted
+        onMounted,computed
     } from 'vue';
     import {
         useToast
@@ -17,16 +17,21 @@
         required
     } from '@vuelidate/validators'
     import useVuelidate from '@vuelidate/core'
+    import Textarea from 'primevue/textarea';
 
     const store = useStore();
     const router = useRouter();
     const route = useRoute();
     const toast = useToast();
+    const {
+        dispatch,
+        getters
+    } = useStore();
 
     const AgreementId = ref(route.params.id);
-    const selectedState = ref();
-    const selectedCategory = ref();
-    const categoryName = ref([]);
+    const selectedState = ref(null);
+    const selectedCategory = ref(null);
+    const categoryName = computed(() => getters['categories/getCategory']);
     const backLabel = 'Cancelar';
     const agreementList = () => {
         router.push({
@@ -143,7 +148,7 @@
                     });
                     await new Promise((resolve) => setTimeout(resolve, 1000));
                     router.push({
-                        name: 'categoryList'
+                        name: 'agrementList'
                     });
                 } catch (error) {
                     toast.add({
@@ -155,14 +160,17 @@
             }
         }
     }
+    onMounted(async () => {
+         fetchAgreementData(),
+        await dispatch('categories/getActiveCategories');     
+    })
 
-
-    onMounted(fetchAgreementData);
 </script>
 
 <template>
     <div class="main">
         <toast-component />
+        <div class="form">
         <div class="header">
             <div class="form-row">
                 <div class="p-float-label">
@@ -175,9 +183,9 @@
                     placeholder="Estado" class="dropdown" id="status" :class="{'hasError': v$?.selectedState?.$error}" />
                     <label or="status">Estado</label>
                 </div>
-                    <div class="p-float-label">
+                    <div class="p-float-label form-margin-left">
                 <drop-down v-model="selectedCategory" :options="categoryName" optionLabel="Description"
-                    optionValue="CategoryAgreementId" class="dropdownLarger form-margin-left" id="category"
+                    optionValue="CategoryAgreementId" class="dropdownLarger" id="category"
                     :class="{'hasError': v$?.CategoryAgreementId?.$error}" />
                     <label for="category">Categoría</label>
                 </div>
@@ -196,22 +204,31 @@
     <div class="actions">
         <base-button :label="backLabel" @click="agreementList" :type="'button'" />
         <base-button :label="sendLabel" @click="submitData" :type="'submit'" />
-    </div>
+    </div> 
+</div>
 </div>
 </template>
 
 <style scoped="scoped">
     .main {
         display: flex;
-        flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+    margin: 1rem;
+    padding: 2rem;
     }
-
-    .header {
+.form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+    .dropdownLarger {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        width: 300px;
     }
-
     .hasError {
         border-color: red;
     }
@@ -234,10 +251,39 @@
     }
 
     .actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.actions button {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.actions button:last-child {
+  margin-right: 0;
+}
+
+    .upload-button {
         display: flex;
-        flex: 1;
+        background-color: #253e8b;
+        border-color: #253e8b;
+        overflow: hidden;
+        width: 300px;
+        color: white;
+        text-align: center;
+        flex-direction: column;
         align-items: center;
-        justify-content: space-between;
-        margin-top: 8rem;
+        justify-content: center;
+    }
+
+
+    .upload-button:hover,
+    .upload-button:focus {
+        box-shadow: 0 0 0 2px white, 0 0 0 3px skyblue;
+        color: white;
+        background-color: #3f569b !important;
     }
 </style>

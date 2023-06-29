@@ -35,7 +35,6 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAllActiveAgreements();
         }
 
-
         //[Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<AgreementDtoOut>> GetById([FromRoute] int id)
