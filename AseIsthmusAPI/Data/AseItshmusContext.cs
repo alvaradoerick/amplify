@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace AseIsthmusAPI.Data;
@@ -76,7 +77,7 @@ public partial class AseItshmusContext : DbContext
         {
             entity.Property(e => e.BeneficiaryName).HasMaxLength(40);
             entity.Property(e => e.BeneficiaryNumberId).HasMaxLength(12);
-            entity.Property(e => e.BeneficiaryPercentage).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.BeneficiaryPercentage).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.BeneficiaryRelation).HasMaxLength(20);
             entity.Property(e => e.PersonId).HasMaxLength(12);
 

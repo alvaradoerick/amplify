@@ -1,81 +1,81 @@
 import axios from "axios";
 
-
 const apiUrl = process.env["VUE_APP_BASED_URL"]
 
 export default {
 
-    async getAllCategories({
+    async getAllTypes({
         commit,
         rootGetters
     }) {
         const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/categoryagreement`, {
+        const response = await axios.get(`${apiUrl}/LoansType`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-        const categoryData = response.data;
-        commit('setCategory', categoryData);
-        return categoryData;
+        const typeData = response.data;
+        commit('setType', typeData);
+        return typeData;
     },
 
-    async getActiveCategories({
+    async getActiveTypes({
         commit,
         rootGetters
     }) {
         const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/categoryagreement/active-categories`, {
+        const response = await axios.get(`${apiUrl}/LoansType/active-categories`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-        const categoryData = response.data;
-        commit('setCategory', categoryData);
-        return categoryData;
+        const typeData = response.data;
+        commit('setType', typeData);
+        return typeData;
     },
 
-    async getCategoryById({
+    async getTypeById({
         commit,
         rootGetters
-    },payload) {
-        const categoryId = payload.rowId;
+    }, payload) {
+        const typeId = payload.rowId;
         const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/categoryagreement/${categoryId}`, {
+        const response = await axios.get(`${apiUrl}/LoansType/${typeId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-        const categoryData = response.data;
-        commit('setCategory', categoryData);
-        return categoryData;
+        const typeData = response.data;
+        commit('setType', typeData);
+        return typeData;
     },
 
     //Post
-    async addCategory({
+    async addType({
         rootGetters
     }, payload) {
         const token = rootGetters['auth/getToken'];
-            const response = await axios.post(
-                `${apiUrl}/categoryagreement`,
-                payload.agreementCategory, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+        const response = await axios.post(
+            `${apiUrl}/LoansType`,
+            payload.loanType, {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            )
-            return response;
+            }
+        )
+        return response;
     },
 
     //Delete
-    async deleteCategory({
-        commit,rootGetters
+    async deleteType({
+        commit,
+        rootGetters
     }, payload) {
         try {
             const token = rootGetters['auth/getToken'];
-            const categoryId = payload.rowId;
+            const typeId = payload.rowId;
             const response = await axios.delete(
-                `${apiUrl}/categoryagreement/${categoryId}`,{
+                `${apiUrl}/LoansType/${typeId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -89,16 +89,17 @@ export default {
     },
 
     //Put or Patch
-    async updateCategory({
-        rootGetters,commit
+    async updateType({
+        rootGetters,
+        commit
     }, payload) {
         try {
-            const categoryId = payload.categoryId;
-            const agreementCategory = payload.agreementCategory;
+            const typeId = payload.typeId;
+            const loanType = payload.loanType;
             const token = rootGetters['auth/getToken'];
             const response = await axios.put(
-                `${apiUrl}/categoryagreement/${categoryId}`,
-                agreementCategory, {
+                `${apiUrl}/LoansType/${typeId}`,
+                loanType, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -110,5 +111,4 @@ export default {
             commit('setErrorResponse', errorMessage);
         }
     },
-
 };

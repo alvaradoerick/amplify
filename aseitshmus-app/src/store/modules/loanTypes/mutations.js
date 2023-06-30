@@ -7,8 +7,7 @@ export default {
         state.errorResponse = null;
     },
 
-    setCategory(state, categories) {
-        state.categories = categories;
+    setType(state, types) {
+        state.types = types;
     },
-
 }
