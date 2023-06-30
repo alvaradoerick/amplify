@@ -134,18 +134,18 @@
         <div class="form">
             <div>
                 <div class="form-row">
-                    <span class="p-float-label">
+                    <div class="p-float-label">
                         <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName"
                             type="text" v-model="agreementCategory.Description"
                             :class="{'hasError': v$?.Description?.$error}" />
                         <label for="categoryName">Nombre</label>
-                    </span>
-                    <span class="p-float-label">
+                    </div>
+                    <div class="p-float-label">
                         <drop-down v-model="agreementCategory.IsActive" :options="status" optionLabel="name"
                             optionValue="value" placeholder="Estado" class="dropdown" id="status"
                             :class="{'hasError': v$?.IsActive?.$error}" />
                         <label for="status">Estado</label>
-                    </span>
+                    </div>
                 </div>
             </div>
             <div class="actions">

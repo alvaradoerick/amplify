@@ -2,6 +2,7 @@
     import {
         useStore
     } from 'vuex'
+    import axios from "axios";
     import {
         useRouter,
         useRoute
@@ -17,15 +18,18 @@
         required
     } from '@vuelidate/validators'
     import useVuelidate from '@vuelidate/core'
+    const apiUrl = process.env["VUE_APP_BASED_URL"]
 
-    const store = useStore();
+    
+
+
     const router = useRouter();
     const route = useRoute();
     const toast = useToast();
-
+    const store = useStore();
 
     const backLabel = 'Cancelar';
-    const typeyList = () => {
+    const typeList = () => {
         router.push({
             name: "typeList"
         });
@@ -40,16 +44,33 @@
             value: 0
         }
     ]);
+    
+    const contributionName = ref(null)
+
+    const fetchContributionData = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/contributionusage`);
+            contributionName.value = response.data;
+        } catch (error) {
+            toast.add({
+                severity: 'error',
+                detail: error,
+                life: 2000
+            });
+        }
+    };
+    const selectedContribution = ref(null);
 
     const loanType = ref({
         Description: null,
-        ContributionUsageId:null,
+        ContributionUsageId: selectedContribution,
         PercentageEmployeeCont:null,
         PercentageEmployerCont: null,
         Term: null,
         InterestRate: null,
         IsActive: null
     })
+    
     const typeId = ref(route.params.id);
     const rules = {
         Description: {
@@ -104,7 +125,7 @@
         const type = store.getters["loanTypes/getType"];
         try {
             loanType.value.Description = type.LoanDescription,
-            loanType.value.ContributionUsageId = type.ContributionUsageId,
+            selectedContribution.value = type.ContributionUsageId,
             loanType.value.PercentageEmployeeCont = type.PercentageEmployeeCont,
             loanType.value.PercentageEmployerCont = type.PercentageEmployerCont,
             loanType.value.Term = type.Term,
@@ -132,7 +153,7 @@
                         life: 2000
                     });
                     await new Promise((resolve) => setTimeout(resolve, 1000));
-                    typeyList()
+                    typeList()
                 } catch (error) {
                     toast.add({
                         severity: 'error',
@@ -145,52 +166,98 @@
     }
 
 
-    onMounted(fetchTypeData);
+    onMounted(fetchTypeData(), fetchContributionData());
 </script>
 
 <template>
 
-    <div class="main">
+<div class="main">
         <toast-component />
-        <div class="header">
+        <div class="form">
+            <div>
             <div class="form-row">
-                <span class="p-float-label">
+                <div class="p-float-label">
                     <input-text placeholder="Tipo de préstamo" class=" input-text form-margin-right" id="typeName" type="text"
                         v-model="loanType.Description" :class="{'hasError': v$?.Description?.$error}" />
                     <label for="typeName">Tipo de préstamo</label>
-                </span>
-                <span class="p-float-label">
+                </div>
+                
+                <div class="p-float-label">
+                    <input-text placeholder="Interés" class=" input-text" id="interest-rate" type="text"
+                        v-model="loanType.InterestRate" :class="{'hasError': v$?.InterestRate?.$error}" />
+                    <label for="interest-rate">Interés</label>
+                </div>
+               
+                <div class="p-float-label form-margin-left">
                     <drop-down v-model="loanType.IsActive" :options="status" optionLabel="name"
                         optionValue="value" placeholder="Estado" class="dropdown" id="status"
                         :class="{'hasError': v$?.IsActive?.$error}" />
                     <label for="status">Estado</label>
-                </span>
+                </div>
+                </div>
+                <div class="form-row">
+                    <div class="p-float-label form-margin-right">
+                <drop-down v-model="selectedContribution" :options="contributionName" optionLabel="Description"
+                    optionValue="ContributionUsageId" class="dropdownLarger" id="contributionUsage"
+                    :class="{'hasError': v$?.selectedContribution?.$error}" />
+                    <label for="contributionUsage">Capacidad</label>
+                </div>
+                <div class="p-float-label">
+                    <input-text placeholder="Porcentaje ahorro obrero" class=" input-text" id="percentage-employee" type="text"
+                        v-model="loanType.PercentageEmployeeCont " :class="{'hasError': v$?.PercentageEmployeeCont?.$error}" />
+                    <label for="percentage-employee">Porcentaje ahorro obrero</label>
+                </div>
+                <div class="p-float-label form-margin-left"  v-if="selectedContribution == '2'">
+                    <input-text placeholder="Porcentaje ahorro patronal" class=" input-text" id="percentage-employer " type="text"
+                        v-model="loanType.PercentageEmployerCont " :class="{'hasError': v$?.PercentageEmployerCont?.$error}" />
+                    <label for="percentage-employer ">Porcentaje ahorro patronal</label>
+                </div>
+                <div class="p-float-label form-margin-left" v-if="selectedContribution == '1'">
+                    <input-text placeholder="Plazo" class=" input-text" id="term" type="text"
+                        v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
+                    <label for="term">Plazo</label>
+                </div>
             </div>
-        </div>
-
-    </div>
+            <div class="form-row" v-if="selectedContribution == '2'">
+                <div class="p-float-label form-margin-right">
+                    <input-text placeholder="Plazo" class=" input-text" id="term" type="text"
+                        v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
+                    <label for="term">Plazo</label>
+                </div>
+            </div>
+        </div>   
     <div class="actions">
-        <base-button :label="backLabel" @click="typeyList" :type="'button'" />
-        <base-button :label="sendLabel" @click="submitData" :type="'submit'" />
+        <base-button :label="backLabel" small @click="typeList" :type="'button'" />
+        <base-button :label="sendLabel" small @click="submitData" :type="'submit'" />
     </div>
+</div>
+</div>
 </template>
 
 <style scoped="scoped">
-    .main {
+.main {
         display: flex;
-        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ebebeb;
+        border-radius: 5px;
+        margin: 1rem;
+        padding: 2rem;
     }
 
-    .header {
+    .form {
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
-
     .hasError {
         border-color: red;
     }
-
+    .dropdownLarger {
+        display: flex;
+        width: 300px;
+    }
     .form-row {
         margin-top: 6rem;
         display: flex;
