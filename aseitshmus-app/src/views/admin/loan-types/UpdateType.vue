@@ -62,7 +62,7 @@
     const selectedContribution = ref(null);
 
     const loanType = ref({
-        Description: null,
+        LoanDescription: null,
         ContributionUsageId: selectedContribution,
         PercentageEmployeeCont:null,
         PercentageEmployerCont: null,
@@ -73,7 +73,7 @@
     
     const typeId = ref(route.params.id);
     const rules = {
-        Description: {
+        LoanDescription: {
             required
         },
         ContributionUsageId: {
@@ -124,7 +124,7 @@
 
         const type = store.getters["loanTypes/getType"];
         try {
-            loanType.value.Description = type.LoanDescription,
+            loanType.value.LoanDescription = type.LoanDescription,
             selectedContribution.value = type.ContributionUsageId,
             loanType.value.PercentageEmployeeCont = type.PercentageEmployeeCont,
             loanType.value.PercentageEmployerCont = type.PercentageEmployerCont,
@@ -178,7 +178,7 @@
             <div class="form-row">
                 <div class="p-float-label">
                     <input-text placeholder="Tipo de préstamo" class=" input-text form-margin-right" id="typeName" type="text"
-                        v-model="loanType.Description" :class="{'hasError': v$?.Description?.$error}" />
+                        v-model="loanType.LoanDescription" :class="{'hasError': v$?.LoanDescription?.$error}" />
                     <label for="typeName">Tipo de préstamo</label>
                 </div>
                 
@@ -186,6 +186,7 @@
                     <input-text placeholder="Interés" class=" input-text" id="interest-rate" type="text"
                         v-model="loanType.InterestRate" :class="{'hasError': v$?.InterestRate?.$error}" />
                     <label for="interest-rate">Interés</label>
+                    <span class="percentage-sign">%</span>
                 </div>
                
                 <div class="p-float-label form-margin-left">
@@ -206,23 +207,25 @@
                     <input-text placeholder="Porcentaje ahorro obrero" class=" input-text" id="percentage-employee" type="text"
                         v-model="loanType.PercentageEmployeeCont " :class="{'hasError': v$?.PercentageEmployeeCont?.$error}" />
                     <label for="percentage-employee">Porcentaje ahorro obrero</label>
+                    <span class="percentage-sign">%</span>
                 </div>
                 <div class="p-float-label form-margin-left"  v-if="selectedContribution == '2'">
                     <input-text placeholder="Porcentaje ahorro patronal" class=" input-text" id="percentage-employer " type="text"
                         v-model="loanType.PercentageEmployerCont " :class="{'hasError': v$?.PercentageEmployerCont?.$error}" />
                     <label for="percentage-employer ">Porcentaje ahorro patronal</label>
+                    <span class="percentage-sign">%</span>
                 </div>
                 <div class="p-float-label form-margin-left" v-if="selectedContribution == '1'">
                     <input-text placeholder="Plazo" class=" input-text" id="term" type="text"
                         v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
-                    <label for="term">Plazo</label>
+                    <label for="term">Plazo (meses)</label>
                 </div>
             </div>
             <div class="form-row" v-if="selectedContribution == '2'">
                 <div class="p-float-label form-margin-right">
                     <input-text placeholder="Plazo" class=" input-text" id="term" type="text"
                         v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
-                    <label for="term">Plazo</label>
+                    <label for="term">Plazo (meses)</label>
                 </div>
             </div>
         </div>   
@@ -286,5 +289,12 @@
     .actions button {
         flex: 1;
         margin-right: 1rem;
+    }
+
+    .percentage-sign {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
     }
 </style>
