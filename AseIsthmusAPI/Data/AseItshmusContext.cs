@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace AseIsthmusAPI.Data;
