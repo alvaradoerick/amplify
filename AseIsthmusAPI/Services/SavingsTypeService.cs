@@ -28,12 +28,12 @@ namespace AseIsthmusAPI.Services
 
             return activeTypes;
         }
-        public async Task<SavingsType> Create(SavingsType newSavignsType)
+        public async Task<SavingsType> Create(SavingsType newSavingsType)
         {
-            _context.SavingsTypes.Add(newSavignsType);
+            _context.SavingsTypes.Add(newSavingsType);
             await _context.SaveChangesAsync();
 
-            return newSavignsType;
+            return newSavingsType;
         }
         public async Task Update(int id, SavingsType savingsType)
         {
