@@ -129,42 +129,54 @@
 </script>
 
 <template>
-
     <div class="main">
         <toast-component />
-        <div class="header">
-            <div class="form-row">
-                <span class="p-float-label">
-                    <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
-                        v-model="agreementCategory.Description" :class="{'hasError': v$?.Description?.$error}" />
-                    <label for="categoryName">Nombre</label>
-                </span>
-                <span class="p-float-label">
-                    <drop-down v-model="agreementCategory.IsActive" :options="status" optionLabel="name"
-                        optionValue="value" placeholder="Estado" class="dropdown" id="status"
-                        :class="{'hasError': v$?.IsActive?.$error}" />
-                    <label for="status">Estado</label>
-                </span>
+        <div class="form">
+            <div>
+                <div class="form-row">
+                    <span class="p-float-label">
+                        <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName"
+                            type="text" v-model="agreementCategory.Description"
+                            :class="{'hasError': v$?.Description?.$error}" />
+                        <label for="categoryName">Nombre</label>
+                    </span>
+                    <span class="p-float-label">
+                        <drop-down v-model="agreementCategory.IsActive" :options="status" optionLabel="name"
+                            optionValue="value" placeholder="Estado" class="dropdown" id="status"
+                            :class="{'hasError': v$?.IsActive?.$error}" />
+                        <label for="status">Estado</label>
+                    </span>
+                </div>
+            </div>
+            <div class="actions">
+                <base-button :label="backLabel" :small="true" @click="categoryList" :type="'button'" />
+                <base-button :label="sendLabel" :small="true" @click="submitData" :type="'submit'" />
             </div>
         </div>
-
-    </div>
-    <div class="actions">
-        <base-button :label="backLabel" @click="categoryList" :type="'button'" />
-        <base-button :label="sendLabel" @click="submitData" :type="'submit'" />
     </div>
 </template>
 
-<style scoped="scoped">
+<style scoped>
     .main {
         display: flex;
-        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ebebeb;
+        border-radius: 5px;
+        margin: 1rem;
+        padding: 2rem;
     }
 
-    .header {
+    .form {
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
+    }
+
+    .dropdownLarger {
+        display: flex;
+        width: 300px;
     }
 
     .hasError {
@@ -172,7 +184,7 @@
     }
 
     .form-row {
-        margin-top: 6rem;
+        margin-top: 2rem;
         display: flex;
         justify-content: space-between;
         align-self: center;
@@ -189,10 +201,15 @@
     }
 
     .actions {
+        margin-top: 2rem;
         display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+    }
+
+    .actions button {
         flex: 1;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 14rem;
+        margin-right: 1rem;
     }
 </style>

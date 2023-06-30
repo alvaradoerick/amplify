@@ -25,7 +25,7 @@
 
 
     const backLabel = 'Cancelar';
-    const typeList = () => {
+    const typeyList = () => {
         router.push({
             name: "typeList"
         });
@@ -43,6 +43,11 @@
 
     const loanType = ref({
         Description: null,
+        ContributionUsageId:null,
+        PercentageEmployeeCont:null,
+        PercentageEmployerCont: null,
+        Term: null,
+        InterestRate: null,
         IsActive: null
     })
     const typeId = ref(route.params.id);
@@ -50,12 +55,25 @@
         Description: {
             required
         },
+        ContributionUsageId: {
+            required
+        },
+        PercentageEmployeeCont: {
+            required
+        },
+        Term: {
+            required
+        },
+        InterestRate: {
+            required
+        },
         IsActive: {
             required
         }
     }
-    const storeCategory = async () => {
-        await store.dispatch('categories/updateCategory', {
+
+    const storeType = async () => {
+        await store.dispatch('loanTypes/updateType', {
             typeId: typeId.value,
             loanType: loanType.value
         })
@@ -71,7 +89,6 @@
                     detail: 'Por favor revisar los campos en rojo.',
                     life: 2000
                 });
-
             }
             return false
         }
@@ -79,19 +96,24 @@
     }
 
 
-    const fetchCategoryData = async () => {
-        await store.dispatch('categories/getCategoryById', {
+    const fetchTypeData = async () => {
+        await store.dispatch('loanTypes/getTypeById', {
             rowId: typeId.value
         });
 
-        const category = store.getters["categories/getCategory"];
+        const type = store.getters["loanTypes/getType"];
         try {
-            loanType.value.Description = category.Description,
-            loanType.value.IsActive = category.IsActive ? 1 : 0;
+            loanType.value.Description = type.LoanDescription,
+            loanType.value.ContributionUsageId = type.ContributionUsageId,
+            loanType.value.PercentageEmployeeCont = type.PercentageEmployeeCont,
+            loanType.value.PercentageEmployerCont = type.PercentageEmployerCont,
+            loanType.value.Term = type.Term,
+            loanType.value.InterestRate = type.InterestRate,
+            loanType.value.IsActive = type.IsActive ? 1 : 0;
         } catch (error) {
             toast.add({
                 severity: 'error',
-                detail: 'Un error ocurrió.',
+                detail: error,
                 life: 2000
             });
         }
@@ -103,20 +125,18 @@
         if (isValid) {
             if (isValid) {
                 try {
-                    await storeCategory();
+                    await storeType();
                     toast.add({
                         severity: 'success',
                         detail: "Sus cambios han sido guardados.",
                         life: 2000
                     });
                     await new Promise((resolve) => setTimeout(resolve, 1000));
-                    router.push({
-                        name: 'categoryList'
-                    });
+                    typeyList()
                 } catch (error) {
                     toast.add({
                         severity: 'error',
-                        detail: 'Un error ocurrió.',
+                        detail: error,
                         life: 2000
                     });
                 }
@@ -125,7 +145,7 @@
     }
 
 
-    onMounted(fetchCategoryData);
+    onMounted(fetchTypeData);
 </script>
 
 <template>
@@ -135,12 +155,12 @@
         <div class="header">
             <div class="form-row">
                 <span class="p-float-label">
-                    <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
-                        v-model="agreementCategory.Description" :class="{'hasError': v$?.Description?.$error}" />
-                    <label for="categoryName">Nombre</label>
+                    <input-text placeholder="Tipo de préstamo" class=" input-text form-margin-right" id="typeName" type="text"
+                        v-model="loanType.Description" :class="{'hasError': v$?.Description?.$error}" />
+                    <label for="typeName">Tipo de préstamo</label>
                 </span>
                 <span class="p-float-label">
-                    <drop-down v-model="agreementCategory.IsActive" :options="status" optionLabel="name"
+                    <drop-down v-model="loanType.IsActive" :options="status" optionLabel="name"
                         optionValue="value" placeholder="Estado" class="dropdown" id="status"
                         :class="{'hasError': v$?.IsActive?.$error}" />
                     <label for="status">Estado</label>
@@ -150,7 +170,7 @@
 
     </div>
     <div class="actions">
-        <base-button :label="backLabel" @click="typeList" :type="'button'" />
+        <base-button :label="backLabel" @click="typeyList" :type="'button'" />
         <base-button :label="sendLabel" @click="submitData" :type="'submit'" />
     </div>
 </template>
@@ -189,10 +209,15 @@
     }
 
     .actions {
+        margin-top: 2rem;
         display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+    }
+
+    .actions button {
         flex: 1;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 14rem;
+        margin-right: 1rem;
     }
 </style>

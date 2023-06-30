@@ -185,13 +185,13 @@
         </div>
     </div>
     <div class="actions">
-        <base-button :label="backLabel" @click="toReturn" :type="'button'" />
-        <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
+        <base-button :label="backLabel" @click="toReturn" :small="true" :type="'button'" />
+        <base-button :label="sendLabel" @click="onSend" :small="true" :type="'submit'" />
     </div> 
 </div>
 </div>
 </template>
-<style scoped="scoped">
+<style scoped>
     .main {
         display: flex;
     justify-content: center;
@@ -233,20 +233,17 @@
     }
 
     .actions {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+    }
 
-.actions button {
-  flex: 1;
-  margin-right: 1rem;
-}
-
-.actions button:last-child {
-  margin-right: 0;
-}
+    .actions button {
+        flex: 1;
+        margin-right: 1rem;
+    }
 
     .upload-button {
         display: flex;

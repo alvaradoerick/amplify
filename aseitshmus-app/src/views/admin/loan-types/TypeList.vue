@@ -110,6 +110,7 @@
     <div class="category-list">
         <DataTable :value="typeData" paginator :rows="3" tableStyle="min-width: 80rem">
             <Column field="Description" header="Tipo de préstamo" sortable></Column>
+            <Column field="Term" header="Plazo (meses)" sortable></Column>
             <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
             <Column header="" style="width: 100px"> <template #body="rowData">
                     <base-button class="action-buttons" label="Editar" @click="updateRecord(rowData)"

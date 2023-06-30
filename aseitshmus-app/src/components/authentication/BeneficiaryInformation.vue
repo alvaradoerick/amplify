@@ -39,7 +39,7 @@
 <template>
     <div class="container">
         <div class="header">
-            <base-button :label="'+'" small class="buttons" @click="addRow" :type="'button'" />
+            <base-button :label="'+'" style="width:3rem" class="buttons" @click="addRow" :type="'button'" />
         </div>
         <div class="body">
             <div v-for="(beneficiary, index) in beneficiaryInfo" :key="index" class="form-row">
@@ -67,7 +67,7 @@
                     </input-text>
                     <label for="beneficiary-percentage">Porcentaje</label>
                 </div>
-                <base-button :label="'-'" small class="buttons" v-if="showRemoveButton" @click="removeRow(index)"
+                <base-button :label="'-'" style="width:3rem" class="buttons" v-if="showRemoveButton" @click="removeRow(index)"
                     :type="'button'" />
             </div>
         </div>

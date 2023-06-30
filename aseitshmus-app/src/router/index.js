@@ -189,9 +189,9 @@ const routes = [{
         path: '/loan-types',
         name: 'loanTypes',
         children: [{
-            path: '/',
+            path: '/all-loan-types',
             name: 'typeList',
-            component: () => import('../views/admin/credits/type/TypeList.vue' /* webpackChunkName: "TypeList" */ ),
+            component: () => import('../views/admin/loan-types/TypeList.vue' /* webpackChunkName: "TypeList" */ ),
             meta: {
               title: ' Tipos de Préstamo',
             }
@@ -199,16 +199,16 @@ const routes = [{
           {
             path: '/create-type',
             name: 'createType',
-            component: () => import('../views/admin/credits/type/CreateType.vue' /* webpackChunkName: "CreateType" */ ),
+            component: () => import('../views/admin/loan-types/CreateType.vue' /* webpackChunkName: "CreateType" */ ),
             props: true,
             meta: {
               title: 'Crear Tipo de Préstamo',
             }
           },
           {
-            path: '/update-category/:id',
-            name: 'updateCategory',
-            component: () => import('../views/admin/credits/type/UpdateType.vue' /* webpackChunkName: "UpdateType" */ ),
+            path: '/update-type/:id',
+            name: 'updateType',
+            component: () => import('../views/admin/loan-types/UpdateType.vue' /* webpackChunkName: "UpdateType" */ ),
             meta: {
               title: 'Actualizar Tipo de Préstamo',
             }

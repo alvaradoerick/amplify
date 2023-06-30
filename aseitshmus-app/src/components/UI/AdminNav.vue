@@ -15,10 +15,8 @@ const subMenuStates = {
 };
 
 const showSubMenu = (subMenu) => {
-  // Hide all sub-menus first
   hideAllSubMenus();
   
-  // Show the specified sub-menu
   subMenuStates[subMenu].value = true;
 };
 

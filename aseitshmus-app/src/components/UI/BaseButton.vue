@@ -28,7 +28,7 @@
 </script>
 
 <template>
-    <Button class="buttons" :style="small ? 'width:3rem' : ''" :label=label :type=type @click.prevent="send"></Button>
+    <Button class="buttons" :style="small ? 'width:8rem' : ''" :label=label :type=type @click.prevent="send"></Button>
 </template>
 
 <style scoped>

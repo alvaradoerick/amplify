@@ -37,7 +37,7 @@ namespace AseIsthmusAPI.Controllers
         {
             if (beneficiaries == null || beneficiaries.Count == 0)
             {
-                return BadRequest("No beneficiaries provided.");
+                return BadRequest("No se pudo procesar su solicitud.");
             }
             try
             {
@@ -45,7 +45,7 @@ namespace AseIsthmusAPI.Controllers
                 {
                     var newUser = await _service.Create(id, beneficiary);
                 }
-                return Ok("Beneficiaries added successfully.");
+                return Ok("Los beneficiarios fueron agregados correctamente.");
             }
             catch (Exception ex)
             {

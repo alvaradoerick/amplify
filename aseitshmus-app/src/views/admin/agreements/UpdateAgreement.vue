@@ -251,20 +251,17 @@
     }
 
     .actions {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+    }
 
-.actions button {
-  flex: 1;
-  margin-right: 1rem;
-}
-
-.actions button:last-child {
-  margin-right: 0;
-}
+    .actions button {
+        flex: 1;
+        margin-right: 1rem;
+    }
 
     .upload-button {
         display: flex;
