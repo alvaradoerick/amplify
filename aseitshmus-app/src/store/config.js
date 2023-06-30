@@ -3,6 +3,7 @@ import users from "./modules/users";
 import agreements from "./modules/agreements";
 import beneficiaries from "./modules/beneficiaries";
 import categories from "./modules/categories";
+import loanTypes from "./modules/loanTypes";
 
 export default {
     namespaced: true,
@@ -13,6 +14,7 @@ export default {
         agreements,
         beneficiaries,
         categories,
+        loanTypes,
 
     },
 

@@ -45,31 +45,31 @@ const routes = [{
           title: 'Resumen de Cuenta',
         },
       },
-        {
-          path: '',
-          name: 'myProfile',
-          component: () => import('../views/user/MyProfile.vue' /* webpackChunkName: "MyProfile" */ ),
-          meta: {
-            title: 'Mi Perfíl',
-          }
+      {
+        path: '',
+        name: 'myProfile',
+        component: () => import('../views/user/MyProfile.vue' /* webpackChunkName: "MyProfile" */ ),
+        meta: {
+          title: 'Mi Perfíl',
+        }
       },
       //agreements
       {
         path: '/agreements',
         name: 'allAgreements',
         component: () => import('../views/agreements/AllAgreements.vue' /* webpackChunkName: "AllAgreements" */ ),
-          meta: {
-            title: 'Convenios Activos',
-          }
+        meta: {
+          title: 'Convenios Activos',
+        }
       },
 
-          {
-            path: '/password',
-            name: 'changePassword',
-            component: () => import('../views/user/ResetPassword.vue' /* webpackChunkName: "ResetPassword" */ ),
-            meta: {
-              title: 'Cambiar Contraseña',
-            }
+      {
+        path: '/password',
+        name: 'changePassword',
+        component: () => import('../views/user/ResetPassword.vue' /* webpackChunkName: "ResetPassword" */ ),
+        meta: {
+          title: 'Cambiar Contraseña',
+        }
 
       }
     ]
@@ -117,7 +117,7 @@ const routes = [{
             component: () => import('../views/admin/agreements/UpdateAgreement.vue' /* webpackChunkName: "UpdateAgreement" */ ),
             meta: {
               title: 'Editar Convenio',
-              authentication: true 
+              authentication: true
             }
           },
 
@@ -180,6 +180,37 @@ const routes = [{
             component: () => import('../views/admin/users/UpdateBeneficiaries.vue' /* webpackChunkName: "UpdateBeneficiaries" */ ),
             meta: {
               title: 'Actualizar Beneficiarios',
+            }
+          },
+        ]
+      },
+      //loan types
+      {
+        path: '/loan-types',
+        name: 'loanTypes',
+        children: [{
+            path: '/',
+            name: 'typeList',
+            component: () => import('../views/admin/credits/type/TypeList.vue' /* webpackChunkName: "TypeList" */ ),
+            meta: {
+              title: ' Tipos de Préstamo',
+            }
+          },
+          {
+            path: '/create-type',
+            name: 'createType',
+            component: () => import('../views/admin/credits/type/CreateType.vue' /* webpackChunkName: "CreateType" */ ),
+            props: true,
+            meta: {
+              title: 'Crear Tipo de Préstamo',
+            }
+          },
+          {
+            path: '/update-category/:id',
+            name: 'updateCategory',
+            component: () => import('../views/admin/credits/type/UpdateType.vue' /* webpackChunkName: "UpdateType" */ ),
+            meta: {
+              title: 'Actualizar Tipo de Préstamo',
             }
           },
         ]

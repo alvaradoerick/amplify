@@ -3,7 +3,8 @@
     import Column from 'primevue/column';
     import {
         ref,
-        onMounted,computed
+        onMounted,
+        computed
     } from 'vue';
     import {
         useStore
@@ -35,15 +36,15 @@
         });
     };
 
-  
+
     const sortedUsersData = computed(() => {
-    return [...usersData.value].sort((a, b) => {
-      if (a.IsActive === b.IsActive) {
-        return new Date(a.WorkStartDate) - new Date(b.WorkStartDate);
-      }
-      return a.IsActive === 'Inactivo' ? -1 : 1;
+        return [...usersData.value].sort((a, b) => {
+            if (a.IsActive === b.IsActive) {
+                return new Date(a.WorkStartDate) - new Date(b.WorkStartDate);
+            }
+            return a.IsActive === 'Inactivo' ? -1 : 1;
+        });
     });
-  });
 
 
     const cancel = () => {
@@ -64,7 +65,7 @@
     onMounted(fetchUsersData);
 </script>
 
-<template> 
+<template>
     <div class="user-list">
         <DataTable :value="sortedUsersData" paginator :rows="3" tableStyle="min-width: 80rem">
             <Column field="FullName" header="Nombre" sortable></Column>
@@ -73,25 +74,24 @@
             <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
             <Column header="" style="width: 100px"> <template #body="rowData">
                     <base-button class="action-buttons" label="Ver más" @click="updateUser(rowData)" :type="'button'" />
-                </template></Column>          
+                </template></Column>
         </DataTable>
         <div class="actions-container">
-        <div class="actions">
-            <base-button :label="backLabel" @click="cancel" :type="'button'"  />
+            <div class="actions">
+                <base-button :label="backLabel" @click="cancel" :type="'button'" />
+            </div>
         </div>
     </div>
-    </div>
-    
 </template>
 
 <style scoped="scoped">
+    .user-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
 
-.user-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
     .action-buttons {
         display: flex;
         overflow: hidden;
@@ -103,52 +103,12 @@
         justify-content: center;
     }
 
-    .main {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .header {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .form-column {
-        display: flex;
-        flex-direction: column;
-        min-height: 10vh;
-    }
-
-    .hasError {
-        border-color: red;
-    }
-
-    .form-row {
-        margin-top: 6rem;
-        display: flex;
-        justify-content: space-between;
-        align-self: center;
-        margin-bottom: 2rem;
-        width: 60%;
-    }
-
-    .form-margin-right {
-        margin-right: 6rem;
-    }
-
-    .form-margin-left {
-        margin-left: 6rem;
-    }
-
     .actions-container {
         position: static;
         bottom: 0;
         background-color: #fff;
-width: 100%;
-
+        width: 100%;
     }
-
     .actions {
         display: flex;
         flex: 1;

@@ -13,52 +13,47 @@
     import {
         useRouter
     } from 'vue-router';
-
     import {
         useToast
     } from 'primevue/usetoast';
 
-    
     const router = useRouter();
     const store = useStore()
     const toast = useToast();
 
+    const typeData = ref([]);
     const backLabel = 'Principal';
     const addLabel = 'Agregar';
-    const agreementData = ref([]);
     const deletionStatus = ref(false);
 
- 
-
-    const fetchAgreementData = async () => {
-        await store.dispatch('agreements/getAllAgreements');
-        const agreements = store.getters['agreements/getAgreement'];
-        agreementData.value = agreements.map(agreement => {
+    const fetchTypeData = async () => {
+        await store.dispatch('loanTypes/getAllTypes');
+        const types = store.getters['loanTypes/getType'];
+        typeData.value = types.map(type => {
             return {
-                ...agreement,
-                IsActive: agreement.IsActive ? "Activo" : "Inactivo"
-            };         
+                ...type,
+                IsActive: type.IsActive ? "Activo" : "Inactivo"
+            };
         });
     };
 
-    const storeAgreement = async (id) => {
-        await store.dispatch('agreements/deleteAgreement', {
+    const storeType = async (id) => {
+        await store.dispatch('loanTypes/deleteType', {
             rowId: id
         })
     }
 
     const deleteResponse = computed(() => {
-        return store.getters["agreements/getErrorResponse"];
+        return store.getters["loanTypes/getErrorResponse"];
     });
 
     const deleteRecord = async (rowData) => {
-        console.log(rowData)
         try {
-            await storeAgreement(rowData.data.AgreementId);
+            await storeType(rowData.data.LoansTypeId);
             if (deleteResponse.value === null) {
                 toast.add({
                     severity: 'warn',
-                    detail: "El convenio ha sido eliminado.",
+                    detail: "Tipo de préstamo ha sido eliminado.",
                     life: 2000
                 });
                 deletionStatus.value = true;
@@ -68,13 +63,12 @@
                     detail: deleteResponse.value,
                     life: 3000
                 });
-                store.commit('agreements/clearErrorResponse');
+                store.commit('loanTypes/clearErrorResponse');
             }
         } catch (error) {
-            console.log(error)
             toast.add({
                 severity: 'error',
-                detail: `Un error ocurrió. ${error}`,
+                detail: error,
                 life: 2000
             });
         }
@@ -82,71 +76,68 @@
 
     watch(deletionStatus, (newStatus) => {
         if (newStatus) {
-            fetchAgreementData();
+            fetchTypeData();
             deletionStatus.value = false;
         }
     });
 
-
-    const goBack = () => {
+    const cancel = () => {
         router.push({
             name: "dashboard"
         });
     }
 
-    const addAgreement = () => {
+    const addRecord = () => {
         router.push({
-            name: "createAgreement"
+            name: "createType"
         });
     }
-    const updateCategory = (rowData) => {
+
+    const updateRecord = (rowData) => {
         router.push({
-            name: "updateAgreement",
+            name: "updateType",
             params: {
-                id: rowData.data.AgreementId
+                id: rowData.data.LoansTypeId
             },
             props: true,
         });
     };
-
-
-    onMounted(fetchAgreementData);
- 
-    
+    onMounted(fetchTypeData);
 </script>
 
 <template>
-            <toast-component />
-    <div class="agreement-list">
-
-        <DataTable :value="agreementData"  tableStyle="min-width: 80rem" paginator :rows="3">
-            <Column field="Title" header="Convenio" sortable></Column>
-            <Column field="CategoryName" header="Categoría" sortable style="width: 300px"></Column>
-            <Column field="IsActive" header="Estado" sortable style="width: 180px"></Column>
+    <toast-component />
+    <div class="category-list">
+        <DataTable :value="typeData" paginator :rows="3" tableStyle="min-width: 80rem">
+            <Column field="Description" header="Tipo de préstamo" sortable></Column>
+            <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
             <Column header="" style="width: 100px"> <template #body="rowData">
-                    <base-button class="action-buttons" label="Editar" :type="'button'" @click="updateCategory(rowData)"/>
+                    <base-button class="action-buttons" label="Editar" @click="updateRecord(rowData)"
+                        :type="'button'" />
                 </template></Column>
             <Column header="" style="width: 100px"> <template #body="rowData">
-                    <base-button class="action-buttons" label="Eliminar"  @click="deleteRecord(rowData)" :type="'button'" />
+                    <base-button class="action-buttons" label="Eliminar" @click="deleteRecord(rowData)"
+                        :type="'button'" />
                 </template></Column>
         </DataTable>
-    <div class="actions-container">
-        <div class="actions">
-            <base-button :label="backLabel" @click="goBack" :type="'button'" />
-            <base-button :label="addLabel" @click="addAgreement" :type="'button'" />
+
+        <div class="actions-container">
+            <div class="actions">
+                <base-button :label="backLabel" @click="cancel" :type="'button'" />
+                <base-button :label="addLabel" @click="addRecord" :type="'button'" />
+            </div>
         </div>
     </div>
-</div>
 </template>
 
-
 <style scoped="scoped">
-   .agreement-list {
+    .category-list {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
     }
+
     .action-buttons {
         display: flex;
         overflow: hidden;
