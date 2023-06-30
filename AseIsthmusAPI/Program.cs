@@ -35,6 +35,7 @@ builder.Services.AddScoped<CategoryAgreementService>();
 builder.Services.AddScoped<AgreementService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<PasswordService>();
+builder.Services.AddScoped<SavingsTypeService>(); 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
