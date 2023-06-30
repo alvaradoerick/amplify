@@ -2,12 +2,8 @@
     import {
         ref,
         onMounted,
-        computed
+        computed,watch
     } from 'vue';
-    import useVuelidate from '@vuelidate/core'
-    import {
-        required
-    } from '@vuelidate/validators'
     import {
         useStore
     } from 'vuex';
@@ -27,49 +23,19 @@
     const PersonId = ref(route.params.id);
     const backLabel = 'Atrás';
     const sendLabel = 'Actualizar';
-    const beneficiaryInfo = ref([]);
-
-    const rules = {
-        BeneficiaryName: {
-            required
-        },
-        BeneficiaryNumberId: {
-            required
-        },
-        BeneficiaryRelation: {
-      required
-        },
-        BeneficiaryPercentage: {
-            required
-        }
-    }
+    const beneficiaryInfo = ref([{ BeneficiaryName: null,
+            BeneficiaryNumberId: null,
+            BeneficiaryRelation: null,
+            BeneficiaryPercentage: null}]);
 
     const addRow = () => {
         beneficiaryInfo.value.push({
             BeneficiaryName: null,
             BeneficiaryNumberId: null,
             BeneficiaryRelation: null,
-            BeneficiaryPercentage: null
+            BeneficiaryPercentage:null,
         });
     };
-
-    const v$ = useVuelidate(rules, beneficiaryInfo);
-
-    const validateForm = async () => {
-        const result = await v$.value.$validate();
-        if (!result) {
-            if (v$.value.$errors[0].$validator === 'required') {
-                toast.add({
-                    severity: 'error',
-                    detail: 'Todos los campos son requeridos.',
-                    life: 2000
-                });
-            }
-            return false
-        }
-        return true;
-    }
-
 
     const removeRow = (index) => {
         beneficiaryInfo.value.splice(index, 1);
@@ -120,8 +86,7 @@
     }
     const updateBeneficiaries = async (event) => {
         event.preventDefault();
-        const isValid = await validateForm();
-        if (isValid) {
+
             try {
             await storeBeneficiary();
             toast.add({
@@ -144,52 +109,82 @@
                 life: 2000
             });            
         }
+    };
+
+    watch(() => beneficiaryInfo.value.length, (newLength) => {
+    if (newLength === 0) {
+      addRow();
     }
-    }
+  });
+
     onMounted(fetchBeneficiaryData);
 </script>
 <template>
-    
     <div class="main">
-        <toast-component />      
-        <div class="header">
-            <base-button :label="'+'" style="width:3rem" class="buttons" @click="addRow" :type="'button'" />
-        </div>
-        <div class="body">
-        <div class="form"  >  
-            <div v-for="(beneficiary, index) in beneficiaryInfo" :key="index"   class="form-row">
-                <div class="p-float-label">
-                    <input-text placeholder="Nombre completo" class="input-text form-margin-right" :id="'beneficiary-name-' + index"
-                        type="text" v-model="beneficiary.BeneficiaryName"  :class="{'hasError': v$?.BeneficiaryName?.$error}" />
-                    <label :for="'beneficiary-name-' + index">Nombre completo</label>
-                </div>
-                <div class="p-float-label">
-                    <input-text class="input-text form-margin-right" id="beneficiary-id" placeholder="Identificación"
-                        type="text" v-model="beneficiary.BeneficiaryNumberId" :class="{'hasError': v$?.BeneficiaryNumberId?.$error}" />
-
-                    <label for="beneficiary-id">Identificación</label>
-                </div>
-                <div class="p-float-label">
-                    <input-text class="input-text form-margin-right" placeholder="Parentesco" id="beneficiary-keen"
-                        type="text" v-model="beneficiary.BeneficiaryRelation"  :class="{'hasError': v$?.BeneficiaryRelation?.$error}" />
-                    <label for="beneficiary-keen">Parentesco</label>
-                </div>
-                <div class="p-float-label">
-                    <input-text class="input-text form-margin-right" placeholder="Porcentaje" v-model="beneficiary.BeneficiaryPercentage" id="beneficiary-percentage" :class="{'hasError': v$?.BeneficiaryPercentage?.$error}" />
-                    <label for="beneficiary-percentage">Porcentaje</label>
-                </div>
-                <base-button :label="'-'" style="width:3rem" class="buttons" v-if="showRemoveButton" @click="removeRow(index)"
-                    :type="'button'"></base-button>
+      <toast-component />
+      <div class="header">
+        <base-button :label="'+'" style="width:3rem" class="buttons" @click="addRow" :type="'button'" />
+      </div>
+      <div class="body">
+        <div class="form">
+          <div v-for="(beneficiary, index) in beneficiaryInfo" :key="index" class="form-row">
+            <div class="p-float-label">
+              <input-text
+                placeholder="Nombre completo"
+                class="input-text form-margin-right"
+                :id="'beneficiary-name' + index"
+                type="text"
+                v-model="beneficiary.BeneficiaryName"
+                :class="{'hasError': v$?.BeneficiaryName?.$error}" />
+              <label :for="'beneficiary-name' + index">Nombre completo</label>
             </div>
+            <div class="p-float-label">
+              <input-text
+                class="input-text form-margin-right"
+                :id="'beneficiary-id' + index"
+                placeholder="Identificación"
+                type="text"
+                v-model="beneficiary.BeneficiaryNumberId"
+                :class="{'hasError': v$?.BeneficiaryNumberId?.$error}" />
+              <label :for="'beneficiary-id' + index">Identificación</label>
+            </div>
+            <div class="p-float-label">
+              <input-text
+                class="input-text form-margin-right"
+                placeholder="Parentesco"
+                :id="'beneficiary-keen-' + index"
+                type="text"
+                v-model="beneficiary.BeneficiaryRelation"
+                :class="{'hasError': v$?.BeneficiaryRelation?.$error}" />
+              <label :for="'beneficiary-keen-' + index">Parentesco</label>
+            </div>
+            <div class="p-float-label">
+              <input-text
+                class="input-text form-margin-right"
+                placeholder="Porcentaje"
+                :id="'beneficiary-percentage' + index"
+                v-model="beneficiary.BeneficiaryPercentage"
+                :class="{'hasError': v$?.BeneficiaryPercentage?.$error}" />
+              <label :for="'beneficiary-percentage' + index">Porcentaje</label>
+            </div>
+            <base-button
+              :label="'-'"
+              style="width:3rem"
+              class="buttons"
+              v-if="showRemoveButton"
+              @click="removeRow(index)"
+              :type="'button'"
+            ></base-button>
+          </div>
         </div>
-  
-</div>
-    <div class="actions">
-        <base-button :label="backLabel"  small @click="userInfo" :type="'button'" />
-        <base-button :label="sendLabel" small  @click="updateBeneficiaries" :type="'submit'" />
+      </div>
+      <div class="actions">
+        <base-button :label="backLabel" small @click="userInfo" :type="'button'" />
+        <base-button :label="sendLabel" small @click="updateBeneficiaries" :type="'submit'" />
+      </div>
     </div>
-</div>
-</template>
+  </template>
+  
 
 <style scoped>
 .main {
@@ -229,14 +224,9 @@
         justify-content: space-between;
         margin-bottom: 2rem;
         width: 100%;
-      
-
+        margin-top: 1.5rem;
     }
-    .dropdown,
-    .input-text {
-        gap: 10px;
-        
-    }
+  
     .form-margin-right {
         margin-right: 1rem;
     }
