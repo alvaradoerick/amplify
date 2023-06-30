@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using AseIsthmusAPI.Data.AseIsthmusModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace AseIsthmusAPI.Data;
@@ -109,8 +108,8 @@ public partial class AseItshmusContext : DbContext
         modelBuilder.Entity<ContributionBalance>(entity =>
         {
             entity.Property(e => e.DeductedDate).HasColumnType("date");
-            entity.Property(e => e.EmployeeContribution).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.EmployerContribution).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.EmployeeContribution).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.EmployerContribution).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.PersonId).HasMaxLength(12);
 
             entity.HasOne(d => d.Person).WithMany(p => p.ContributionBalances)
@@ -141,22 +140,20 @@ public partial class AseItshmusContext : DbContext
 
         modelBuilder.Entity<LoanBalance>(entity =>
         {
-            entity.Property(e => e.BeginningBalance).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.CumulativeInterest).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.BeginningBalance).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CumulativeInterest).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Currency)
                 .HasMaxLength(10)
                 .IsFixedLength();
-            entity.Property(e => e.EndingBalance).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.ExtraPayment).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.Interest).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.InterestRate).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.EndingBalance).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.ExtraPayment).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Interest).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.InterestRate).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.PaymentDate).HasColumnType("date");
-            entity.Property(e => e.PersonId)
-                .HasMaxLength(12)
-                .HasColumnName("PersonID");
-            entity.Property(e => e.Principal).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.ScheduledPayment).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.TotalPayment).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.PersonId).HasMaxLength(12);
+            entity.Property(e => e.Principal).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.ScheduledPayment).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.TotalPayment).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.LoanRequest).WithMany(p => p.LoanBalances)
                 .HasForeignKey(d => d.LoanRequestId)
@@ -173,7 +170,7 @@ public partial class AseItshmusContext : DbContext
         {
             entity.HasKey(e => e.LoanRequestId).HasName("PK_LoanRequest");
 
-            entity.Property(e => e.AmountRequested).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.AmountRequested).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ApprovedDate).HasColumnType("date");
             entity.Property(e => e.BankAccount).HasMaxLength(25);
             entity.Property(e => e.PersonId).HasMaxLength(12);
@@ -193,9 +190,9 @@ public partial class AseItshmusContext : DbContext
         modelBuilder.Entity<LoansType>(entity =>
         {
             entity.Property(e => e.Description).HasMaxLength(50);
-            entity.Property(e => e.InterestRate).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.PercentageEmployeeCont).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.PercentageEmployerCont).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.InterestRate).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.PercentageEmployeeCont).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.PercentageEmployerCont).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.ContributionUsage).WithMany(p => p.LoansTypes)
                 .HasForeignKey(d => d.ContributionUsageId)
@@ -229,7 +226,7 @@ public partial class AseItshmusContext : DbContext
 
         modelBuilder.Entity<SavingsBalance>(entity =>
         {
-            entity.Property(e => e.LastAmountDeducted).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.LastAmountDeducted).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.LastDeductedDate).HasColumnType("date");
             entity.Property(e => e.PersonId).HasMaxLength(12);
 
@@ -246,7 +243,7 @@ public partial class AseItshmusContext : DbContext
 
         modelBuilder.Entity<SavingsRequest>(entity =>
         {
-            entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ApplicationDate).HasColumnType("date");
             entity.Property(e => e.ApprovedDate).HasColumnType("date");
             entity.Property(e => e.PersonId).HasMaxLength(12);
