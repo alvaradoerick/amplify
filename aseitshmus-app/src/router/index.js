@@ -215,6 +215,36 @@ const routes = [{
           },
         ]
       },
+      {
+        path: '/savings-types',
+        name: 'savingsTypes',
+        children: [{
+            path: '/all-savings-types',
+            name: 'savingsList',
+            component: () => import('../views/admin/savings-types/SavingsList.vue' /* webpackChunkName: "SavingsList" */ ),
+            meta: {
+              title: ' Tipos de Ahorro',
+            }
+          },
+          {
+            path: '/create-savings',
+            name: 'createSavingsType',
+            component: () => import('../views/admin/savings-types/CreateSavings.vue' /* webpackChunkName: "CreateSavings" */ ),
+            props: true,
+            meta: {
+              title: 'Crear Tipo de Ahorro',
+            }
+          },
+          {
+            path: '/update-savings/:id',
+            name: 'updateSavingsType',
+            component: () => import('../views/admin/savings-types/UpdateSavings.vue' /* webpackChunkName: "UpdateSavings" */ ),
+            meta: {
+              title: 'Actualizar Tipo de Ahorro',
+            }
+          },
+        ]
+      },
     ]
   },
 

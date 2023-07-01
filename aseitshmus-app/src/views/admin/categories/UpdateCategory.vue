@@ -41,9 +41,11 @@
         }
     ]);
 
+
+
     const agreementCategory = ref({
         Description: null,
-        IsActive: null
+        IsActive: 0
     })
     const categoryId = ref(route.params.id);
     const rules = {
@@ -144,7 +146,8 @@
                         <drop-down v-model="agreementCategory.IsActive" :options="status" optionLabel="name"
                             optionValue="value" placeholder="Estado" class="dropdown" id="status"
                             :class="{'hasError': v$?.IsActive?.$error}" />
-                        <label for="status">Estado</label>
+                        <label for="status" :class="{'float-label': agreementCategory.IsActive !== 0}">Estado</label>
+
                     </div>
                 </div>
             </div>
