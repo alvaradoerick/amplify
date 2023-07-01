@@ -60,10 +60,10 @@
     const loanType = ref({
         LoanDescription: null,
         ContributionUsageId: selectedContribution,
-        PercentageEmployeeCont: null,
-        PercentageEmployerCont: null,
-        Term: null,
-        InterestRate: null,
+        PercentageEmployeeCont: 0,
+        PercentageEmployerCont: 0,
+        Term: 0,
+        InterestRate: 0,
         IsActive: selectedState
     })
 

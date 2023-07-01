@@ -11,7 +11,7 @@
         useRouter
     } from 'vue-router';
     import {
-        ref, onMounted
+        ref, onMounted, computed
     } from 'vue';
     import {
         useToast
@@ -23,6 +23,11 @@
     const router = useRouter();
     const toast = useToast();
 
+    const dateFormat = {
+        day: "numeric",
+        month: "numeric",
+        year: "numeric"
+    };
 
     const backLabel = 'Cancelar';
     const toReturn = () => {
@@ -36,7 +41,7 @@
 
   const savingsData = ref({
     SavingsTypeId: selectedSavingsType,
-    Amount: null
+    Amount: 0.00
     })
 
     const storeSavings = async () => {
@@ -44,6 +49,8 @@
         savingsData: savingsData.value,
     });
   };
+
+
 
     const fetchActiveSavings = async () => {
         try {
@@ -56,13 +63,40 @@
             console.error(error);
         }
     };
-
+    const getSelectedSavingsType = () => {
+  return savingsTypeList.value.find(type => type.SavingsTypeId === selectedSavingsType.value);
+};
     const rules = {
         Amount: {
             required
         }
     }
 
+    const numberOfBiweeklies = computed(() => {
+  const startDate = new Date(getSelectedSavingsType()?.StartDate);
+  const endDate = new Date(getSelectedSavingsType()?.EndDate);
+
+  // Adjust the start date to the nearest 15th or 30th
+  const adjustedStartDate = new Date(startDate);
+  if (adjustedStartDate.getDate() < 15) {
+    adjustedStartDate.setDate(15);
+  } else if (adjustedStartDate.getDate() > 30) {
+    adjustedStartDate.setDate(30);
+  }
+
+  // Calculate the number of days between adjusted start date and end date
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  const daysDifference = Math.ceil((endDate - adjustedStartDate) / millisecondsPerDay);
+
+    // Calculate the number of biweeklies (considering biweeklies on days 15 and 30)
+    const biweeklies = Math.floor(daysDifference / 15) + 1;
+
+  return biweeklies;
+});
+
+const estimatedSavings = computed(() => {
+  return numberOfBiweeklies.value * savingsData.value.Amount;
+});
     const v$ = useVuelidate(rules, savingsData);
 
     const validateForm = async () => {
@@ -112,8 +146,7 @@
         <toast-component />
         <div class="form">
         <div class="header">
-            <div class="form-row">
-              
+            <div class="form-row">             
                     <div class="p-float-label">
                 <drop-down v-model="selectedSavingsType" :options="savingsTypeList" optionLabel="Description" optionValue="SavingsTypeId"
                     placeholder="Ahorro" class="dropdown form-margin-right" id="status" :class="{'p-invalid': v$?.selectedState?.$error}" />
@@ -124,6 +157,26 @@
                     v-model="savingsData.Amount" :class="{'p-invalid': v$?.Amount?.$error}" />
                     <label for="amount">Monto quincenal</label>
                 </div>       
+    </div>
+    <div class="form-row">
+        <p v-if="savingsTypeList.length > 0">
+            <label><b>Empieza: </b></label>
+            {{new Date(getSelectedSavingsType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
+          </p>
+    </div>
+
+          <div class="form-row">
+          <p v-if="savingsTypeList.length > 0">
+            <label><b>Finaliza: </b></label>
+            {{new Date(getSelectedSavingsType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
+          </p>
+    </div>
+
+          <div class="form-row">
+            <p v-if="savingsTypeList.length > 0">
+  <label><b>Monto estimado de ahorro: </b></label>
+  $ {{ estimatedSavings }}
+</p>
     </div>
 </div>
     <div class="actions">
