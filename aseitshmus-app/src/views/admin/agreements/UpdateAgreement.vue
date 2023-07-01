@@ -181,7 +181,7 @@
                     <div class="p-float-label">
                 <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
                     placeholder="Estado" class="dropdown" id="status" :class="{'p-invalid': v$?.selectedState?.$error}" />
-                    <label or="status">Estado</label>
+                    <label for="status">Estado</label>
                 </div>
                     <div class="p-float-label form-margin-left">
                 <drop-down v-model="selectedCategory" :options="categoryName" optionLabel="Description"

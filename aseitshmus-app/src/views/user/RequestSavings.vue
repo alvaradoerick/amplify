@@ -16,9 +16,6 @@
     import {
         useToast
     } from 'primevue/usetoast';
-
-
-    import Textarea from 'primevue/textarea';
     
     const apiUrl = process.env["VUE_APP_BASED_URL"]
 
@@ -34,18 +31,8 @@
         });
     }
     const sendLabel = 'Enviar';
-    const selectedState = ref(1);
-    const status = ref([{
-            name: 'Activo',
-            value: 1
-        },
-        {
-            name: 'Inactivo',
-            value: 0
-        }
-    ]);
     const savingsTypeList = ref([]);
-    const selectedSavingsType = ref(null);
+    const selectedSavingsType = ref(2);
 
   const savingsData = ref({
     SavingsTypeId: selectedSavingsType,
@@ -53,38 +40,30 @@
     })
 
     const storeSavings = async () => {
-    await store.dispatch('agreements/addAgreement', {
+    await store.dispatch('savingsRequests/addSavingsRequest', {
         savingsData: savingsData.value,
     });
   };
 
-  
-
     const fetchActiveSavings = async () => {
         try {
-            const response = await axios.get(`${apiUrl}/categoryagreement/active-categories`);
+            const response = await axios.get(`${apiUrl}/SavingsType/active-savings`);
             savingsTypeList.value = response.data;
+            if (response.data.length > 0) {
+      selectedSavingsType.value = response.data[0].SavingsTypeId;
+    }
         } catch (error) {
             console.error(error);
         }
     };
 
     const rules = {
-        Title: {
-            required
-        },
-        Description: {
-            required
-        },
-        CategoryAgreementId: {
-            required
-        },
-        IsActive: {
+        Amount: {
             required
         }
     }
 
-    const v$ = useVuelidate(rules, agreementData);
+    const v$ = useVuelidate(rules, savingsData);
 
     const validateForm = async () => {
         const result = await v$.value.$validate();
@@ -101,28 +80,23 @@
         return true;
     }
 
-
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
         if (isValid) {
-            try {
-                
-                await storeAgreement();
-                console.log(agreementData.value)
+            try {            
+                await storeSavings();
                 toast.add({
                     severity: 'success',
-                    detail: "Su convenio ha sido agregado.",
+                    detail: "Su solicitud de ahorro ha sido enviada.",
                     life: 2000
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1000));
-                router.push({
-                    name: 'agrementList'
-                });
+                toReturn();
             } catch (error) {
                 toast.add({              
                     severity: 'error',
-                    detail: 'Un error ocurrió.',
+                    detail: error,
                     life: 2000
                 });
                 console.log(error)
@@ -130,7 +104,7 @@
         }
     }
 
-    onMounted(fetchActiveCategories)
+    onMounted(fetchActiveSavings)
 </script>
 
 <template>
@@ -139,34 +113,19 @@
         <div class="form">
         <div class="header">
             <div class="form-row">
-                <div class="p-float-label">
-                <input-text placeholder="Convenio" class=" input-text form-margin-right" id="agreementName" type="text"
-                    v-model="agreementData.Title" :class="{'p-invalid': v$?.Title?.$error}" />
-                    <label for="agreementName">Convenio</label>
-                </div>
+              
                     <div class="p-float-label">
-                <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
-                    placeholder="Estado" class="dropdown" id="status" :class="{'p-invalid': v$?.selectedState?.$error}" />
-                    <label or="status">Estado</label>
+                <drop-down v-model="selectedSavingsType" :options="savingsTypeList" optionLabel="Description" optionValue="SavingsTypeId"
+                    placeholder="Ahorro" class="dropdown form-margin-right" id="status" :class="{'p-invalid': v$?.selectedState?.$error}" />
+                    <label for="savings-type">Ahorro</label>
                 </div>
-                    <div class="p-float-label form-margin-left">
-                <drop-down v-model="selectedCategory" :options="categories" optionLabel="Description"
-                    optionValue="CategoryAgreementId" class="dropdownLarger " id="category"
-                    :class="{'p-invalid': v$?.CategoryAgreementId?.$error}" />
-                    <label for="category">Categoría</label>
-                </div>
-            </div>
-            <div class="form-row">
                 <div class="p-float-label">
-                <Textarea id="description" placeholder="Descripción" v-model="agreementData.Description" rows="5"
-                    cols="45" class="form-margin-right" :class="{'p-invalid': v$?.Description?.$error}" ></Textarea>
-                    <label for="description">Descripción</label>
-                </div>
-            </div>             
-              <div class="form-row">     
-                <input type="file" id="myfile" name="myfile" class="upload-button" @change="handleFileUpload" />
-        </div>
+                <input-number placeholder="Monto quincenal" class=" input-text " id="amount" mode="currency" currency="USD"  locale="en-US"
+                    v-model="savingsData.Amount" :class="{'p-invalid': v$?.Amount?.$error}" />
+                    <label for="amount">Monto quincenal</label>
+                </div>       
     </div>
+</div>
     <div class="actions">
         <base-button :label="backLabel" @click="toReturn" :small="true" :type="'button'" />
         <base-button :label="sendLabel" @click="onSend" :small="true" :type="'submit'" />
