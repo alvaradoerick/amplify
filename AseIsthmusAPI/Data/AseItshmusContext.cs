@@ -52,10 +52,7 @@ public partial class AseItshmusContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=AseItshmus.mssql.somee.com;user id=krudina_SQLLogin_1;pwd=c3il8epc66;Database=AseItshmus;persist security info=False; encrypt=false");
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Agreement>(entity =>
@@ -101,8 +98,6 @@ public partial class AseItshmusContext : DbContext
 
         modelBuilder.Entity<CategoryAgreement>(entity =>
         {
-            entity.HasKey(e => e.CategoryAgreementId).HasName("PK_CateryAgreements");
-
             entity.Property(e => e.Description).HasMaxLength(100);
         });
 

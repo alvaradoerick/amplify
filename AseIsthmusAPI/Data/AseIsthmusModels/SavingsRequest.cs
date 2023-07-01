@@ -17,8 +17,6 @@ public partial class SavingsRequest
 
     public bool IsActive { get; set; }
 
-    public int Term { get; set; }
-
     public DateTime? ApprovedDate { get; set; }
 
     public bool? IsApproved { get; set; }
