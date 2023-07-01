@@ -242,7 +242,7 @@
 <template>
     <div class="main">
         <toast-component />
-        <div class="header">
+        <div class="form">
             <div class="form-row">
                 <div class="p-float-label">
                     <input-text class="input-text form-margin-right" id="employee-code" type="text"
@@ -305,38 +305,45 @@
                     <label for="role">Rol</label>
                 </div>
             </div>
-
-        </div>
+       
         <div class="actions">
-            <base-button class="action-buttons" :label="backLabel" @click="UserList" :type="'button'" />
-            <base-button class="action-buttons" :label="beneficiariesLabel" @click="updateBeneficiaries" :type="'button'" />
-            <base-button class="action-buttons green" v-if="statusDB === 0" @click="manageUser" :label="activeLabel"
+            <base-button class="action-buttons" small :label="backLabel" @click="UserList" :type="'button'" />
+            <base-button class="action-buttons" small :label="beneficiariesLabel" @click="updateBeneficiaries" :type="'button'" />
+            <base-button class="action-buttons green" small v-if="statusDB === 0" @click="manageUser" :label="activeLabel"
                 :type="'submit'" />
-            <base-button class="action-buttons red" v-if="statusDB === 1" @click="manageUser" :label="inactiveLabel"
+            <base-button class="action-buttons red" small v-if="statusDB === 1" @click="manageUser" :label="inactiveLabel"
                 :type="'submit'" />
-            <base-button class="action-buttons" :label="sendLabel" @click="submitData" :type="'submit'" />
+            <base-button class="action-buttons" small :label="sendLabel" @click="submitData" :type="'submit'" />
         </div>
+    </div>
     </div>
 </template>
 <style scoped="scoped">
-    .main {
+   .main {
         display: flex;
-        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ebebeb;
+        border-radius: 5px;
+        margin: 1rem;
+        padding: 2rem;
     }
 
-    .header {
+    .form {
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
 
-    .form-row {
 
+
+    .form-row {
         display: flex;
         justify-content: space-between;
         align-self: center;
         margin-bottom: 2.4rem;
-        width: 75%;
+       
     }
 
     .form-margin-right {
@@ -352,22 +359,16 @@
     }
 
     .actions {
+        margin-top: 2rem;
         display: flex;
-        flex: 1;
-        align-items: center;
+        flex-direction: row;
         justify-content: space-between;
-        margin-top: 1rem;
+      
     }
 
-    .action-buttons {
-        display: flex;
-        overflow: hidden;
-        width: 125px;
-        color: white;
-        text-align: center;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+    .actions button {
+        flex: 1;
+        margin-right: 1rem;
     }
 
     .green,

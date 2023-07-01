@@ -13,12 +13,6 @@
     import {
         useToast
     } from 'primevue/usetoast';
-    import useVuelidate from '@vuelidate/core'
-    import {
-        email,
-        required
-    } from '@vuelidate/validators'
-
     import Stepper from '@/components/UI/Stepper.vue'
 import RegistrationConfirmation from '@/components/authentication/RegistrationConfirmation.vue';
 const store = useStore()
@@ -81,33 +75,6 @@ const toast = useToast();
         beneficiaryInfo.value = value
     }
 
-    const rules = {
-        personalInfo: {
-    PersonId: { required },
-    NumberId: { required },
-    firstName: { required },
-    lastName1: { required },
-    Nationality: { required },
-    DateBirth: { required },
-  },
-  workInfo: {
-    WorkStartDate: { required },
-    PhoneNumber: { required },
-    EmailAddress: { required, email },
-    BankAccount: { required },
-  },
-  addressInfo: {
-    Address1: { required },
-    DistrictId: { required },
-    PostalCode: { required },
-  },
-  beneficiaryInfo: {
-    BeneficiaryName: { required },
-    BeneficiaryNumberId: { required },
-    BeneficiaryRelation: { required },
-    BeneficiaryPercentage: { required },
-  },
-    }
 
     const loginResponse = computed(() => {
         return store.getters["auth/getErrorResponse"];
@@ -122,38 +89,12 @@ const toast = useToast();
         })
     }
 
-    const v$ = useVuelidate(rules, personalInfo, workInfo, addressInfo, beneficiaryInfo);
 
-    const validateForm = async () => {
-        const result = await v$.value.$validate();
-        console.log(v$)
-        console.log(result)
-  if (!result) {
-            if (v$.value.$errors[0].$validator === 'required') {
-                toast.add({
-                    severity: 'error',
-                    detail: 'Por favor revisar los campos requeridos',
-                    life: 2000
-                });
-                return false
-            } else if (v$.value.$silentErrors[0].$validator === 'email')   {
-                toast.add({
-                    severity: 'error',
-                    detail: 'El formato del correo es incorrecto.',
-                    life: 2000
-                });}
-                return false                   
-        }
-        return true;
-    };
 
     const isValiData =  ref(false)
 
 const submitData = async (event) => {
     event.preventDefault();
-     console.log(personalInfo.value)
-       const isValid = await validateForm();
-       if (isValid) {
             try
             {
         await storeUser();
@@ -175,7 +116,7 @@ const submitData = async (event) => {
         life: 2000
       });
         }
-   }
+
 }
         
 

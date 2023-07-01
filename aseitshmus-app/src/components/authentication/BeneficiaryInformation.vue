@@ -39,7 +39,7 @@
 <template>
     <div class="container">
         <div class="header">
-            <base-button :label="'+'" small class="buttons" @click="addRow" :type="'button'" />
+            <base-button :label="'+'" style="width:3rem" class="buttons" @click="addRow" :type="'button'" />
         </div>
         <div class="body">
             <div v-for="(beneficiary, index) in beneficiaryInfo" :key="index" class="form-row">
@@ -62,12 +62,12 @@
                     <label for="beneficiary-keen">Parentesco</label>
                 </div>
                 <div class="p-float-label">
-                    <input-text class="input-text form-margin-right" placeholder="Porcentaje"
-                        id="beneficiary-percentage" type="text" v-model="beneficiary.BeneficiaryPercentage">
-                    </input-text>
+                    <input-number class="input-text form-margin-right" placeholder="Porcentaje"
+                        id="beneficiary-percentage" type="text" v-model="beneficiary.BeneficiaryPercentage" :maxFractionDigits="2"/>
                     <label for="beneficiary-percentage">Porcentaje</label>
+                    <span class="percentage-sign">%</span>
                 </div>
-                <base-button :label="'-'" small class="buttons" v-if="showRemoveButton" @click="removeRow(index)"
+                <base-button :label="'-'" style="width:3rem" class="buttons" v-if="showRemoveButton" @click="removeRow(index)"
                     :type="'button'" />
             </div>
         </div>
@@ -87,6 +87,8 @@
         overflow: scroll;
         min-height: 28vh;
         max-height: 28vh;
+        padding-right: 2rem;
+ 
     }
 
     .container {
@@ -102,14 +104,19 @@
         justify-content: space-between;
         margin-bottom: 2rem;
         width: 100%;
+        margin-top: 1.5rem;
+        padding-left: 2rem;
     }
 
     .form-margin-right {
-        margin-right: 1rem;
+        margin-right: 2rem;
     }
 
     .dropdown,
     .input-text {
         width: 170px;
+    }
+    .buttons {     
+        margin-left: 1rem;
     }
 </style>

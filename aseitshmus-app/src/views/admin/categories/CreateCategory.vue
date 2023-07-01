@@ -16,7 +16,7 @@
         useToast
     } from 'primevue/usetoast';
 
-    
+
     const store = useStore();
     const router = useRouter();
     const toast = useToast();
@@ -47,8 +47,7 @@
         Description: {
             required
         },
-        IsActive:
-        {
+        IsActive: {
             required
         }
     }
@@ -63,7 +62,7 @@
                     severity: 'error',
                     detail: 'Todos los campos son requeridos.',
                     life: 2000
-                });              
+                });
             }
             return false
         }
@@ -80,7 +79,7 @@
         const isValid = await validateForm();
         if (isValid) {
             try {
-              await storeCategory();
+                await storeCategory();
                 toast.add({
                     severity: 'success',
                     detail: "Su categoría ha sido agregada.",
@@ -102,53 +101,62 @@
 </script>
 
 <template>
-
     <div class="main">
         <toast-component />
-        <div class="header">
-            <div class="form-row">
-                <div class="p-float-label">
-                <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName" type="text"
-                    v-model="agreementCategory.Description"  :class="{'hasError': v$?.Description?.$error}"/>
-                    <label for="categoryName">Nombre</label>
-                </div>
-                <div class="p-float-label">
-                <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value" id="state"
-                    placeholder="Estado" class="dropdown" :class="{'hasError': v$?.selectedState?.$error}"/>
-                    <label for="state">Estado</label>
+        <div class="form">
+            <div class="header">
+                <div class="form-row">
+                    <div class="p-float-label">
+                        <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName"
+                            type="text" v-model="agreementCategory.Description"
+                            :class="{'hasError': v$?.Description?.$error}" />
+                        <label for="categoryName">Nombre</label>
+                    </div>
+                    <div class="p-float-label">
+                        <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
+                            id="state" placeholder="Estado" class="dropdown"
+                            :class="{'hasError': v$?.selectedState?.$error}" />
+                        <label for="state">Estado</label>
+                    </div>
                 </div>
             </div>
+            <div class="actions">
+                <base-button :label="backLabel" :small="true" @click="categoryList" :type="'button'" />
+                <base-button :label="sendLabel" :small="true" @click="onSend" :type="'submit'" />
+            </div>
         </div>
-
-    </div>
-    <div class="actions">
-        <base-button :label="backLabel" @click="categoryList" :type="'button'" />
-        <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
     </div>
 </template>
-<style scoped="scoped">
+
+<style scoped>
     .main {
         display: flex;
-        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ebebeb;
+        border-radius: 5px;
+        margin: 1rem;
+        padding: 2rem;
     }
 
-    .header {
+    .form {
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
 
-    .form-column {
+    .dropdownLarger {
         display: flex;
-        flex-direction: column;
-        min-height: 10vh;
+        width: 300px;
     }
-    .hasError  {
-    border-color: red; 
+
+    .hasError {
+        border-color: red;
     }
 
     .form-row {
-        margin-top: 6rem;
+        margin-top: 2rem;
         display: flex;
         justify-content: space-between;
         align-self: center;
@@ -165,10 +173,15 @@
     }
 
     .actions {
+        margin-top: 2rem;
         display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+    }
+
+    .actions button {
         flex: 1;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 14rem;
+        margin-right: 1rem;
     }
 </style>

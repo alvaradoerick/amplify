@@ -2,7 +2,7 @@
     import {
         ref,
         onMounted,
-        computed
+        computed,watch
     } from 'vue';
     import {
         useStore
@@ -23,14 +23,17 @@
     const PersonId = ref(route.params.id);
     const backLabel = 'Atrás';
     const sendLabel = 'Actualizar';
-    const beneficiaryInfo = ref([]);
+    const beneficiaryInfo = ref([{ BeneficiaryName: null,
+            BeneficiaryNumberId: null,
+            BeneficiaryRelation: null,
+            BeneficiaryPercentage: null}]);
 
     const addRow = () => {
         beneficiaryInfo.value.push({
             BeneficiaryName: null,
             BeneficiaryNumberId: null,
             BeneficiaryRelation: null,
-            BeneficiaryPercentage: null
+            BeneficiaryPercentage:null,
         });
     };
 
@@ -83,7 +86,8 @@
     }
     const updateBeneficiaries = async (event) => {
         event.preventDefault();
-        try {
+
+            try {
             await storeBeneficiary();
             toast.add({
                 severity: 'success',
@@ -105,95 +109,150 @@
                 life: 2000
             });            
         }
+    };
+
+    watch(() => beneficiaryInfo.value.length, (newLength) => {
+    if (newLength === 0) {
+      addRow();
     }
+  });
+
     onMounted(fetchBeneficiaryData);
 </script>
 <template>
-    <toast-component />
-    <div class="container">
-        <div class="header">
-            <base-button :label="'+'" small class="buttons" @click="addRow" :type="'button'" />
-        </div>
-        <div class="body"  >  
-            <div v-for="(beneficiary, index) in beneficiaryInfo" :key="index"   class="form-row">
-                <div class="p-float-label">
-                    <input-text placeholder="Nombre completo" class="input-text form-margin-right" :id="'beneficiary-name-' + index"
-                        type="text" v-model="beneficiary.BeneficiaryName"></input-text>
-                    <label :for="'beneficiary-name-' + index">Nombre completo</label>
-                </div>
-                <div class="p-float-label">
-                    <input-text class="input-text form-margin-right" id="beneficiary-id" placeholder="Identificación"
-                        type="text" v-model="beneficiary.BeneficiaryNumberId">
-
-                    </input-text>
-                    <label for="beneficiary-id">Identificación</label>
-                </div>
-                <div class="p-float-label">
-                    <input-text class="input-text form-margin-right" placeholder="Parentesco" id="beneficiary-keen"
-                        type="text" v-model="beneficiary.BeneficiaryRelation">
-                    </input-text>
-                    <label for="beneficiary-keen">Parentesco</label>
-                </div>
-                <div class="p-float-label">
-                    <input-text class="input-text form-margin-right" placeholder="Porcentaje"
-                        id="beneficiary-percentage" type="text" v-model="beneficiary.BeneficiaryPercentage">
-                    </input-text>
-                    <label for="beneficiary-percentage">Porcentaje</label>
-                </div>
-                <base-button :label="'-'" small class="buttons" v-if="showRemoveButton" @click="removeRow(index)"
-                    :type="'button'"></base-button>
+    <div class="main">
+      <toast-component />
+      <div class="header">
+        <base-button :label="'+'" style="width:3rem" class="buttons" @click="addRow" :type="'button'" />
+      </div>
+      <div class="body">
+        <div class="form">
+          <div v-for="(beneficiary, index) in beneficiaryInfo" :key="index" class="form-row">
+            <div class="p-float-label">
+              <input-text
+                placeholder="Nombre completo"
+                class="input-text form-margin-right"
+                :id="'beneficiary-name' + index"
+                type="text"
+                v-model="beneficiary.BeneficiaryName"
+               />
+              <label :for="'beneficiary-name' + index">Nombre completo</label>
             </div>
+            <div class="p-float-label">
+              <input-text
+                class="input-text form-margin-right"
+                :id="'beneficiary-id' + index"
+                placeholder="Identificación"
+                type="text"
+                v-model="beneficiary.BeneficiaryNumberId"
+                />
+              <label :for="'beneficiary-id' + index">Identificación</label>
+            </div>
+            <div class="p-float-label">
+              <input-text
+                class="input-text form-margin-right"
+                placeholder="Parentesco"
+                :id="'beneficiary-keen-' + index"
+                type="text"
+                v-model="beneficiary.BeneficiaryRelation"
+                 />
+              <label :for="'beneficiary-keen-' + index">Parentesco</label>
+            </div>
+            <div class="p-float-label">
+              <input-number
+                class="input-text form-margin-right"
+                placeholder="Porcentaje"
+                :id="'beneficiary-percentage' + index"
+                v-model="beneficiary.BeneficiaryPercentage"
+               :maxFractionDigits="2"/>
+              <label :for="'beneficiary-percentage' + index">Porcentaje</label>
+              <span class="percentage-sign">%</span>
+            </div>
+            <base-button
+              :label="'-'"
+              style="width:3rem"
+              class="buttons"
+              v-if="showRemoveButton"
+              @click="removeRow(index)"
+              :type="'button'"
+            ></base-button>
+          </div>
         </div>
+      </div>
+      <div class="actions">
+        <base-button :label="backLabel" small @click="userInfo" :type="'button'" />
+        <base-button :label="sendLabel" small @click="updateBeneficiaries" :type="'submit'" />
+      </div>
     </div>
-    <div class="actions">
-        <base-button :label="backLabel" @click="userInfo" :type="'button'" />
-        <base-button :label="sendLabel" @click="updateBeneficiaries" :type="'submit'" />
-    </div>
-</template>
+  </template>
+  
 
 <style scoped>
+.main {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 2rem;
+        width: 100%;
+    }
+
     .header {
         display: flex;
-        width: 100%;
-        justify-content: flex-end;
-        margin-bottom: 3rem;
+        flex-direction: column;
+        align-items: center;
+        align-self: flex-end;
+        margin-bottom: 4rem;
     }
+ 
 
     .body {
         overflow: scroll;
-        min-height: 23vh;
-        max-height: 23vh;
+        min-height: 30vh;
+        max-height: 30vh;
+        margin-bottom: 3rem;
     }
-
-    .container {
+    .form {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
-        margin-bottom: 0.98em;
+       
     }
-
+ 
     .form-row {
         display: flex;
         justify-content: space-between;
         margin-bottom: 2rem;
         width: 100%;
+        margin-top: 1.5rem;
     }
-
+  
     .form-margin-right {
         margin-right: 1rem;
     }
-
-    .dropdown,
-    .input-text {
-        width: 170px;
+    .actions {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
     }
 
-    .actions {
-        display: flex;
+    .actions button {
         flex: 1;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 9rem;
+        margin-right: 1rem;
+    }
+
+
+    .hasError  {
+    border-color: red;        
+    }
+    .dropdown,
+    .input-text {
+        width: 200px;
+    }
+    .buttons {     
+        margin-right: 1rem;
     }
 </style>

@@ -52,6 +52,11 @@
     .links:hover {
         color: #fab03f;
     }
-
+    .percentage-sign {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+    }
    
 </style>
