@@ -34,7 +34,7 @@ const routes = [{
 
   {
     path: '/my-dashboard',
-    name: 'myDashboard',
+    name: 'my-dashboard',
     component: () => import('../layouts/UserView.vue' /* webpackChunkName: "UserView" */ ),
     children: [{
         //dashboard

@@ -1,61 +1,90 @@
 <script setup>
+    import useVuelidate from '@vuelidate/core'
     import {
-        ref,computed
-    } from 'vue';
+        required
+    } from '@vuelidate/validators'
+    import axios from "axios";
+    import {
+        useStore
+    } from 'vuex'
     import {
         useRouter
     } from 'vue-router';
     import {
-        required,
-        minLength,
-        sameAs
-    } from '@vuelidate/validators'
-    import {
-        useVuelidate
-    } from '@vuelidate/core'
+        ref, onMounted
+    } from 'vue';
     import {
         useToast
     } from 'primevue/usetoast';
-    import {
-        useStore
-    } from 'vuex';
 
-    const toast = useToast();
+
+    import Textarea from 'primevue/textarea';
+    
+    const apiUrl = process.env["VUE_APP_BASED_URL"]
+
+    const store = useStore();
     const router = useRouter();
-    const store = useStore()
+    const toast = useToast();
 
 
-    const password = ref(null);
-    const confirmPassword = ref(null);
-    const backLabel = 'Principal';
-    const sendLabel = 'Cambiar';
-    const isInvalidData = ref(false)
-
-    const homePage = () => {
+    const backLabel = 'Cancelar';
+    const toReturn = () => {
         router.push({
             name: "myDashboard"
         });
     }
+    const sendLabel = 'Enviar';
+    const selectedState = ref(1);
+    const status = ref([{
+            name: 'Activo',
+            value: 1
+        },
+        {
+            name: 'Inactivo',
+            value: 0
+        }
+    ]);
+    const savingsTypeList = ref([]);
+    const selectedSavingsType = ref(null);
+
+  const savingsData = ref({
+    SavingsTypeId: selectedSavingsType,
+    Amount: null
+    })
+
+    const storeSavings = async () => {
+    await store.dispatch('agreements/addAgreement', {
+        savingsData: savingsData.value,
+    });
+  };
+
+  
+
+    const fetchActiveSavings = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/categoryagreement/active-categories`);
+            savingsTypeList.value = response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const rules = {
-        password: {
-            required,
-            minLength: minLength(8)
+        Title: {
+            required
         },
-        confirmPassword: {
-            required,
-            sameAs: sameAs(password)
+        Description: {
+            required
+        },
+        CategoryAgreementId: {
+            required
+        },
+        IsActive: {
+            required
         }
     }
 
-    const v$ = useVuelidate(rules, {
-        password,
-        confirmPassword
-    });
-
-    const passwordResponse = computed(() => {
-        return store.getters["users/getErrorResponse"];
-    });
+    const v$ = useVuelidate(rules, agreementData);
 
     const validateForm = async () => {
         const result = await v$.value.$validate();
@@ -66,19 +95,6 @@
                     detail: 'Todos los campos son requeridos.',
                     life: 2000
                 });
-                return false
-            } else if (v$?.value?.password?.$error) {
-                toast.add({
-                    severity: 'error',
-                    detail: 'La contraseña es inválida.',
-                    life: 2000
-                });
-            } else if (v$?.value?.confirmPassword?.$error) {
-                toast.add({
-                    severity: 'error',
-                    detail: 'Las contraseñas no son las mismas.',
-                    life: 2000
-                });
             }
             return false
         }
@@ -86,109 +102,147 @@
     }
 
 
-    const storeUser = async () => {
-  const resetData = {
-    Password: password.value,
-  };
-
-  await store.dispatch('users/resetPasswordAuthenticated', {
-    resetData: resetData,
-  });
-};
-
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
         if (isValid) {
             try {
-               await storeUser();
-                if (passwordResponse.value !== null) {
-                    isInvalidData.value = true
-                    toast.add({
-                        severity: 'error',
-                        detail: passwordResponse.value,
-                        life: 2000
-                    });
-                    store.commit('users/clearErrorResponse');
-                } else {
-                    toast.add({
-                        severity: 'success',
-                        detail: "Su contraseña ha sido cambiada.",
-                        life: 2000
-                    });
-                    await new Promise((resolve) => setTimeout(resolve, 2000));
-                    router.push({
-                        name: "myDashboard"
-                    });
-                }
-            } catch (error) {
+                
+                await storeAgreement();
+                console.log(agreementData.value)
                 toast.add({
+                    severity: 'success',
+                    detail: "Su convenio ha sido agregado.",
+                    life: 2000
+                });
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                router.push({
+                    name: 'agrementList'
+                });
+            } catch (error) {
+                toast.add({              
                     severity: 'error',
                     detail: 'Un error ocurrió.',
                     life: 2000
                 });
+                console.log(error)
             }
         }
-    };
+    }
+
+    onMounted(fetchActiveCategories)
 </script>
 
 <template>
-    <div class="center-container">
+   <div class="main">
         <toast-component />
-        <div class="container">
+        <div class="form">
+        <div class="header">
             <div class="form-row">
                 <div class="p-float-label">
-                    <input-text class="input-text" id="password"
-                        :class="{ 'p-invalid': (v$?.password?.$error || isInvalidData) }" type="password"
-                        v-model="password" autocomplete="password" placeholder="Contraseña" />
-                    <label for="password">Contraseña</label>
+                <input-text placeholder="Convenio" class=" input-text form-margin-right" id="agreementName" type="text"
+                    v-model="agreementData.Title" :class="{'p-invalid': v$?.Title?.$error}" />
+                    <label for="agreementName">Convenio</label>
+                </div>
+                    <div class="p-float-label">
+                <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
+                    placeholder="Estado" class="dropdown" id="status" :class="{'p-invalid': v$?.selectedState?.$error}" />
+                    <label or="status">Estado</label>
+                </div>
+                    <div class="p-float-label form-margin-left">
+                <drop-down v-model="selectedCategory" :options="categories" optionLabel="Description"
+                    optionValue="CategoryAgreementId" class="dropdownLarger " id="category"
+                    :class="{'p-invalid': v$?.CategoryAgreementId?.$error}" />
+                    <label for="category">Categoría</label>
                 </div>
             </div>
             <div class="form-row">
                 <div class="p-float-label">
-                    <input-text class="input-text" id="reenter-password"
-                        :class="{ 'p-invalid': (v$?.confirmPassword?.$error || isInvalidData) }" type="password"
-                        v-model="confirmPassword" autocomplete="confirmPassword" placeholder="Reingrese contraseña" />
-                    <label for="reenter-password">Reingrese contraseña</label>
+                <Textarea id="description" placeholder="Descripción" v-model="agreementData.Description" rows="5"
+                    cols="45" class="form-margin-right" :class="{'p-invalid': v$?.Description?.$error}" ></Textarea>
+                    <label for="description">Descripción</label>
                 </div>
-            </div>
+            </div>             
+              <div class="form-row">     
+                <input type="file" id="myfile" name="myfile" class="upload-button" @change="handleFileUpload" />
         </div>
     </div>
     <div class="actions">
-        <base-button :label="backLabel" @click="homePage" :type="'button'" />
-        <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
-    </div>
+        <base-button :label="backLabel" @click="toReturn" :small="true" :type="'button'" />
+        <base-button :label="sendLabel" @click="onSend" :small="true" :type="'submit'" />
+    </div> 
+</div>
+</div>
 </template>
-
 <style scoped>
-    .center-container {
+    .main {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 48vh;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+    margin: 1rem;
+    padding: 2rem;
     }
-
-    .container {
+.form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+    .dropdownLarger {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        margin: auto;
+        width: 300px;
     }
 
     .form-row {
+        margin-top: 2rem;
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        justify-content: space-between;
+        align-self: center;
         margin-bottom: 2rem;
-        width: 100%;
+        width: 60%;
+    }
+
+    .form-margin-right {
+        margin-right: 6rem;
+    }
+
+    .form-margin-left {
+        margin-left: 6rem;
     }
 
     .actions {
+        margin-top: 2rem;
         display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+    }
 
+    .actions button {
+        flex: 1;
+        margin-right: 1rem;
+    }
+
+    .upload-button {
+        display: flex;
+        background-color: #253e8b;
+        border-color: #253e8b;
+        overflow: hidden;
+        width: 300px;
+        color: white;
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .upload-button:hover,
+    .upload-button:focus {
+        box-shadow: 0 0 0 2px white, 0 0 0 3px skyblue;
+        color: white;
+        background-color: #3f569b !important;
     }
 </style>
