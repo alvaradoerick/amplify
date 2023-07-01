@@ -135,7 +135,7 @@
                 :id="'beneficiary-name' + index"
                 type="text"
                 v-model="beneficiary.BeneficiaryName"
-                :class="{'hasError': v$?.BeneficiaryName?.$error}" />
+               />
               <label :for="'beneficiary-name' + index">Nombre completo</label>
             </div>
             <div class="p-float-label">
@@ -145,7 +145,7 @@
                 placeholder="Identificación"
                 type="text"
                 v-model="beneficiary.BeneficiaryNumberId"
-                :class="{'hasError': v$?.BeneficiaryNumberId?.$error}" />
+                />
               <label :for="'beneficiary-id' + index">Identificación</label>
             </div>
             <div class="p-float-label">
@@ -155,17 +155,18 @@
                 :id="'beneficiary-keen-' + index"
                 type="text"
                 v-model="beneficiary.BeneficiaryRelation"
-                :class="{'hasError': v$?.BeneficiaryRelation?.$error}" />
+                 />
               <label :for="'beneficiary-keen-' + index">Parentesco</label>
             </div>
             <div class="p-float-label">
-              <input-text
+              <input-number
                 class="input-text form-margin-right"
                 placeholder="Porcentaje"
                 :id="'beneficiary-percentage' + index"
                 v-model="beneficiary.BeneficiaryPercentage"
-                :class="{'hasError': v$?.BeneficiaryPercentage?.$error}" />
+               :maxFractionDigits="2"/>
               <label :for="'beneficiary-percentage' + index">Porcentaje</label>
+              <span class="percentage-sign">%</span>
             </div>
             <base-button
               :label="'-'"
@@ -246,5 +247,12 @@
 
     .hasError  {
     border-color: red;        
+    }
+    .dropdown,
+    .input-text {
+        width: 200px;
+    }
+    .buttons {     
+        margin-right: 1rem;
     }
 </style>
