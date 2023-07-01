@@ -3,30 +3,30 @@
         <div class="menu collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <router-link class="nav-link" to="/"><img src="../../assets/logo.png" alt="Logo" /></router-link>                    
+                    <router-link class="nav-link" to="/"><img src="../../assets/logo.png" alt="Logo" /></router-link>
                 </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="{name:'login'}">Iniciar Sesión</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="{name:'register'}">Registro</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="{name:'allAgreements'}">Convenios</router-link>
-                    </li>
-                </ul>
-            </div>
+                <li class="nav-item">
+                    <router-link class="nav-link" :to="{name:'login'}">Iniciar Sesión</router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" :to="{name:'register'}">Registro</router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" :to="{name:'allAgreements'}">Convenios</router-link>
+                </li>
+            </ul>
+        </div>
     </nav>
 </template>
 
 <style scoped>
-.menu {
+    .menu {
         display: flex;
         justify-content: flex-end;
         align-items: center;
         width: 100%;
     }
-    
+
     li {
         list-style: none;
     }
@@ -44,7 +44,7 @@
     a:hover {
         color: #fab03f !important;
     }
-    
+
     .nav-link {
         text-transform: uppercase;
         font-family: nunito;

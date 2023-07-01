@@ -1,47 +1,51 @@
 <script setup>
-import { useStore } from 'vuex';
-import { ref } from 'vue';
+  import {
+    useStore
+  } from 'vuex';
+  import {
+    ref
+  } from 'vue';
 
-const store = useStore();
+  const store = useStore();
 
-const logout = async () => {
-  store.commit("auth/clearToken");
-};
+  const logout = async () => {
+    store.commit("auth/clearToken");
+  };
 
-const subMenuStates = {
-  subMenu1: ref(false),
-  subMenu2: ref(false),
-  subMenu3: ref(false),
-  subMenu4: ref(false)
-};
+  const subMenuStates = {
+    subMenu1: ref(false),
+    subMenu2: ref(false),
+    subMenu3: ref(false),
+    subMenu4: ref(false)
+  };
 
-const showSubMenu = (subMenu) => {
-  hideAllSubMenus();
-  
-  subMenuStates[subMenu].value = true;
-};
+  const showSubMenu = (subMenu) => {
+    hideAllSubMenus();
 
-const hideSubMenu = (subMenu) => {
-  subMenuStates[subMenu].value = false;
-};
+    subMenuStates[subMenu].value = true;
+  };
 
-const hideAllSubMenus = () => {
-  for (const key in subMenuStates) {
-    subMenuStates[key].value = false;
-  }
-};
+  const hideSubMenu = (subMenu) => {
+    subMenuStates[subMenu].value = false;
+  };
+
+  const hideAllSubMenus = () => {
+    for (const key in subMenuStates) {
+      subMenuStates[key].value = false;
+    }
+  };
 </script>
 
 <template>
   <div class="menu">
     <nav class="navbar navbar-expand-lg navbar-light">
-     
+
       <div class="menu collapse navbar-collapse" id="navbarSupportedContent">
-       
+
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-        <router-link class="nav-link" to="/"><img src="../../assets/logo.png" alt="Logo" /></router-link>
-      </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/"><img src="../../assets/logo.png" alt="Logo" /></router-link>
+          </li>
           <li class="nav-item">
             <router-link class="nav-link" :to="{name:'dashboard'}">Principal</router-link>
           </li>
@@ -90,33 +94,33 @@ const hideAllSubMenus = () => {
 </template>
 
 <style scoped>
-.menu {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100%;
-}
+  .menu {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+  }
 
-li {
-  list-style: none;
-}
+  li {
+    list-style: none;
+  }
 
-img {
-  height: 30px;
-  width: 40px;
-  margin-left: 10px;
-}
+  img {
+    height: 30px;
+    width: 40px;
+    margin-left: 10px;
+  }
 
-a {
-  color: #060123 !important;
-}
+  a {
+    color: #060123 !important;
+  }
 
-a:hover {
-  color: #fab03f !important;
-}
+  a:hover {
+    color: #fab03f !important;
+  }
 
-.nav-link {
-  text-transform: uppercase;
-  font-family: nunito;
-}
+  .nav-link {
+    text-transform: uppercase;
+    font-family: nunito;
+  }
 </style>
