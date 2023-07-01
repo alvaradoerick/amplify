@@ -4,7 +4,8 @@
     } from 'vuex'
     import axios from "axios";
     import {
-        useRouter
+        useRouter,
+        useRoute
     } from 'vue-router';
     import {
         ref,
@@ -20,6 +21,7 @@
     const apiUrl = process.env["VUE_APP_BASED_URL"]
 
     const router = useRouter();
+    const route = useRoute();
     const toast = useToast();
     const store = useStore();
 
@@ -29,8 +31,7 @@
             name: "typeList"
         });
     }
-    const sendLabel = 'Crear';
-    const selectedState = ref(1);
+    const sendLabel = 'Actualizar';
     const status = ref([{
             name: 'Activo',
             value: 1
@@ -55,7 +56,7 @@
             });
         }
     };
-    const selectedContribution = ref(1);
+    const selectedContribution = ref(null);
 
     const loanType = ref({
         LoanDescription: null,
@@ -64,11 +65,15 @@
         PercentageEmployerCont: null,
         Term: null,
         InterestRate: null,
-        IsActive: selectedState
+        IsActive: null
     })
 
+    const typeId = ref(route.params.id);
     const rules = {
         LoanDescription: {
+            required
+        },
+        ContributionUsageId: {
             required
         },
         PercentageEmployeeCont: {
@@ -86,7 +91,8 @@
     };
 
     const storeType = async () => {
-        await store.dispatch('loanTypes/addType', {
+        await store.dispatch('loanTypes/updateType', {
+            typeId: typeId.value,
             loanType: loanType.value
         })
     }
@@ -107,15 +113,40 @@
         return true;
     }
 
+
+    const fetchTypeData = async () => {
+        await store.dispatch('loanTypes/getTypeById', {
+            rowId: typeId.value
+        });
+
+        const type = store.getters["loanTypes/getType"];
+        try {
+            loanType.value.LoanDescription = type.LoanDescription,
+                selectedContribution.value = type.ContributionUsageId,
+                loanType.value.PercentageEmployeeCont = type.PercentageEmployeeCont,
+                loanType.value.PercentageEmployerCont = type.PercentageEmployerCont,
+                loanType.value.Term = type.Term,
+                loanType.value.InterestRate = type.InterestRate,
+                loanType.value.IsActive = type.IsActive ? 1 : 0;
+        } catch (error) {
+            toast.add({
+                severity: 'error',
+                detail: error,
+                life: 2000
+            });
+        }
+    };
+
     const submitData = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
+        if (isValid) {
             if (isValid) {
                 try {
                     await storeType();
                     toast.add({
                         severity: 'success',
-                        detail: "Su tipo de préstamo ha sido agregado.",
+                        detail: "Sus cambios han sido guardados.",
                         life: 2000
                     });
                     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -127,11 +158,12 @@
                         life: 2000
                     });
                 }
+            }
         }
     }
 
 
-    onMounted(fetchContributionData);
+    onMounted(fetchTypeData(), fetchContributionData());
 </script>
 
 <template>
@@ -156,7 +188,7 @@
                     </div>
 
                     <div class="p-float-label form-margin-left">
-                        <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
+                        <drop-down v-model="loanType.IsActive" :options="status" optionLabel="name" optionValue="value"
                             placeholder="Estado" class="dropdown" id="status"
                             :class="{'hasError': v$?.IsActive?.$error}" />
                         <label for="status">Estado</label>
@@ -184,17 +216,16 @@
                         <span class="percentage-sign">%</span>
                     </div>
                     <div class="p-float-label form-margin-left" v-if="selectedContribution == '1'">
-                        <input-number placeholder="Plazo" class=" input-text" id="term"  
-                            v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}"/>
+                        <input-number placeholder="Plazo" class=" input-text" id="term" type="text"
+                            v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
                         <label for="term">Plazo (meses)</label>
                     </div>
                 </div>
                 <div class="form-row" v-if="selectedContribution == '2'">
                     <div class="p-float-label form-margin-right">
-                        <input-number placeholder="Plazo" class=" input-text" id="term" 
-                            v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}"/>
+                        <input-number placeholder="Plazo" class=" input-text" id="term" type="text"
+                            v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
                         <label for="term">Plazo (meses)</label>
-              
                     </div>
                 </div>
             </div>
@@ -263,10 +294,5 @@
         margin-right: 1rem;
     }
 
-    .percentage-sign {
-        position: absolute;
-        top: 50%;
-        right: 1rem;
-        transform: translateY(-50%);
-    }
+
 </style>

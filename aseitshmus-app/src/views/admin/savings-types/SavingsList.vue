@@ -27,33 +27,35 @@
     const deletionStatus = ref(false);
 
     const fetchTypeData = async () => {
-        await store.dispatch('loanTypes/getAllTypes');
-        const types = store.getters['loanTypes/getType'];
+        await store.dispatch('savingsTypes/getAllTypes');
+        const types = store.getters['savingsTypes/getType'];
         typeData.value = types.map(type => {
             return {
                 ...type,
-                IsActive: type.IsActive ? "Activo" : "Inactivo"
+                IsActive: type.IsActive ? "Activo" : "Inactivo",
+                ApplicationDeadline: new Date(type.ApplicationDeadline).toLocaleString("es-ES", dateFormat),
+                StartDate: new Date(type.StartDate).toLocaleString("es-ES", dateFormat),
             };
         });
     };
 
     const storeType = async (id) => {
-        await store.dispatch('loanTypes/deleteType', {
+        await store.dispatch('savingsTypes/deleteType', {
             rowId: id
         })
     }
 
     const deleteResponse = computed(() => {
-        return store.getters["loanTypes/getErrorResponse"];
+        return store.getters["savingsTypes/getErrorResponse"];
     });
 
     const deleteRecord = async (rowData) => {
         try {
-            await storeType(rowData.data.LoansTypeId);
+            await storeType(rowData.data.SavingsTypeId);
             if (deleteResponse.value === null) {
                 toast.add({
                     severity: 'warn',
-                    detail: "Tipo de préstamo ha sido eliminado.",
+                    detail: "Tipo de ahorro ha sido eliminado.",
                     life: 2000
                 });
                 deletionStatus.value = true;
@@ -63,7 +65,7 @@
                     detail: deleteResponse.value,
                     life: 3000
                 });
-                store.commit('loanTypes/clearErrorResponse');
+                store.commit('savingsTypes/clearErrorResponse');
             }
         } catch (error) {
             toast.add({
@@ -73,7 +75,11 @@
             });
         }
     };
-
+    const dateFormat = {
+        day: "numeric",
+        month: "numeric",
+        year: "numeric"
+    };
     watch(deletionStatus, (newStatus) => {
         if (newStatus) {
             fetchTypeData();
@@ -89,15 +95,15 @@
 
     const addRecord = () => {
         router.push({
-            name: "createType"
+            name: "createSavingsType"
         });
     }
 
     const updateRecord = (rowData) => {
         router.push({
-            name: "updateType",
+            name: "updateSavingsType",
             params: {
-                id: rowData.data.LoansTypeId
+                id: rowData.data.SavingsTypeId
             },
             props: true,
         });
@@ -109,8 +115,9 @@
     <toast-component />
     <div class="list">
         <DataTable :value="typeData" paginator :rows="3" tableStyle="min-width: 80rem">
-            <Column field="Description" header="Tipo de préstamo" sortable></Column>
-            <Column field="Term" header="Plazo (meses)" sortable></Column>
+            <Column field="Description" header="Tipo de ahorro" sortable></Column>
+            <Column field="ApplicationDeadline" header="Último día de inscripción" sortable></Column>
+            <Column field="StartDate" header="Fecha de inicio" sortable></Column>
             <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
             <Column header="" style="width: 100px"> <template #body="rowData">
                     <base-button class="action-buttons" label="Editar" @click="updateRecord(rowData)"
@@ -132,7 +139,7 @@
 </template>
 
 <style scoped="scoped">
-    .clist {
+    .list {
         display: flex;
         flex-direction: column;
         align-items: center;

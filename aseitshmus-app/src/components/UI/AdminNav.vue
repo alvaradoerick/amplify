@@ -11,7 +11,8 @@ const logout = async () => {
 const subMenuStates = {
   subMenu1: ref(false),
   subMenu2: ref(false),
-  subMenu3: ref(false)
+  subMenu3: ref(false),
+  subMenu4: ref(false)
 };
 
 const showSubMenu = (subMenu) => {
@@ -68,6 +69,14 @@ const hideAllSubMenus = () => {
             <ul v-show="subMenuStates.subMenu3" class="sub-menu">
               <li>
                 <router-link class="nav-link" :to="{name:'typeList'}">Lista de tipos de préstamos</router-link>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item" @mouseover="showSubMenu('subMenu4')" @mouseleave="hideSubMenu('subMenu4')">
+            <a class="nav-link">Ahorros</a>
+            <ul v-show="subMenuStates.subMenu3" class="sub-menu">
+              <li>
+                <router-link class="nav-link" :to="{name:'savingsList'}">Lista de tipos de ahorros</router-link>
               </li>
             </ul>
           </li>

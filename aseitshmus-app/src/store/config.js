@@ -4,6 +4,7 @@ import agreements from "./modules/agreements";
 import beneficiaries from "./modules/beneficiaries";
 import categories from "./modules/categories";
 import loanTypes from "./modules/loanTypes";
+import savingsTypes from "./modules/savingsTypes";
 
 export default {
     namespaced: true,
@@ -15,6 +16,7 @@ export default {
         beneficiaries,
         categories,
         loanTypes,
+        savingsTypes,
 
     },
 
