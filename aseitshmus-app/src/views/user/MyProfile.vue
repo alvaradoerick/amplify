@@ -214,19 +214,19 @@
                 <div class="p-float-label">
                     <input-mask class="input-text form-margin-right" id="employee-phone" type="text"
                         placeholder="Número telefónico" v-model="personalInfo.PhoneNumber"
-                        :class="{'hasError': (v$?.PhoneNumber?.$error) }" mask="9999-9999" />
+                        :class="{'p-invalid': (v$?.PhoneNumber?.$error) }" mask="9999-9999" />
                     <label for="employee-code">Número telefónico</label>
                 </div>
                 <div class="p-float-label">
                     <input-text class="input-text" id="employee-account" type="text" placeholder="Cuenta IBAN"
-                        v-model="personalInfo.BankAccount" :class="{'hasError': (v$?.BankAccount?.$error) }" />
+                        v-model="personalInfo.BankAccount" :class="{'p-invalid': (v$?.BankAccount?.$error) }" />
                     <label for="employee-code">Cuenta IBAN</label>
                 </div>
             </div>
             <div class="form-row">
                 <div class="p-float-label">
                     <input-text placeholder="Dirección 1" class="dropdown form-margin-right" id="employee-address1"
-                        type="text" v-model="personalInfo.Address1" :class="{'hasError': (v$?.Address1?.$error ) }" />
+                        type="text" v-model="personalInfo.Address1" :class="{'p-invalid': (v$?.Address1?.$error ) }" />
                     <label for="employee-code">Dirección 1</label>
                 </div>
                 <div class="p-float-label">
@@ -239,13 +239,13 @@
                 <div class="p-float-label">
                     <drop-down class="dropdown form-margin-right" :options="provincias" v-model="selectedProvincia"
                         optionLabel="ProvinceName" optionValue="ProvinceId" @onChange="onProvinciaChange"
-                        placeholder="Provincia" :class="{'hasError': (v$?.selectedProvincia?.$error) }" />
+                        placeholder="Provincia" :class="{'p-invalid': (v$?.selectedProvincia?.$error) }" />
                     <label for="employee-code">Provincia</label>
                 </div>
                 <div class="p-float-label">
                     <drop-down class="dropdown" :options="cantones" v-model="selectedCanton" optionLabel="CantonName"
                         optionValue="CantonId" @onChange="onCantonChange" placeholder="Cantón"
-                        :class="{'hasError': (v$?.selectedCanton?.$error) }" />
+                        :class="{'p-invalid': (v$?.selectedCanton?.$error) }" />
                     <label for="employee-code">Cantón</label>
                 </div>
             </div>
@@ -253,12 +253,12 @@
                 <div class="p-float-label">
                     <drop-down class="dropdown form-margin-right" :options="distritos" v-model="selectedDistrito"
                         optionLabel="DistrictName" optionValue="DistrictId" placeholder="Distrito"
-                        :class="{'hasError': (v$?.selectedDistrito?.$error) }" />
+                        :class="{'p-invalid': (v$?.selectedDistrito?.$error) }" />
                     <label for="employee-code">Distrito</label>
                 </div>
                 <div class="p-float-label">
                     <input-text class="input-text" id="employee-zip" type="text" v-model="personalInfo.PostalCode"
-                        placeholder="Código postal" :class="{'hasError': (v$?.PostalCode?.$error) }" />
+                        placeholder="Código postal" :class="{'p-invalid': (v$?.PostalCode?.$error) }" />
                     <label for="employee-code">Código postal</label>
                 </div>
             </div>
@@ -305,11 +305,6 @@
     .form-margin-left {
         margin-left: 6rem;
     }
-
-    .hasError {
-        border-color: red;
-    }
-
     .actions {
         display: flex;
         flex: 1;

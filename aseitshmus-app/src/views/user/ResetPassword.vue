@@ -139,7 +139,7 @@
             <div class="form-row">
                 <div class="p-float-label">
                     <input-text class="input-text" id="password"
-                        :class="{ 'hasError': (v$?.password?.$error || isInvalidData) }" type="password"
+                        :class="{ 'p-invalid': (v$?.password?.$error || isInvalidData) }" type="password"
                         v-model="password" autocomplete="password" placeholder="Contraseña" />
                     <label for="password">Contraseña</label>
                 </div>
@@ -147,7 +147,7 @@
             <div class="form-row">
                 <div class="p-float-label">
                     <input-text class="input-text" id="reenter-password"
-                        :class="{ 'hasError': (v$?.confirmPassword?.$error || isInvalidData) }" type="password"
+                        :class="{ 'p-invalid': (v$?.confirmPassword?.$error || isInvalidData) }" type="password"
                         v-model="confirmPassword" autocomplete="confirmPassword" placeholder="Reingrese contraseña" />
                     <label for="reenter-password">Reingrese contraseña</label>
                 </div>
@@ -166,10 +166,6 @@
         justify-content: center;
         align-items: center;
         height: 48vh;
-    }
-
-    .hasError {
-        border-color: red;
     }
 
     .container {

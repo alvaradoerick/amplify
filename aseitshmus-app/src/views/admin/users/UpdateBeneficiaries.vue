@@ -243,11 +243,7 @@
         flex: 1;
         margin-right: 1rem;
     }
-
-
-    .hasError  {
-    border-color: red;        
-    }
+    
     .dropdown,
     .input-text {
         width: 200px;
