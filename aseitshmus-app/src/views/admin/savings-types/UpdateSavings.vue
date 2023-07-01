@@ -2,7 +2,6 @@
     import {
         useStore
     } from 'vuex'
-    import axios from "axios";
     import {
         useRouter,
         useRoute
@@ -18,7 +17,7 @@
         required
     } from '@vuelidate/validators'
     import useVuelidate from '@vuelidate/core'
-    const apiUrl = process.env["VUE_APP_BASED_URL"]
+
 
     const router = useRouter();
     const route = useRoute();
@@ -28,7 +27,7 @@
     const backLabel = 'Cancelar';
     const typeList = () => {
         router.push({
-            name: "typeList"
+            name: "savingsList"
         });
     }
     const sendLabel = 'Actualizar';
@@ -41,48 +40,26 @@
             value: 0
         }
     ]);
-
-    const contributionName = ref(null)
-
-    const fetchContributionData = async () => {
-        try {
-            const response = await axios.get(`${apiUrl}/contributionusage`);
-            contributionName.value = response.data;
-        } catch (error) {
-            toast.add({
-                severity: 'error',
-                detail: error,
-                life: 2000
-            });
-        }
-    };
-    const selectedContribution = ref(null);
-
-    const loanType = ref({
-        LoanDescription: null,
-        ContributionUsageId: selectedContribution,
-        PercentageEmployeeCont: null,
-        PercentageEmployerCont: null,
-        Term: null,
-        InterestRate: null,
+    const savingsType = ref({
+        Description: null,
+        ApplicationDeadline: null,
+        StartDate: null,
+        EndDate: null,
         IsActive: null
     })
 
     const typeId = ref(route.params.id);
     const rules = {
-        LoanDescription: {
+        Description: {
             required
         },
-        ContributionUsageId: {
+        ApplicationDeadline: {
             required
         },
-        PercentageEmployeeCont: {
+        StartDate: {
             required
         },
-        Term: {
-            required
-        },
-        InterestRate: {
+        EndDate: {
             required
         },
         IsActive: {
@@ -91,13 +68,13 @@
     };
 
     const storeType = async () => {
-        await store.dispatch('loanTypes/updateType', {
+        await store.dispatch('savingsTypes/updateType', {
             typeId: typeId.value,
-            loanType: loanType.value
+            savingsType: savingsType.value
         })
     }
 
-    const v$ = useVuelidate(rules, loanType);
+    const v$ = useVuelidate(rules, savingsType);
     const validateForm = async () => {
         const result = await v$.value.$validate();
         if (!result) {
@@ -115,19 +92,17 @@
 
 
     const fetchTypeData = async () => {
-        await store.dispatch('loanTypes/getTypeById', {
+        await store.dispatch('savingsTypes/getTypeById', {
             rowId: typeId.value
         });
 
-        const type = store.getters["loanTypes/getType"];
+        const type = store.getters["savingsTypes/getType"];
         try {
-            loanType.value.LoanDescription = type.LoanDescription,
-                selectedContribution.value = type.ContributionUsageId,
-                loanType.value.PercentageEmployeeCont = type.PercentageEmployeeCont,
-                loanType.value.PercentageEmployerCont = type.PercentageEmployerCont,
-                loanType.value.Term = type.Term,
-                loanType.value.InterestRate = type.InterestRate,
-                loanType.value.IsActive = type.IsActive ? 1 : 0;
+            savingsType.value.Description = type.Description,
+            savingsType.value.ApplicationDeadline =   new Date(type.ApplicationDeadline),
+            savingsType.value.StartDate =   new Date(type.StartDate),
+            savingsType.value.EndDate =   new Date(type.EndDate),
+            savingsType.value.IsActive = type.IsActive ? 1 : 0;
         } catch (error) {
             toast.add({
                 severity: 'error',
@@ -163,7 +138,7 @@
     }
 
 
-    onMounted(fetchTypeData(), fetchContributionData());
+    onMounted(fetchTypeData);
 </script>
 
 <template>
@@ -175,57 +150,37 @@
                 <div class="form-row">
                     <div class="p-float-label">
                         <input-text placeholder="Tipo de préstamo" class=" input-text form-margin-right" id="typeName"
-                            type="text" v-model="loanType.LoanDescription"
-                            :class="{'hasError': v$?.LoanDescription?.$error}" />
+                            type="text" v-model="savingsType.Description"
+                            :class="{'p-invalid': v$?.LoanDescription?.$error}" />
                         <label for="typeName">Tipo de préstamo</label>
                     </div>
-
                     <div class="p-float-label">
-                        <input-number placeholder="Interés" class=" input-text" id="interest-rate" type="text"
-                            v-model="loanType.InterestRate" :class="{'hasError': v$?.InterestRate?.$error}" :maxFractionDigits="2" />
-                        <label for="interest-rate">Interés</label>
-                        <span class="percentage-sign">%</span>
+                        <date-picker v-model="savingsType.ApplicationDeadline" placeholder="Último día de inscripción"
+                            class="dropdown form-margin-right" dateFormat="dd-mm-yy" showIcon id="last-day"
+                            :class="{'p-invalid': v$?.ApplicationDeadline?.$error }" />
+                        <label for="last-day">Último día de inscripción</label>
                     </div>
 
                     <div class="p-float-label form-margin-left">
-                        <drop-down v-model="loanType.IsActive" :options="status" optionLabel="name" optionValue="value"
+                        <drop-down v-model="savingsType.IsActive" :options="status" optionLabel="name" optionValue="value"
                             placeholder="Estado" class="dropdown" id="status"
-                            :class="{'hasError': v$?.IsActive?.$error}" />
+                            :class="{'p-invalid': v$?.IsActive?.$error}" />
+                        <label for="status">Estado</label>
                         <label for="status">Estado</label>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="p-float-label form-margin-right">
-                        <drop-down v-model="selectedContribution" :options="contributionName" optionLabel="Description"
-                            optionValue="ContributionUsageId" class="dropdownLarger" id="contributionUsage"
-                            :class="{'hasError': v$?.selectedContribution?.$error}" />
-                        <label for="contributionUsage">Capacidad</label>
+                    <div class="p-float-label">
+                        <date-picker v-model="savingsType.StartDate" placeholder="Fecha de inicio"
+                            class="dropdown form-margin-right" dateFormat="dd-mm-yy" showIcon id="start-day"
+                            :class="{'p-invalid': v$?.StartDate?.$error }" />
+                        <label for="start-day">Fecha de inicio</label>
                     </div>
                     <div class="p-float-label">
-                        <input-number placeholder="Porcentaje ahorro obrero" class=" input-text" id="percentage-employee"
-                            type="text" v-model="loanType.PercentageEmployeeCont "
-                            :class="{'hasError': v$?.PercentageEmployeeCont?.$error}" :maxFractionDigits="2" />
-                        <label for="percentage-employee">Porcentaje ahorro obrero</label>
-                        <span class="percentage-sign">%</span>
-                    </div>
-                    <div class="p-float-label form-margin-left" v-if="selectedContribution == '2'">
-                        <input-number placeholder="Porcentaje ahorro patronal" class="input-text" id="percentage-employer"
-                            type="text" v-model="loanType.PercentageEmployerCont"
-                            :class="{'hasError': v$?.PercentageEmployerCont?.$error}" :maxFractionDigits="2" />
-                        <label for="percentage-employer ">Porcentaje ahorro patronal</label>
-                        <span class="percentage-sign">%</span>
-                    </div>
-                    <div class="p-float-label form-margin-left" v-if="selectedContribution == '1'">
-                        <input-number placeholder="Plazo" class=" input-text" id="term" type="text"
-                            v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
-                        <label for="term">Plazo (meses)</label>
-                    </div>
-                </div>
-                <div class="form-row" v-if="selectedContribution == '2'">
-                    <div class="p-float-label form-margin-right">
-                        <input-number placeholder="Plazo" class=" input-text" id="term" type="text"
-                            v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
-                        <label for="term">Plazo (meses)</label>
+                        <date-picker v-model="savingsType.EndDate" placeholder="Fecha de finalización"
+                            class="dropdown form-margin-right" dateFormat="dd-mm-yy" showIcon id="end-day"
+                            :class="{'p-invalid': v$?.EndDate?.$error }" />
+                        <label for="end-day">Fecha de finalización</label>
                     </div>
                 </div>
             </div>
@@ -253,10 +208,6 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-    }
-
-    .hasError {
-        border-color: red;
     }
 
     .dropdownLarger {

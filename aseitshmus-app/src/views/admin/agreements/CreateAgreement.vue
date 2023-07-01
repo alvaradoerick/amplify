@@ -158,25 +158,25 @@
             <div class="form-row">
                 <div class="p-float-label">
                 <input-text placeholder="Convenio" class=" input-text form-margin-right" id="agreementName" type="text"
-                    v-model="agreementData.Title" :class="{'hasError': v$?.Title?.$error}" />
+                    v-model="agreementData.Title" :class="{'p-invalid': v$?.Title?.$error}" />
                     <label for="agreementName">Convenio</label>
                 </div>
                     <div class="p-float-label">
                 <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
-                    placeholder="Estado" class="dropdown" id="status" :class="{'hasError': v$?.selectedState?.$error}" />
+                    placeholder="Estado" class="dropdown" id="status" :class="{'p-invalid': v$?.selectedState?.$error}" />
                     <label or="status">Estado</label>
                 </div>
                     <div class="p-float-label form-margin-left">
                 <drop-down v-model="selectedCategory" :options="categories" optionLabel="Description"
                     optionValue="CategoryAgreementId" class="dropdownLarger " id="category"
-                    :class="{'hasError': v$?.CategoryAgreementId?.$error}" />
+                    :class="{'p-invalid': v$?.CategoryAgreementId?.$error}" />
                     <label for="category">Categoría</label>
                 </div>
             </div>
             <div class="form-row">
                 <div class="p-float-label">
                 <Textarea id="description" placeholder="Descripción" v-model="agreementData.Description" rows="5"
-                    cols="45" class="form-margin-right" :class="{'hasError': v$?.Description?.$error}" ></Textarea>
+                    cols="45" class="form-margin-right" :class="{'p-invalid': v$?.Description?.$error}" ></Textarea>
                     <label for="description">Descripción</label>
                 </div>
             </div>             
@@ -210,9 +210,6 @@
     .dropdownLarger {
         display: flex;
         width: 300px;
-    }
-    .hasError {
-        border-color: red;
     }
 
     .form-row {

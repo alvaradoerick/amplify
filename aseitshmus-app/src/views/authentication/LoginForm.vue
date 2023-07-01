@@ -142,13 +142,13 @@
                 <div class="form-row">   
                     <div class="p-float-label">       
                     <input-text class="input-text " type="email" id="email-address" v-model="formData.EmailAddress"
-                        placeholder="Correo eléctronico" :class="{'hasError': (v$?.EmailAddress?.$error || isInvalidData) }" />
+                        placeholder="Correo eléctronico" :class="{'p-invalid': (v$?.EmailAddress?.$error || isInvalidData) }" />
                         <label for="email-address">Correo eléctronico</label>
                 </div>  
             </div>
                 <div class="form-row">
                     <div class="p-float-label"> 
-                    <input-text class="input-text" id="password" :class="{ 'hasError': (v$?.Pw?.$error || isInvalidData) }" type="password" v-model="formData.Pw"
+                    <input-text class="input-text" id="password" :class="{ 'p-invalid': (v$?.Pw?.$error || isInvalidData) }" type="password" v-model="formData.Pw"
                         autocomplete="formData.Pw" placeholder="Contraseña" />
                         <label for="password">Contraseña</label>
                 </div>
@@ -184,9 +184,6 @@
 .title{
     margin-bottom: 3rem;
 }
-    .hasError  {
-    border-color: red;        
-    }
 
     .form-row {
         display: flex;

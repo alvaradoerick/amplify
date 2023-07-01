@@ -139,13 +139,13 @@
                     <div class="p-float-label">
                         <input-text placeholder="Nombre" class=" input-text form-margin-right" id="categoryName"
                             type="text" v-model="agreementCategory.Description"
-                            :class="{'hasError': v$?.Description?.$error}" />
+                            :class="{'p-invalid': v$?.Description?.$error}" />
                         <label for="categoryName">Nombre</label>
                     </div>
                     <div class="p-float-label">
                         <drop-down v-model="agreementCategory.IsActive" :options="status" optionLabel="name"
                             optionValue="value" placeholder="Estado" class="dropdown" id="status"
-                            :class="{'hasError': v$?.IsActive?.$error}" />
+                            :class="{'p-invalid': v$?.IsActive?.$error}" />
                         <label for="status" :class="{'float-label': agreementCategory.IsActive !== 0}">Estado</label>
 
                     </div>
@@ -180,10 +180,6 @@
     .dropdownLarger {
         display: flex;
         width: 300px;
-    }
-
-    .hasError {
-        border-color: red;
     }
 
     .form-row {

@@ -176,13 +176,13 @@
                     <div class="p-float-label">
                         <input-text placeholder="Tipo de préstamo" class=" input-text form-margin-right" id="typeName"
                             type="text" v-model="loanType.LoanDescription"
-                            :class="{'hasError': v$?.LoanDescription?.$error}" />
+                            :class="{'p-invalid': v$?.LoanDescription?.$error}" />
                         <label for="typeName">Tipo de préstamo</label>
                     </div>
 
                     <div class="p-float-label">
                         <input-number placeholder="Interés" class=" input-text" id="interest-rate" type="text"
-                            v-model="loanType.InterestRate" :class="{'hasError': v$?.InterestRate?.$error}" :maxFractionDigits="2" />
+                            v-model="loanType.InterestRate" :class="{'p-invalid': v$?.InterestRate?.$error}" :maxFractionDigits="2" />
                         <label for="interest-rate">Interés</label>
                         <span class="percentage-sign">%</span>
                     </div>
@@ -190,7 +190,7 @@
                     <div class="p-float-label form-margin-left">
                         <drop-down v-model="loanType.IsActive" :options="status" optionLabel="name" optionValue="value"
                             placeholder="Estado" class="dropdown" id="status"
-                            :class="{'hasError': v$?.IsActive?.$error}" />
+                            :class="{'p-invalid': v$?.IsActive?.$error}" />
                         <label for="status">Estado</label>
                     </div>
                 </div>
@@ -198,33 +198,33 @@
                     <div class="p-float-label form-margin-right">
                         <drop-down v-model="selectedContribution" :options="contributionName" optionLabel="Description"
                             optionValue="ContributionUsageId" class="dropdownLarger" id="contributionUsage"
-                            :class="{'hasError': v$?.selectedContribution?.$error}" />
+                            :class="{'p-invalid': v$?.selectedContribution?.$error}" />
                         <label for="contributionUsage">Capacidad</label>
                     </div>
                     <div class="p-float-label">
                         <input-number placeholder="Porcentaje ahorro obrero" class=" input-text" id="percentage-employee"
                             type="text" v-model="loanType.PercentageEmployeeCont "
-                            :class="{'hasError': v$?.PercentageEmployeeCont?.$error}" :maxFractionDigits="2" />
+                            :class="{'p-invalid': v$?.PercentageEmployeeCont?.$error}" :maxFractionDigits="2" />
                         <label for="percentage-employee">Porcentaje ahorro obrero</label>
                         <span class="percentage-sign">%</span>
                     </div>
                     <div class="p-float-label form-margin-left" v-if="selectedContribution == '2'">
                         <input-number placeholder="Porcentaje ahorro patronal" class="input-text" id="percentage-employer"
                             type="text" v-model="loanType.PercentageEmployerCont"
-                            :class="{'hasError': v$?.PercentageEmployerCont?.$error}" :maxFractionDigits="2" />
+                            :class="{'p-invalid': v$?.PercentageEmployerCont?.$error}" :maxFractionDigits="2" />
                         <label for="percentage-employer ">Porcentaje ahorro patronal</label>
                         <span class="percentage-sign">%</span>
                     </div>
                     <div class="p-float-label form-margin-left" v-if="selectedContribution == '1'">
                         <input-number placeholder="Plazo" class=" input-text" id="term" type="text"
-                            v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
+                            v-model="loanType.Term" :class="{'p-invalid': v$?.Term?.$error}" />
                         <label for="term">Plazo (meses)</label>
                     </div>
                 </div>
                 <div class="form-row" v-if="selectedContribution == '2'">
                     <div class="p-float-label form-margin-right">
                         <input-number placeholder="Plazo" class=" input-text" id="term" type="text"
-                            v-model="loanType.Term" :class="{'hasError': v$?.Term?.$error}" />
+                            v-model="loanType.Term" :class="{'p-invalid': v$?.Term?.$error}" />
                         <label for="term">Plazo (meses)</label>
                     </div>
                 </div>
@@ -253,10 +253,6 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-    }
-
-    .hasError {
-        border-color: red;
     }
 
     .dropdownLarger {

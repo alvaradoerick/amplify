@@ -120,21 +120,20 @@
                     <div class="p-float-label">
                         <input-text placeholder="Tipo de ahorro" class=" input-text form-margin-right" id="typeName"
                             type="text" v-model="savingsType.Description"
-                            :class="{'hasError': v$?.Description?.$error}" />
+                            :class="{'p-invalid': v$?.Description?.$error}" />
                         <label for="typeName">Tipo de ahorro</label>
                     </div>
-
                     <div class="p-float-label">
                         <date-picker v-model="savingsType.ApplicationDeadline" placeholder="Último día de inscripción"
                             class="dropdown form-margin-right" dateFormat="dd-mm-yy" showIcon id="last-day"
-                            :class="{'hasError': v$?.ApplicationDeadline?.$error }" />
+                            :class="{'p-invalid': v$?.ApplicationDeadline?.$error }" />
                         <label for="last-day">Último día de inscripción</label>
                     </div>
 
                     <div class="p-float-label form-margin-left">
                         <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
                             placeholder="Estado" class="dropdown" id="status"
-                            :class="{'hasError': v$?.IsActive?.$error}" />
+                            :class="{'p-invalid': v$?.IsActive?.$error}" />
                         <label for="status">Estado</label>
                     </div>
                 </div>
@@ -142,13 +141,13 @@
                     <div class="p-float-label">
                         <date-picker v-model="savingsType.StartDate" placeholder="Fecha de inicio"
                             class="dropdown form-margin-right" dateFormat="dd-mm-yy" showIcon id="start-day"
-                            :class="{'hasError': v$?.StartDate?.$error }" />
+                            :class="{'p-invalid': v$?.StartDate?.$error}" />
                         <label for="start-day">Fecha de inicio</label>
                     </div>
                     <div class="p-float-label">
                         <date-picker v-model="savingsType.EndDate" placeholder="Fecha de finalización"
                             class="dropdown form-margin-right" dateFormat="dd-mm-yy" showIcon id="end-day"
-                            :class="{'hasError': v$?.EndDate?.$error }" />
+                            :class="{'p-invalid': v$?.EndDate?.$error }" />
                         <label for="end-day">Fecha de finalización</label>
                     </div>
                 </div>
@@ -177,10 +176,6 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-    }
-
-    .hasError {
-        border-color: red;
     }
 
     .dropdownLarger {

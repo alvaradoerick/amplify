@@ -122,7 +122,7 @@
             <div class="form-row">
                 <div class="p-float-label">         
                     <input-text class="input-text " type="email" id="email-address" v-model="resetData.EmailAddress"
-                    placeholder="Correo eléctronico" :class="{'hasError': v$?.EmailAddress?.$error || isValiData }" />
+                    placeholder="Correo eléctronico" :class="{'p-invalid': v$?.EmailAddress?.$error || isValiData }" />
                         <label for="email-address">Correo eléctronico</label>
                 </div> 
             </div>
@@ -159,10 +159,6 @@
         justify-content: center;
         align-items: center;
         height: 28vh;
-    }
-
-    .hasError {
-        border-color: red;
     }
 
     .container {
