@@ -34,7 +34,7 @@ const routes = [{
 
   {
     path: '/my-dashboard',
-    name: 'myDashboard',
+    name: 'my-dashboard',
     component: () => import('../layouts/UserView.vue' /* webpackChunkName: "UserView" */ ),
     children: [{
         //dashboard
@@ -62,13 +62,33 @@ const routes = [{
           title: 'Convenios Activos',
         }
       },
-
+//change pw
       {
         path: '/password',
         name: 'changePassword',
         component: () => import('../views/user/ResetPassword.vue' /* webpackChunkName: "ResetPassword" */ ),
         meta: {
           title: 'Cambiar Contraseña',
+        }
+
+      },
+      //request loan
+      {
+        path: '/loan',
+        name: 'requestLoan',
+        component: () => import('../views/user/RequestLoan.vue' /* webpackChunkName: "RequestLoan" */ ),
+        meta: {
+          title: 'Solicitar Préstamo',
+        }
+
+      },
+      //request savings
+      {
+        path: '/savings',
+        name: 'requestSavings',
+        component: () => import('../views/user/RequestSavings.vue' /* webpackChunkName: "RequestSavings" */ ),
+        meta: {
+          title: 'Solicitar Ahorro',
         }
 
       }

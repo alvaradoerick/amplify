@@ -118,15 +118,12 @@
         return true;
     }
 
-
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
         if (isValid) {
-            try {
-                
+            try {               
                 await storeAgreement();
-                console.log(agreementData.value)
                 toast.add({
                     severity: 'success',
                     detail: "Su convenio ha sido agregado.",
@@ -164,7 +161,7 @@
                     <div class="p-float-label">
                 <drop-down v-model="selectedState" :options="status" optionLabel="name" optionValue="value"
                     placeholder="Estado" class="dropdown" id="status" :class="{'p-invalid': v$?.selectedState?.$error}" />
-                    <label or="status">Estado</label>
+                    <label for="status">Estado</label>
                 </div>
                     <div class="p-float-label form-margin-left">
                 <drop-down v-model="selectedCategory" :options="categories" optionLabel="Description"

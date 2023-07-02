@@ -28,7 +28,7 @@
     const password = ref(null);
     const confirmPassword = ref(null);
     const backLabel = 'Principal';
-    const sendLabel = 'Cambiar';
+    const sendLabel = 'Actualizar';
     const isInvalidData = ref(false)
 
     const homePage = () => {
@@ -133,8 +133,9 @@
 </script>
 
 <template>
-    <div class="center-container">
+     <div class="password-container">
         <toast-component />
+        <div class="form">
         <div class="container">
             <div class="form-row">
                 <div class="p-float-label">
@@ -153,21 +154,32 @@
                 </div>
             </div>
         </div>
+        <div class="actions">
+        <base-button small :label="backLabel" @click="homePage" :type="'button'" />
+        <base-button small :label="sendLabel" @click="onSend" :type="'submit'" />
     </div>
-    <div class="actions">
-        <base-button :label="backLabel" @click="homePage" :type="'button'" />
-        <base-button :label="sendLabel" @click="onSend" :type="'submit'" />
     </div>
+    
+</div>
 </template>
 
 <style scoped>
-    .center-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 48vh;
-    }
+ .password-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+    margin: 1rem;
+    padding: 2rem;
+}
 
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
     .container {
         display: flex;
         flex-direction: column;
@@ -185,10 +197,15 @@
     }
 
     .actions {
+        margin-top: 2rem;
         display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+    }
 
+    .actions button {
+        flex: 1;
+        margin-right: 1rem;
     }
 </style>

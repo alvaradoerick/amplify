@@ -121,8 +121,8 @@
                 </div>
             </div>
             <div class="actions">
-                <base-button :label="backLabel" :small="true" @click="categoryList" :type="'button'" />
-                <base-button :label="sendLabel" :small="true" @click="onSend" :type="'submit'" />
+                <base-button :label="backLabel" small @click="categoryList" :type="'button'" />
+                <base-button :label="sendLabel" small @click="onSend" :type="'submit'" />
             </div>
         </div>
     </div>

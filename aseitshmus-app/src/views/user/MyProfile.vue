@@ -200,7 +200,9 @@
 <template>
     <div class="main">
         <toast-component />
-        <div class="form-column">
+        
+        <div class="form">
+            <div class="form-column">
             <p><label><b>Código de empleado: </b></label>
                 {{ PersonId }}</p>
             <p><label><b>Número de identificación: </b> </label>
@@ -209,7 +211,7 @@
                 {{ FirstName }} {{ LastName1 }}
                 {{ LastName2 }}</p>
         </div>
-        <div class="header">
+            <div>
             <div class="form-row">
                 <div class="p-float-label">
                     <input-mask class="input-text form-margin-right" id="employee-phone" type="text"
@@ -264,23 +266,29 @@
             </div>
         </div>
         <div class="actions">
-            <base-button :label="backLabel" @click="homePage" :type="'button'" />
-            <base-button :label="sendLabel" @click="submitData" :type="'submit'" />
+            <base-button small :label="backLabel" @click="homePage" :type="'button'" />
+            <base-button small :label="sendLabel" @click="submitData" :type="'submit'" />
         </div>
+    </div>
     </div>
 </template>
 <style scoped="scoped">
-    .main {
+   .main {
         display: flex;
-        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ebebeb;
+        border-radius: 5px;
+        margin: 1rem;
+        padding: 2rem;
     }
 
-    .header {
+    .form {
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
-
     .form-column {
         display: flex;
         flex-direction: column;
@@ -306,9 +314,15 @@
         margin-left: 6rem;
     }
     .actions {
+        margin-top: 2rem;
         display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        align-self: flex-end;
+    }
+
+    .actions button {
         flex: 1;
-        align-items: center;
-        justify-content: space-between;
+        margin-right: 1rem;
     }
 </style>

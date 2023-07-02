@@ -112,7 +112,7 @@
 <template>
      <div class="password-container">
     <toast-component />
-    <div class="password-form">
+    <div class="form">
     <div style="margin-left: 40px;">
         <p>Por favor ingrese el correo eléctronico con el que está asociada su cuenta.</p>
         <p>Recibirá un correo con su nueva contraseña.</p>
@@ -148,7 +148,7 @@
     padding: 2rem;
 }
 
-.password-form {
+.form {
     display: flex;
     flex-direction: column;
     align-items: center;
