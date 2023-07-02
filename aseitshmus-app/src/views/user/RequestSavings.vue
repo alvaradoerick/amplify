@@ -82,51 +82,83 @@
         const endDate = new Date(getSelectedSavingsType()?.EndDate);
 
         const isStartBefore15th = startDate.getDate() < 15;
-        const isEndAfter15thBefore30th = endDate.getDate() > 15 && endDate.getDate() <= 30;
+        const isStartOn15th = startDate.getDate() === 15;
+
+        const isEndAfter15thBefore30th = endDate.getDate() > 15 && endDate.getDate() < 30;
         const isEndOn30th = endDate.getDate() === 30;
         const isEndBefore15th = endDate.getDate() < 15;
+        const isEndOn15th = endDate.getDate() === 15;
         const isEndOnFeb = endDate.getMonth() === 1 && (endDate.getDate() === 29 || endDate.getDate() === 28);
+        const isCurrentMonth = endDate.getMonth() === startDate.getMonth();
+
+
 
         let biweeklies = 0;
         let months = 0
+
         if (isStartBefore15th) {
-            if (isEndOn30th) {
-                biweeklies = 2;
-            } else if (isEndBefore15th) {
-                biweeklies = 2;
-            } else if (isEndOnFeb) {
-                biweeklies = 2;
+            if (isEndBefore15th) {
+                if (isCurrentMonth) {
+                    biweeklies = 0;
+                } else {
+                    biweeklies = 2;
+                }
+            } else if (isEndOn15th) {
+                if (isCurrentMonth) {
+                    biweeklies = 1;
+                } else {
+                    biweeklies = 2;
+                }
+            } else if (isEndAfter15thBefore30th) {
+                if (isCurrentMonth) {
+                    biweeklies = 1;
+                } else {
+                    biweeklies = 2;
+                }
             } else {
-                biweeklies = 1;
+                biweeklies = 2
             }
         } else {
-            if (isEndAfter15thBefore30th) {
+            if (isEndOnFeb) {
+                if (isStartOn15th){biweeklies = 2;}
+               else{biweeklies = 1;} 
+            }   
+else if (isEndAfter15thBefore30th) {
+                if (isCurrentMonth) {
+                    biweeklies = 0;
+
+                } else {
+                    biweeklies = 2;
+                }
+                } else if (isEndOn30th) {
                 biweeklies = 1;
-            } else if (isEndOnFeb) {
-                biweeklies = 1;
-                isEndBefore15th
-            } else if (isEndBefore15th) {
-                biweeklies = 1;
+            } else if (isEndOn15th) {
+                if (isCurrentMonth) {
+                    biweeklies = 1;
+                } else {
+                    
+                    if (isStartOn15th){biweeklies = 2;}
+               else{biweeklies = 1;} 
+                }
             } else {
-                biweeklies = 2;
+                biweeklies = 1;
             }
         }
 
         //calculo de num de meses 
-        const getEndDateMonth = endDate.getDate() < 15;
-        if (getEndDateMonth && isStartBefore15th) {
+
+        if (endDate.getDate() < 15 && isStartBefore15th) {
+            months = months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (startDate.getMonth() -
+                endDate.getMonth()) * -1;
+        } else if (endDate.getDate() === 15 && isStartOn15th) {
             months = months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (startDate.getMonth() -
                 endDate.getMonth()) * -1;
         } else {
             months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate
                 .getMonth()) + 1;
         }
-        console.log("total de meses " + months);
-
         //calculo de quincenas
         const totalBiweeklies = biweeklies * months;
-
-        console.log("quincenas " + totalBiweeklies);
         return totalBiweeklies;
     });
 
@@ -196,18 +228,19 @@
                         <label for="amount">Monto quincenal</label>
                     </div>
                 </div>
-                    <p v-if="savingsTypeList.length > 0">
-                        <label><b>Empieza: </b></label>
-                        {{new Date(getSelectedSavingsType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
-                    </p>               
-                    <p v-if="savingsTypeList.length > 0">
-                        <label><b>Finaliza: </b></label>
-                        {{new Date(getSelectedSavingsType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
-                    </p>
-                    <p v-if="savingsTypeList.length > 0">
-                        <label><b>Monto aproximado al final del ahorro: </b></label>
-                        ${{ estimatedSavings }}<label v-if="(estimatedSavings - Math.floor(estimatedSavings)) == 0">.00</label>
-                    </p>
+                <p v-if="savingsTypeList.length > 0">
+                    <label><b>Empieza: </b></label>
+                    {{new Date(getSelectedSavingsType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
+                </p>
+                <p v-if="savingsTypeList.length > 0">
+                    <label><b>Finaliza: </b></label>
+                    {{new Date(getSelectedSavingsType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
+                </p>
+                <p v-if="savingsTypeList.length > 0">
+                    <label><b>Monto aproximado al final del ahorro: </b></label>
+                    ${{ estimatedSavings }}<label
+                        v-if="(estimatedSavings - Math.floor(estimatedSavings)) == 0">.00</label>
+                </p>
             </div>
             <div class="actions">
                 <base-button :label="backLabel" @click="toReturn" small :type="'button'" />
