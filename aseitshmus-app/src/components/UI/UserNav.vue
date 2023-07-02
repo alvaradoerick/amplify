@@ -12,6 +12,7 @@
     };
 
     const isSubMenu1Visible = ref(false);
+    const isSubMenu2Visible = ref(false);
 
     const showSubMenu1 = () => {
         isSubMenu1Visible.value = true;
@@ -19,6 +20,14 @@
 
     const hideSubMenu1 = () => {
         isSubMenu1Visible.value = false;
+    };
+
+    const showSubMenu2 = () => {
+        isSubMenu2Visible.value = true;
+    };
+
+    const hideSubMenu2 = () => {
+        isSubMenu2Visible.value = false;
     };
 </script>
 
@@ -48,11 +57,11 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item" @click="showSubMenu1" @mouseleave="hideSubMenu1">
+                    <li class="nav-item" @click="showSubMenu2" @mouseleave="hideSubMenu2">
                         <a class="nav-link">Solicitudes</a>
-                        <ul v-show="isSubMenu1Visible" class="sub-menu">
+                        <ul v-show="isSubMenu2Visible" class="sub-menu">
                             <li>
-                                <router-link class="nav-link" :to="{name:'myProfile'}">Préstamos</router-link>
+                                <router-link class="nav-link" :to="{name:'requestLoan'}">Préstamos</router-link>
                             </li>
                             <li>
                                 <router-link class="nav-link" :to="{name:'requestSavings'}">Ahorros</router-link>

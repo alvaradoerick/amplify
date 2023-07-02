@@ -74,11 +74,11 @@ const routes = [{
       },
       //request loan
       {
-        path: '/password',
-        name: 'changePassword',
-        component: () => import('../views/user/ResetPassword.vue' /* webpackChunkName: "ResetPassword" */ ),
+        path: '/loan',
+        name: 'requestLoan',
+        component: () => import('../views/user/RequestLoan.vue' /* webpackChunkName: "RequestLoan" */ ),
         meta: {
-          title: 'Cambiar Contraseña',
+          title: 'Solicitar Préstamo',
         }
 
       },
