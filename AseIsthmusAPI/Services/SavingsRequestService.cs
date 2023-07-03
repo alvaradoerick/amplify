@@ -18,8 +18,9 @@ namespace AseIsthmusAPI.Services
         public async Task<IEnumerable<SavingsRequestOutDto>> GetAll()
         {
             return await _context.SavingsRequests
-                .OrderBy(a => a.IsApproved == null)  
-                .ThenBy(a => a.IsApproved)
+               .OrderByDescending(a => a.IsApproved == null)
+
+                .ThenByDescending(a => a.IsActive)
                 .Select(a => new SavingsRequestOutDto
                     {
                         PersonId = a.PersonId,
@@ -40,9 +41,19 @@ namespace AseIsthmusAPI.Services
 
             if (existingSaving is not null)
             {
-                existingSaving.IsActive = saving.IsActive;
-                existingSaving.ApprovedDate = saving.ApprovedDate;
-                existingSaving.IsApproved = saving.IsApproved;
+              
+                existingSaving.IsApproved = saving.IsApproved;            
+                if (saving.IsApproved == false) {
+                    existingSaving.ApprovedDate = null;
+                    existingSaving.IsActive = false;
+                }
+                else {
+                    existingSaving.ApprovedDate = DateTime.Now;
+                    existingSaving.IsActive = true;
+                }
+               
+               
+               
 
                 await _context.SaveChangesAsync();
                 return existingSaving;
