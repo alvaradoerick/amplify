@@ -23,6 +23,7 @@ namespace AseIsthmusAPI.Services
                 .ThenByDescending(a => a.IsActive)
                 .Select(a => new SavingsRequestOutDto
                     {
+                     SavingsRequestId = a.SavingsRequestId,
                         PersonId = a.PersonId,
                         Name = $"{a.Person.FirstName} {a.Person.LastName2}",
                         NumberId = a.Person.NumberId,
@@ -76,6 +77,17 @@ namespace AseIsthmusAPI.Services
             await _context.SaveChangesAsync();
 
             return savings;
+        }
+
+        public async Task Delete(int id)
+        {
+            var savingsToDelete = await _context.SavingsRequests.Where(a => a.SavingsRequestId == id).FirstOrDefaultAsync();
+
+            if (savingsToDelete is not null)
+            {
+                _context.SavingsRequests.Remove(savingsToDelete);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

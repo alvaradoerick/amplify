@@ -51,11 +51,11 @@
 
     const deleteRecord = async (rowData) => {
         try {
-            await storeRequest(rowData.data.SavingsTypeId);
+            await storeRequest(rowData.data.SavingsRequestId);
             if (deleteResponse.value === null) {
                 toast.add({
                     severity: 'warn',
-                    detail: "Tipo de ahorro ha sido eliminado.",
+                    detail: "Solicitud de ahorro ha sido eliminada.",
                     life: 2000
                 });
                 deletionStatus.value = true;
@@ -97,7 +97,7 @@
         router.push({
             name: "updateSavingRequest",
             params: {
-                id: rowData.data.SavingsTypeId
+                id: rowData.data.SavingsRequestId
             },
             props: true,
         });
