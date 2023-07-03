@@ -71,26 +71,26 @@ export default {
     
 
 
-    // //Delete
-    // async deleteAgreement({
-    //     commit,rootGetters
-    // }, payload) {
-    //     try {
-    //         const token = rootGetters['auth/getToken'];
-    //         const agreementId = payload.rowId;
-    //         const response = await axios.delete(
-    //             `${apiUrl}/agreement/${agreementId}`,{
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`
-    //                 }
-    //             }
-    //         );
-    //         return response;
-    //     } catch (error) {
-    //         const errorMessage = error.response.data.error;
-    //         commit('setErrorResponse', errorMessage);
-    //     }
-    // },
+    //Delete
+    async deleteSavings({
+        commit,rootGetters
+    }, payload) {
+        try {
+            const token = rootGetters['auth/getToken'];
+            const savingsRequestId = payload.rowId;
+            const response = await axios.delete(
+                `${apiUrl}/savingsrequest/${savingsRequestId}`,{
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            return response;
+        } catch (error) {
+            const errorMessage = error.response.data.error;
+            commit('setErrorResponse', errorMessage);
+        }
+    },
 
     //  //Put or Patch
     //  async updateAgreement({

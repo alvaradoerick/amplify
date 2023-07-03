@@ -40,7 +40,7 @@
     };
 
     const storeRequest = async (id) => {
-        await store.dispatch('savingsRequests/deleteType', {
+        await store.dispatch('savingsRequests/deleteSavings', {
             rowId: id
         })
     }
