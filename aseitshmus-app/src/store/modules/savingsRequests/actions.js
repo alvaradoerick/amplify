@@ -4,21 +4,21 @@ const apiUrl = process.env["VUE_APP_BASED_URL"]
 
 export default {
 
-    // //Get
-    // async getAllAgreements({
-    //     commit,
-    //     rootGetters
-    // }) {
-    //     const token = rootGetters['auth/getToken'];
-    //     const response = await axios.get(`${apiUrl}/agreement`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-    //     const agreementData = response.data;
-    //     commit('setAgreement', agreementData);
-    //     return agreementData;
-    // },
+    //Get
+    async getAllSavings({
+        commit,
+        rootGetters
+    }) {
+        const token = rootGetters['auth/getToken'];
+        const response = await axios.get(`${apiUrl}/savingsrequest`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const savingsData = response.data;
+        commit('setSavings', savingsData);
+        return savingsData;
+    },
 
     // async getActiveAgreements({
     //     commit,

@@ -17,6 +17,14 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
 
+        #region Get
+
+        [HttpGet]
+        public async Task<IEnumerable<SavingsRequestOutDto>> Get()
+        {
+            return await _service.GetAll();
+        }
+        #endregion
 
         #region Create
 
