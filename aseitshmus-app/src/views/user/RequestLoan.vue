@@ -12,7 +12,7 @@
     } from 'vue-router';
     import {
         ref,
-        onMounted,
+        onMounted,watch,
     } from 'vue';
     import {
         useToast
@@ -36,36 +36,30 @@
             name: "myDashboard"
         });
     }
-    
+    const cuenta = ref(null)
     const sendLabel = 'Enviar';
     const loanTypesList = ref([]);
     const selectedLoanType = ref(null);
     let responseData = null;
 
-    const selectedBankAccount = ref([]);
+    const selectedBankAccount = ref(null);
     const BankAccountList = ref([]);
    
     const fetchUserData = async () => {
-        await store.dispatch('users/getById');
-        responseData = store.getters["users/getUsers"];  
+  await store.dispatch('users/getById');
+  responseData = store.getters["users/getUsers"];  
   selectedBankAccount.value = responseData.BankAccount;
-  
-  if (Array.isArray(responseData.BankAccount)) {
-    BankAccountList.value = responseData.BankAccount.map((value, index) => ({
-      value: index,
-      label: value + " - " + responseData.BankAccount[index]
-    }));
-  } else {
-    BankAccountList.value = [];
-    // Handle the case when responseData.BankAccount is not an array
-  }
-  
-  BankAccountList.value.push({ value: 'Otra cuenta', label: 'Otra cuenta' });
-  
-  console.log(selectedBankAccount.value);
-  console.log(BankAccountList.value);
-};
 
+  if (responseData.BankAccount !== null && responseData.BankAccount !== undefined) {
+    BankAccountList.value = [
+      { value: responseData.BankAccount, label: responseData.BankAccount },
+      { value: 'Otra cuenta', label: 'Otra cuenta' }
+    ];
+  } else {
+    BankAccountList.value = [{ value: 'Otra cuenta', label: 'Otra cuenta' }];
+  }
+
+};
 
     const loanData = ref({
         LoansTypeId: selectedLoanType,
@@ -125,6 +119,12 @@
         return true;
     }
 
+
+    watch(selectedBankAccount.value, (newValue) => {
+        console.log(newValue)
+    })
+
+
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
@@ -151,8 +151,7 @@
 
     onMounted(fetchActiveLoans(), fetchUserData());
 </script>
-
-        <template>
+<template>
     <div class="main">
         <toast-component />
         <div class="form">
@@ -170,7 +169,7 @@
                             :class="{'p-invalid': v$?.AmountRequested?.$error}" />
                         <label for="amount">Monto a solicitar</label>
                     </div>
-                    <div class="p-float-label  form-margin-left" >
+                    <div class="p-float-label  form-margin-left">
                         <date-picker v-model="loanData.RequestedDate" placeholder="Fecha de solicitud de crédito"
                             class="dropdown" dateFormat="dd-mm-yy" showIcon id="requested-day"
                             :class="{'p-invalid': v$?.RequestedDate?.$error}" />
@@ -179,19 +178,23 @@
                 </div>
                 <div class="form-row">
                     <div class="p-float-label">
-                        <input-number placeholder="Monto quincenal" class="dropdown form-margin-right" id="term" 
-                            v-model="loanData.Term"  v-tooltip.focus="'De 1 mes hasta 5 años. Para compra de vehículo hasta por 10 años.'"
+                        <input-number placeholder="Monto quincenal" class="dropdown form-margin-right" id="term"
+                            v-model="loanData.Term"
+                            v-tooltip.focus="'De 1 mes hasta 5 años. Para compra de vehículo hasta por 10 años.'"
                             :class="{'p-invalid': v$?.Term?.$error}" />
                         <label for="term">Plazo (meses)</label>
                     </div>
                     <div class="p-float-label">
-    <drop-down v-model="selectedBankAccount"  :options="BankAccountList" optionLabel="label"
-                            optionValue="value"
-        placeholder="Tipo de crédito" class="dropdown" id="bank-account"/>
-    <label for="bank-account">Cuenta bancaria (IBAN)</label>
-</div>
-     
+                        <drop-down v-model="selectedBankAccount" :options="BankAccountList" optionLabel="label"
+                            optionValue="value" placeholder="Tipo de crédito" class="dropdown" id="bank-account" />
+                        <label for="bank-account">Cuenta bancaria (IBAN)</label>
                     </div>
+                    <div class="p-float-label form-margin-left" v-if="selectedBankAccount === 'Otra cuenta'" >
+                    <input-text placeholder="Otra cuenta" class="input-text" id="other-account" type="text"
+                        v-model="cuenta" />
+                    <label for="other-account">Otra cuenta</label>
+                </div>
+                </div>
                 <p v-if="loanTypesList.length > 0">
                     <label><b>Empieza: </b></label>
                     {{new Date(getSelectedLoansType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
@@ -200,9 +203,9 @@
                     <label><b>Finaliza: </b></label>
                     {{new Date(getSelectedLoansType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
                     <br>
-                   
+
                 </p>
-                </div>
+            </div>
             <div class="actions">
                 <base-button :label="backLabel" @click="toReturn" small :type="'button'" />
                 <base-button :label="sendLabel" @click="onSend" small :type="'submit'" />
