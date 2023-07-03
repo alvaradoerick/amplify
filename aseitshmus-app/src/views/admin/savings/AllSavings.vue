@@ -23,7 +23,6 @@
 
     const requestData = ref([]);
     const backLabel = 'Principal';
-    const addLabel = 'Agregar';
     const deletionStatus = ref(false);
 
     const fetchRequestData = async () => {
@@ -127,7 +126,6 @@
         <div class="actions-container">
             <div class="actions">
                 <base-button :label="backLabel" @click="cancel" :type="'button'" />
-                <base-button :label="addLabel" @click="addRecord" :type="'button'" />
             </div>
         </div>
     </div>
