@@ -10,6 +10,6 @@
 
         public string BankAccount { get; set; } = null!;
 
-
+        public DateTime RequestedDate { get; set; }
     }
 }

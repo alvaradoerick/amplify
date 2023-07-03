@@ -13,7 +13,6 @@
     import {
         ref,
         onMounted,
-        computed
     } from 'vue';
     import {
         useToast
@@ -21,7 +20,7 @@
 
     const apiUrl = process.env["VUE_APP_BASED_URL"]
 
-    const store = useStore();
+    const store= useStore();   
     const router = useRouter();
     const toast = useToast();
 
@@ -37,27 +36,57 @@
             name: "myDashboard"
         });
     }
+    
     const sendLabel = 'Enviar';
-    const savingsTypeList = ref([]);
-    const selectedSavingsType = ref(null);
+    const loanTypesList = ref([]);
+    const selectedLoanType = ref(null);
+    let responseData = null;
 
-    const savingsData = ref({
-        SavingsTypeId: selectedSavingsType,
-        Amount: 0.00
+    const selectedBankAccount = ref([]);
+    const BankAccountList = ref([]);
+   
+    const fetchUserData = async () => {
+        await store.dispatch('users/getById');
+        responseData = store.getters["users/getUsers"];  
+  selectedBankAccount.value = responseData.BankAccount;
+  
+  if (Array.isArray(responseData.BankAccount)) {
+    BankAccountList.value = responseData.BankAccount.map((value, index) => ({
+      value: index,
+      label: value + " - " + responseData.BankAccount[index]
+    }));
+  } else {
+    BankAccountList.value = [];
+    // Handle the case when responseData.BankAccount is not an array
+  }
+  
+  BankAccountList.value.push({ value: 'Otra cuenta', label: 'Otra cuenta' });
+  
+  console.log(selectedBankAccount.value);
+  console.log(BankAccountList.value);
+};
+
+
+    const loanData = ref({
+        LoansTypeId: selectedLoanType,
+        AmountRequested: 0.00,
+        Term: null,
+        BankAccount: null,
+        RequestedDate: null
     })
 
-    const storeSavings = async () => {
-        await store.dispatch('savingsRequests/addSavingsRequest', {
-            savingsData: savingsData.value,
+    const storeLoan = async () => {
+        await store.dispatch('loanRequests/addLoanRequest', {
+            loanData: loanData.value,
         });
     };
 
-    const fetchActiveSavings = async () => {
+    const fetchActiveLoans = async () => {
         try {
-            const response = await axios.get(`${apiUrl}/SavingsType/active-savings`);
-            savingsTypeList.value = response.data;
+            const response = await axios.get(`${apiUrl}/LoansType/active-loans`);
+            loanTypesList.value = response.data;
             if (response.data.length > 0) {
-                selectedSavingsType.value = response.data[0].SavingsTypeId;
+                selectedLoanType.value = response.data[0].LoansTypeId;
             }
         } catch (error) {
             toast.add({
@@ -67,8 +96,8 @@
             });
         }
     };
-    const getSelectedSavingsType = () => {
-        return savingsTypeList.value.find(type => type.SavingsTypeId === selectedSavingsType.value);
+    const getSelectedLoansType = () => {
+        return loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
     };
     const rules = {
         Amount: {
@@ -76,64 +105,10 @@
         }
     }
 
-
-    const numberOfBiweeklies = computed(() => {
-        const startDate = new Date(getSelectedSavingsType()?.StartDate);
-        const endDate = new Date(getSelectedSavingsType()?.EndDate);
-
-        const isStartBefore15th = startDate.getDate() < 15;
-        const isEndAfter15thBefore30th = endDate.getDate() > 15 && endDate.getDate() <= 30;
-        const isEndOn30th = endDate.getDate() === 30;
-        const isEndBefore15th = endDate.getDate() < 15;
-        const isEndOnFeb = endDate.getMonth() === 1 && (endDate.getDate() === 29 || endDate.getDate() === 28);
-
-        let biweeklies = 0;
-        let months = 0
-        if (isStartBefore15th) {
-            if (isEndOn30th) {
-                biweeklies = 2;
-            } else if (isEndBefore15th) {
-                biweeklies = 2;
-            } else if (isEndOnFeb) {
-                biweeklies = 2;
-            } else {
-                biweeklies = 1;
-            }
-        } else {
-            if (isEndAfter15thBefore30th) {
-                biweeklies = 1;
-            } else if (isEndOnFeb) {
-                biweeklies = 1;
-                isEndBefore15th
-            } else if (isEndBefore15th) {
-                biweeklies = 1;
-            } else {
-                biweeklies = 2;
-            }
-        }
-
-        //calculo de num de meses 
-        const getEndDateMonth = endDate.getDate() < 15;
-        if (getEndDateMonth && isStartBefore15th) {
-            months = months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (startDate.getMonth() -
-                endDate.getMonth()) * -1;
-        } else {
-            months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate
-                .getMonth()) + 1;
-        }
-        console.log("total de meses " + months);
-
-        //calculo de quincenas
-        const totalBiweeklies = biweeklies * months;
-
-        console.log("quincenas " + totalBiweeklies);
-        return totalBiweeklies;
-    });
-
-    const estimatedSavings = computed(() => {
-        return numberOfBiweeklies.value * savingsData.value.Amount;
-    });
-    const v$ = useVuelidate(rules, savingsData);
+    // const estimatedSavings = computed(() => {
+    //     return numberOfBiweeklies.value * loanData.value.Amount;
+    // });
+    const v$ = useVuelidate(rules, loanData);
 
     const validateForm = async () => {
         const result = await v$.value.$validate();
@@ -155,7 +130,7 @@
         const isValid = await validateForm();
         if (isValid) {
             try {
-                await storeSavings();
+                await storeLoan();
                 toast.add({
                     severity: 'success',
                     detail: "Su solicitud de ahorro ha sido enviada.",
@@ -174,41 +149,60 @@
         }
     }
 
-    onMounted(fetchActiveSavings)
+    onMounted(fetchActiveLoans(), fetchUserData());
 </script>
 
-<template>
+        <template>
     <div class="main">
         <toast-component />
         <div class="form">
-            <div class="header">
+            <div>
                 <div class="form-row">
                     <div class="p-float-label">
-                        <drop-down v-model="selectedSavingsType" :options="savingsTypeList" optionLabel="Description"
-                            optionValue="SavingsTypeId" placeholder="Ahorro" class="dropdown form-margin-right"
-                            id="status" :class="{'p-invalid': v$?.selectedState?.$error}" />
-                        <label for="savings-type">Ahorro</label>
+                        <drop-down v-model="selectedLoanType" :options="loanTypesList" optionLabel="Description"
+                            optionValue="LoansTypeId" placeholder="Tipo de crédito" class="dropdown form-margin-right"
+                            id="loan-type" />
+                        <label for="loan-type">Tipo de crédito</label>
                     </div>
                     <div class="p-float-label">
                         <input-number placeholder="Monto quincenal" class=" input-text " id="amount" mode="currency"
-                            currency="USD" locale="en-US" v-model="savingsData.Amount"
-                            :class="{'p-invalid': v$?.Amount?.$error}" />
-                        <label for="amount">Monto quincenal</label>
+                            currency="USD" locale="en-US" v-model="loanData.AmountRequested"
+                            :class="{'p-invalid': v$?.AmountRequested?.$error}" />
+                        <label for="amount">Monto a solicitar</label>
+                    </div>
+                    <div class="p-float-label  form-margin-left" >
+                        <date-picker v-model="loanData.RequestedDate" placeholder="Fecha de solicitud de crédito"
+                            class="dropdown" dateFormat="dd-mm-yy" showIcon id="requested-day"
+                            :class="{'p-invalid': v$?.RequestedDate?.$error}" />
+                        <label for="requested-day">Fecha de solicitud de crédito</label>
                     </div>
                 </div>
-                    <p v-if="savingsTypeList.length > 0">
-                        <label><b>Empieza: </b></label>
-                        {{new Date(getSelectedSavingsType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
-                    </p>               
-                    <p v-if="savingsTypeList.length > 0">
-                        <label><b>Finaliza: </b></label>
-                        {{new Date(getSelectedSavingsType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
-                    </p>
-                    <p v-if="savingsTypeList.length > 0">
-                        <label><b>Monto aproximado al final del ahorro: </b></label>
-                        ${{ estimatedSavings }}<label v-if="(estimatedSavings - Math.floor(estimatedSavings)) == 0">.00</label>
-                    </p>
-            </div>
+                <div class="form-row">
+                    <div class="p-float-label">
+                        <input-number placeholder="Monto quincenal" class="dropdown form-margin-right" id="term" 
+                            v-model="loanData.Term"  v-tooltip.focus="'De 1 mes hasta 5 años. Para compra de vehículo hasta por 10 años.'"
+                            :class="{'p-invalid': v$?.Term?.$error}" />
+                        <label for="term">Plazo (meses)</label>
+                    </div>
+                    <div class="p-float-label">
+    <drop-down v-model="selectedBankAccount"  :options="BankAccountList" optionLabel="label"
+                            optionValue="value"
+        placeholder="Tipo de crédito" class="dropdown" id="bank-account"/>
+    <label for="bank-account">Cuenta bancaria (IBAN)</label>
+</div>
+     
+                    </div>
+                <p v-if="loanTypesList.length > 0">
+                    <label><b>Empieza: </b></label>
+                    {{new Date(getSelectedLoansType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
+
+                    <br>
+                    <label><b>Finaliza: </b></label>
+                    {{new Date(getSelectedLoansType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
+                    <br>
+                   
+                </p>
+                </div>
             <div class="actions">
                 <base-button :label="backLabel" @click="toReturn" small :type="'button'" />
                 <base-button :label="sendLabel" @click="onSend" small :type="'submit'" />
@@ -216,6 +210,7 @@
         </div>
     </div>
 </template>
+
 <style scoped>
     .main {
         display: flex;

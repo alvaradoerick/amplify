@@ -53,13 +53,13 @@ export default {
     // },
 
     //Post
-    async addSavingsRequest({
+    async addLoanRequest({
         rootGetters
     }, payload) {
         const userId = rootGetters['auth/getLoggedInUser'];
         const token = rootGetters['auth/getToken'];
             const response = await axios.post(
-                `${apiUrl}/savingsrequest/${userId}`,
+                `${apiUrl}/loanrequest/${userId}`,
                 payload.savingsData, {
                     headers: {
                         Authorization: `Bearer ${token}`

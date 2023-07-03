@@ -21,7 +21,7 @@ namespace AseIsthmusAPI.Services
                 AmountRequested = loanRequest.AmountRequested,
                 Term = loanRequest.Term,
                 BankAccount = loanRequest.BankAccount,
-                RequestedDate = DateTime.Now,
+                RequestedDate = loanRequest.RequestedDate,
                 IsActive = false,
             };
 

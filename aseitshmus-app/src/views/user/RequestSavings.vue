@@ -218,7 +218,7 @@ else if (isEndAfter15thBefore30th) {
                     <div class="p-float-label">
                         <drop-down v-model="selectedSavingsType" :options="savingsTypeList" optionLabel="Description"
                             optionValue="SavingsTypeId" placeholder="Ahorro" class="dropdown form-margin-right"
-                            id="status" :class="{'p-invalid': v$?.selectedState?.$error}" />
+                            id="savings-type" />
                         <label for="savings-type">Ahorro</label>
                     </div>
                     <div class="p-float-label">
@@ -231,12 +231,10 @@ else if (isEndAfter15thBefore30th) {
                 <p v-if="savingsTypeList.length > 0">
                     <label><b>Empieza: </b></label>
                     {{new Date(getSelectedSavingsType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
-                </p>
-                <p v-if="savingsTypeList.length > 0">
+                    <br>
                     <label><b>Finaliza: </b></label>
                     {{new Date(getSelectedSavingsType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
-                </p>
-                <p v-if="savingsTypeList.length > 0">
+                    <br>
                     <label><b>Monto aproximado al final del ahorro: </b></label>
                     ${{ estimatedSavings }}<label
                         v-if="(estimatedSavings - Math.floor(estimatedSavings)) == 0">.00</label>
