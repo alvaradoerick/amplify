@@ -12,7 +12,8 @@
     } from 'vue-router';
     import {
         ref,
-        onMounted,watch,
+        onMounted,
+        computed
     } from 'vue';
     import {
         useToast
@@ -20,15 +21,15 @@
 
     const apiUrl = process.env["VUE_APP_BASED_URL"]
 
-    const store= useStore();   
+    const store = useStore();
     const router = useRouter();
     const toast = useToast();
 
-    const dateFormat = {
-        day: "numeric",
-        month: "numeric",
-        year: "numeric"
-    };
+    // const dateFormat = {
+    //     day: "numeric",
+    //     month: "numeric",
+    //     year: "numeric"
+    // };
 
     const backLabel = 'Cancelar';
     const toReturn = () => {
@@ -36,31 +37,22 @@
             name: "myDashboard"
         });
     }
-    const cuenta = ref(null)
+    const enteredBankAccount = ref(null)
     const sendLabel = 'Enviar';
     const loanTypesList = ref([]);
     const selectedLoanType = ref(null);
+
     let responseData = null;
+    // const calculatedValues= ref({
+    //     employeeAvailable:null,
+    //     totalAvailable:null,
+    //     employerAvailablet:null,
+    //     biweeklyAmount:null,
+    //     totalPay:null,
+    // })
 
     const selectedBankAccount = ref(null);
     const BankAccountList = ref([]);
-   
-    const fetchUserData = async () => {
-  await store.dispatch('users/getById');
-  responseData = store.getters["users/getUsers"];  
-  selectedBankAccount.value = responseData.BankAccount;
-
-  if (responseData.BankAccount !== null && responseData.BankAccount !== undefined) {
-    BankAccountList.value = [
-      { value: responseData.BankAccount, label: responseData.BankAccount },
-      { value: 'Otra cuenta', label: 'Otra cuenta' }
-    ];
-  } else {
-    BankAccountList.value = [{ value: 'Otra cuenta', label: 'Otra cuenta' }];
-  }
-
-};
-
     const loanData = ref({
         LoansTypeId: selectedLoanType,
         AmountRequested: 0.00,
@@ -69,9 +61,40 @@
         RequestedDate: null
     })
 
+    const updatedLoanData = computed(() => {
+        return {
+            ...loanData.value,
+            BankAccount: selectedBankAccount.value === 'Otra cuenta' ? enteredBankAccount.value :
+                selectedBankAccount.value,
+        };
+    });
+
+    const fetchUserData = async () => {
+        await store.dispatch('users/getById');
+        responseData = store.getters["users/getUsers"];
+        selectedBankAccount.value = responseData.BankAccount ? responseData.BankAccount : null;
+        if (responseData.BankAccount !== null && responseData.BankAccount !== undefined) {
+            BankAccountList.value = [{
+                    value: responseData.BankAccount,
+                    label: responseData.BankAccount
+                },
+                {
+                    value: 'Otra cuenta',
+                    label: 'Otra cuenta'
+                }
+            ];
+        } else {
+            BankAccountList.value = [{
+                value: 'Otra cuenta',
+                label: 'Otra cuenta'
+            }];
+        }
+
+    };
+
     const storeLoan = async () => {
         await store.dispatch('loanRequests/addLoanRequest', {
-            loanData: loanData.value,
+            loanData: updatedLoanData.value,
         });
     };
 
@@ -90,13 +113,29 @@
             });
         }
     };
-    const getSelectedLoansType = () => {
+
+    const getSelectedLoanType = () => {
         return loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
     };
+
+//     const getSelectedLoanType = () => {
+//   const selectedType = loanTypesList.value.find(
+//     type => type.LoansTypeId === selectedLoanType.value
+//   );
+
+//   if (selectedType) {
+//     const biweeklyAmount = selectedType.AmountRequested * selectedType.Terms;
+//     calculatedValues.value.biweeklyAmount = biweeklyAmount;
+//   }
+// };
+
     const rules = {
-        Amount: {
+        RequestedDate: {
             required
-        }
+        },
+        Term: {
+            required
+        },
     }
 
     // const estimatedSavings = computed(() => {
@@ -119,12 +158,6 @@
         return true;
     }
 
-
-    watch(selectedBankAccount.value, (newValue) => {
-        console.log(newValue)
-    })
-
-
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
@@ -133,7 +166,7 @@
                 await storeLoan();
                 toast.add({
                     severity: 'success',
-                    detail: "Su solicitud de ahorro ha sido enviada.",
+                    detail: "Su solicitud de crédito ha sido enviada.",
                     life: 2000
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -149,7 +182,8 @@
         }
     }
 
-    onMounted(fetchActiveLoans(), fetchUserData());
+    onMounted(fetchActiveLoans(), fetchUserData(),getSelectedLoanType());
+
 </script>
 <template>
     <div class="main">
@@ -189,22 +223,49 @@
                             optionValue="value" placeholder="Tipo de crédito" class="dropdown" id="bank-account" />
                         <label for="bank-account">Cuenta bancaria (IBAN)</label>
                     </div>
-                    <div class="p-float-label form-margin-left" v-if="selectedBankAccount === 'Otra cuenta'" >
-                    <input-text placeholder="Otra cuenta" class="input-text" id="other-account" type="text"
-                        v-model="cuenta" />
-                    <label for="other-account">Otra cuenta</label>
+                    <div class="p-float-label form-margin-left" v-if="selectedBankAccount === 'Otra cuenta'">
+                        <input-text placeholder="Otra cuenta" class="input-text" id="other-account" type="text"
+                            v-model="enteredBankAccount" />
+                        <label for="other-account">Otra cuenta</label>
+                    </div>
                 </div>
-                </div>
-                <p v-if="loanTypesList.length > 0">
-                    <label><b>Empieza: </b></label>
-                    {{new Date(getSelectedLoansType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
+                <div v-if="loanTypesList.length > 0">
+          <data-table :value="[loanTypesList.find(type => type.LoansTypeId === selectedLoanType)]" showGridlines :paginator="false">
 
-                    <br>
-                    <label><b>Finaliza: </b></label>
-                    {{new Date(getSelectedLoansType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
-                    <br>
 
-                </p>
+            <data-column  header="Monto disponible de ahorro:" style="width: 200px">
+              <template #body="{ }">
+                {{ getSelectedLoanType()?.PercentageEmployeeCont  ?? 'N/A' }}
+  
+  </template>
+            </data-column>
+            <data-column header="Monto disponible de aporte:" style="width: 200px">
+              <template #body="{ }">
+                {{ getSelectedLoanType()?.PercentageEmployerCont ?? 'N/A' }}
+              </template>
+            </data-column>
+            <data-column header="Total disponible:">
+              <template #body="{}">
+                ferf
+              </template>
+            </data-column>
+            <data-column header="Tasa de interés:">
+              <template #body="{}">
+                ferf
+              </template>
+            </data-column>
+            <data-column header="Cuota quincenal:">
+              <template #body="{}">
+                ferf
+              </template>
+            </data-column>
+            <data-column header="Total a pagar:">
+              <template #body="{}">
+                ferf
+              </template>
+            </data-column>
+          </data-table>
+        </div>
             </div>
             <div class="actions">
                 <base-button :label="backLabel" @click="toReturn" small :type="'button'" />

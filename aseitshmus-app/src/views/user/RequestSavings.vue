@@ -76,7 +76,6 @@
         }
     }
 
-
     const numberOfBiweeklies = computed(() => {
         const startDate = new Date(getSelectedSavingsType()?.StartDate);
         const endDate = new Date(getSelectedSavingsType()?.EndDate);
@@ -90,9 +89,6 @@
         const isEndOn15th = endDate.getDate() === 15;
         const isEndOnFeb = endDate.getMonth() === 1 && (endDate.getDate() === 29 || endDate.getDate() === 28);
         const isCurrentMonth = endDate.getMonth() === startDate.getMonth();
-
-
-
         let biweeklies = 0;
         let months = 0
 
@@ -120,32 +116,35 @@
             }
         } else {
             if (isEndOnFeb) {
-                if (isStartOn15th){biweeklies = 2;}
-               else{biweeklies = 1;} 
-            }   
-else if (isEndAfter15thBefore30th) {
+                if (isStartOn15th) {
+                    biweeklies = 2;
+                } else {
+                    biweeklies = 1;
+                }
+            } else if (isEndAfter15thBefore30th) {
                 if (isCurrentMonth) {
                     biweeklies = 0;
 
                 } else {
                     biweeklies = 2;
                 }
-                } else if (isEndOn30th) {
+            } else if (isEndOn30th) {
                 biweeklies = 1;
             } else if (isEndOn15th) {
                 if (isCurrentMonth) {
                     biweeklies = 1;
                 } else {
-                    
-                    if (isStartOn15th){biweeklies = 2;}
-               else{biweeklies = 1;} 
+
+                    if (isStartOn15th) {
+                        biweeklies = 2;
+                    } else {
+                        biweeklies = 1;
+                    }
                 }
             } else {
                 biweeklies = 1;
             }
         }
-
-        //calculo de num de meses 
 
         if (endDate.getDate() < 15 && isStartBefore15th) {
             months = months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (startDate.getMonth() -
@@ -157,7 +156,6 @@ else if (isEndAfter15thBefore30th) {
             months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate
                 .getMonth()) + 1;
         }
-        //calculo de quincenas
         const totalBiweeklies = biweeklies * months;
         return totalBiweeklies;
     });
@@ -227,18 +225,26 @@ else if (isEndAfter15thBefore30th) {
                             :class="{'p-invalid': v$?.Amount?.$error}" />
                         <label for="amount">Monto quincenal</label>
                     </div>
-                </div>
-                <p v-if="savingsTypeList.length > 0">
-                    <label><b>Empieza: </b></label>
-                    {{new Date(getSelectedSavingsType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
-                    <br>
-                    <label><b>Finaliza: </b></label>
-                    {{new Date(getSelectedSavingsType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
-                    <br>
-                    <label><b>Monto aproximado al final del ahorro: </b></label>
-                    ${{ estimatedSavings }}<label
-                        v-if="(estimatedSavings - Math.floor(estimatedSavings)) == 0">.00</label>
-                </p>
+                </div>             
+    <div v-if="savingsTypeList.length > 0">
+          <data-table :value="[{ id: 1 }]"  showGridlines  :paginator="false">
+            <data-column field="id" header="Empieza" style="width: 200px">
+              <template #body="{}">
+                {{ new Date(getSelectedSavingsType()?.StartDate).toLocaleString("es-ES", dateFormat) }}
+              </template>
+            </data-column>
+            <data-column field="id" header="Finaliza" style="width: 200px">
+              <template #body="{}">
+                {{ new Date(getSelectedSavingsType()?.EndDate).toLocaleString("es-ES", dateFormat) }}
+              </template>
+            </data-column>
+            <data-column header="Monto aproximado al final del ahorro:">
+              <template #body="{}">
+                ${{ estimatedSavings }}<label v-if="(estimatedSavings - Math.floor(estimatedSavings)) === 0">.00</label>
+              </template>
+            </data-column>
+          </data-table>
+        </div>
             </div>
             <div class="actions">
                 <base-button :label="backLabel" @click="toReturn" small :type="'button'" />
