@@ -34,24 +34,50 @@ namespace AseIsthmusAPI.Services
             return savings;
         }
 
-        public async Task<sp_GetLoanCalculation_Result> GetLoanCalculation(string personId, int loanTypeId, int term, decimal amount)
+        public async Task<sp_GetLoanCalculation_Result> GetLoanCalculation(LoanCalculationType loanCalculation)
         {
-            var personIdParameter = new SqlParameter("@personId", personId);
-            var loanTypeIdParameter = new SqlParameter("@loanTypeId", loanTypeId);
-            var termParameter = new SqlParameter("@term", term);
-            var amountParameter = new SqlParameter("@amount", amount);
-            var availEmployeeAmtParameter = new SqlParameter("@availEmployeeAmt", SqlDbType.Decimal) { Direction = ParameterDirection.Output, Precision = 18, Scale = 2 };
-            var availEmployerAmtParameter = new SqlParameter("@availEmployerAmt", SqlDbType.Decimal) { Direction = ParameterDirection.Output, Precision = 18, Scale = 2 };
-            var totalAvailAmountParameter = new SqlParameter("@totalAvailAmount", SqlDbType.Decimal) { Direction = ParameterDirection.Output, Precision = 18, Scale = 2 };
-            var biweeklyFeeParameter = new SqlParameter("@biweeklyFee", SqlDbType.Decimal) { Direction = ParameterDirection.Output, Precision = 18, Scale = 2 };
-            var totalAmtPayParameter = new SqlParameter("@totalAmtPay", SqlDbType.Decimal) { Direction = ParameterDirection.Output, Precision = 18, Scale = 2 };
+            var loanData = ConvertLoanCalculationTypeToDataTable(loanCalculation);
+
+            var loanDataParameter = new SqlParameter("@loanData", SqlDbType.Structured)
+            {
+                TypeName = "dbo.LoanCalculationTypes",
+                Value = loanData
+            };
+            var availEmployeeAmtParameter = new SqlParameter("@availEmployeeAmt", SqlDbType.Decimal)
+            {
+                Direction = ParameterDirection.Output,
+                Precision = 18,
+                Scale = 2
+            };
+            var availEmployerAmtParameter = new SqlParameter("@availEmployerAmt", SqlDbType.Decimal)
+            {
+                Direction = ParameterDirection.Output,
+                Precision = 18,
+                Scale = 2
+            };
+            var totalAvailAmountParameter = new SqlParameter("@totalAvailAmount", SqlDbType.Decimal)
+            {
+                Direction = ParameterDirection.Output,
+                Precision = 18,
+                Scale = 2
+            };
+            var biweeklyFeeParameter = new SqlParameter("@biweeklyFee", SqlDbType.Decimal)
+            {
+                Direction = ParameterDirection.Output,
+                Precision = 18,
+                Scale = 2
+            };
+            var totalAmtPayParameter = new SqlParameter("@totalAmtPay", SqlDbType.Decimal)
+            {
+                Direction = ParameterDirection.Output,
+                Precision = 18,
+                Scale = 2
+            };
+
 
             await _context.Database.ExecuteSqlRawAsync(
-                "EXEC sp_GetLoanCalculation @personId, @loanTypeId, @term, @amount, @availEmployeeAmt OUTPUT, @availEmployerAmt OUTPUT, @totalAvailAmount OUTPUT, @biweeklyFee OUTPUT, @totalAmtPay OUTPUT",
-                personIdParameter,
-                loanTypeIdParameter,
-                termParameter,
-                amountParameter,
+                "EXEC sp_GetLoanCalculation @loanData, @availEmployeeAmt OUTPUT, @availEmployerAmt OUTPUT, @totalAvailAmount OUTPUT, @biweeklyFee OUTPUT, @totalAmtPay OUTPUT",
+                loanDataParameter,
                 availEmployeeAmtParameter,
                 availEmployerAmtParameter,
                 totalAvailAmountParameter,
@@ -70,6 +96,29 @@ namespace AseIsthmusAPI.Services
 
             return loanCalculationResult;
 
+        }
+
+        private DataTable ConvertLoanCalculationTypeToDataTable(LoanCalculationType loanCalculation)
+        {
+            DataTable dataTable = new DataTable();
+
+            dataTable.Columns.Add("PersonId", typeof(string));
+            dataTable.Columns.Add("LoanTypeId", typeof(int));
+            dataTable.Columns.Add("Term", typeof(int));
+            dataTable.Columns.Add("Amount", typeof(decimal));
+ 
+   
+                // Create a new row for each item and populate the column values
+                DataRow row = dataTable.NewRow();
+                row["PersonId"] = loanCalculation.PersonId;
+                row["LoanTypeId"] = loanCalculation.LoanTypeId;
+                row["Term"] = loanCalculation.Term;
+                row["Amount"] = loanCalculation.Amount;
+
+                dataTable.Rows.Add(row);
+  
+
+            return dataTable;
         }
     }
 }

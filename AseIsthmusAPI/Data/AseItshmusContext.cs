@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using AseIsthmusAPI.Data.AseIsthmusModels;
-using AseIsthmusAPI.Data.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace AseIsthmusAPI.Data;
@@ -52,13 +50,23 @@ public partial class AseItshmusContext : DbContext
     public virtual DbSet<TransactionLog> TransactionLogs { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
-    public virtual DbSet<sp_GetLoanCalculation_Result> LoanCalculationResults { get; set; }
 
+    public virtual DbSet<sp_GetLoanCalculation_Result> Sp_GetLoanCalculations { get; set; }
 
+    public virtual DbSet<LoanCalculationType> LoanCalculationTypes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-     
+
+        modelBuilder.Entity<sp_GetLoanCalculation_Result>().HasNoKey();
+
+        modelBuilder.Entity<LoanCalculationType>(entity =>
+        {
+            entity.ToTable("LoanCalculationTypes");
+            entity.HasNoKey(); 
+            entity.Property(e => e.PersonId).HasMaxLength(12); 
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+        });
 
         modelBuilder.Entity<Agreement>(entity =>
         {
@@ -325,8 +333,7 @@ public partial class AseItshmusContext : DbContext
         });
 
         OnModelCreatingPartial(modelBuilder);
-        modelBuilder.Entity<sp_GetLoanCalculation_Result>()
-        .HasNoKey();
+
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

@@ -4,19 +4,19 @@ const apiUrl = process.env["VUE_APP_BASED_URL"]
 
 export default {
 
-    // //Get
-    // async getAllAgreements({
+    //Get
+    // async getLoanCalculation({
     //     commit,
     //     rootGetters
     // }) {
     //     const token = rootGetters['auth/getToken'];
-    //     const response = await axios.get(`${apiUrl}/agreement`, {
+    //     const response = await axios.get(`${apiUrl}/loanrequest/calculation`, {
     //         headers: {
     //             Authorization: `Bearer ${token}`
     //         }
     //     })
     //     const agreementData = response.data;
-    //     commit('setAgreement', agreementData);
+    //     commit('setLoanCalculation', agreementData);
     //     return agreementData;
     // },
 

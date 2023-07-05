@@ -43,13 +43,8 @@
     const selectedLoanType = ref(null);
 
     let responseData = null;
-    // const calculatedValues= ref({
-    //     employeeAvailable:null,
-    //     totalAvailable:null,
-    //     employerAvailablet:null,
-    //     biweeklyAmount:null,
-    //     totalPay:null,
-    // })
+
+
 
     const selectedBankAccount = ref(null);
     const BankAccountList = ref([]);
@@ -60,6 +55,15 @@
         BankAccount: null,
         RequestedDate: null
     })
+
+    const calculatedValues = ref({
+        AvailEmployeeAmt: null,
+        AvailEmployerAmt: null,
+        TotalAvailAmount: null,
+        BiweeklyFee: null,
+        TotalAmtToPay: null,
+    })
+
 
     const updatedLoanData = computed(() => {
         return {
@@ -92,6 +96,7 @@
 
     };
 
+   
     const storeLoan = async () => {
         await store.dispatch('loanRequests/addLoanRequest', {
             loanData: updatedLoanData.value,
@@ -114,8 +119,37 @@
         }
     };
 
-    const getSelectedLoanType = () => {
-        return loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
+    const getSelectedLoanType = async () => {
+        const selectedType = loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
+
+if (selectedType) {
+
+  await fetchCalculation();
+}
+console.log(selectedLoanType.value)
+console.log(calculatedValues.value)
+return selectedType;
+    };
+
+
+    const fetchCalculation = async () => {
+        try {
+            const response = await axios.get(`${apiUrl}/loanrequest/calculation`, {
+                params: {
+                    PersonId: store.getters["auth/getLoggedInUser"],
+                    LoanTypeId: loanData.value.LoansTypeId,
+                    Term: loanData.value.Term,
+                    Amount: loanData.value.AmountRequested
+                }
+            });
+            calculatedValues.value = response.data;
+        } catch (error) {
+            toast.add({
+                severity: 'error',
+                detail: error,
+                life: 2000
+            });
+        }
     };
 
 
@@ -169,8 +203,7 @@
         }
     }
 
-    onMounted(fetchActiveLoans(), fetchUserData(),getSelectedLoanType());
-
+    onMounted(fetchActiveLoans(), fetchUserData(), getSelectedLoanType());
 </script>
 <template>
     <div class="main">
@@ -217,42 +250,43 @@
                     </div>
                 </div>
                 <div v-if="loanTypesList.length > 0">
-          <data-table :value="[loanTypesList.find(type => type.LoansTypeId === selectedLoanType)]" showGridlines :paginator="false">
+                    <data-table :value="[loanTypesList.find(type => type.LoansTypeId === selectedLoanType)]"
+                        showGridlines :paginator="false">
 
 
-            <data-column  header="Monto disponible de ahorro:" style="width: 200px">
-              <template #body="{ }">
-                {{ getSelectedLoanType()?.PercentageEmployeeCont  ?? 'N/A' }}
-  
-  </template>
-            </data-column>
-            <data-column header="Monto disponible de aporte:" style="width: 200px">
-              <template #body="{ }">
-                {{ getSelectedLoanType()?.PercentageEmployerCont ?? 'N/A' }}
-              </template>
-            </data-column>
-            <data-column header="Total disponible:">
-              <template #body="{}">
-                ferf
-              </template>
-            </data-column>
-            <data-column header="Tasa de interés:">
-              <template #body="{}">
-                ferf
-              </template>
-            </data-column>
-            <data-column header="Cuota quincenal:">
-              <template #body="{}">
-                ferf
-              </template>
-            </data-column>
-            <data-column header="Total a pagar:">
-              <template #body="{}">
-                ferf
-              </template>
-            </data-column>
-          </data-table>
-        </div>
+                        <data-column header="Monto disponible de ahorro:" style="width: 200px">
+                            <template #body="{ }">
+                                {{ getSelectedLoanType()?.PercentageEmployeeCont  ?? 'N/A' }}
+
+                            </template>
+                        </data-column>
+                        <data-column header="Monto disponible de aporte:" style="width: 200px">
+                            <template #body="{ }">
+                                {{ getSelectedLoanType()?.PercentageEmployerCont ?? 'N/A' }}
+                            </template>
+                        </data-column>
+                        <data-column header="Total disponible:">
+                            <template #body="{}">
+                                ferf
+                            </template>
+                        </data-column>
+                        <data-column header="Tasa de interés:">
+                            <template #body="{}">
+                                ferf
+                            </template>
+                        </data-column>
+                        <data-column header="Cuota quincenal:">
+                            <template #body="{}">
+                                ferf
+                            </template>
+                        </data-column>
+                        <data-column header="Total a pagar:">
+                            <template #body="{}">
+                                ferf
+                            </template>
+                        </data-column>
+                    </data-table>
+                </div>
             </div>
             <div class="actions">
                 <base-button :label="backLabel" @click="toReturn" small :type="'button'" />

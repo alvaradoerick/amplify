@@ -1,4 +1,5 @@
 ﻿using AseIsthmusAPI.Data;
+using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -19,13 +20,13 @@ namespace AseIsthmusAPI.Controllers
         }
         #region Get
 
-        [HttpGet("calculation")]
-        public ActionResult<sp_GetLoanCalculation_Result> GetLoanCalculation(string personId, int loanTypeId, int term, decimal amount)
+        [HttpPost("calculation")]
+        public async Task<IActionResult> GetLoanCalculation([FromBody]LoanCalculationType loanCalculation)
         {
-            var result = _service.GetLoanCalculation(personId, loanTypeId, term, amount);
+            var result = await _service.GetLoanCalculation(loanCalculation);
 
 
-            return Ok(result.Result);
+            return Ok(result);
         }
         #endregion
 
