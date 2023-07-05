@@ -50,7 +50,7 @@
     const BankAccountList = ref([]);
     const loanData = ref({
         LoansTypeId: selectedLoanType,
-        AmountRequested: 0.00,
+        AmountRequested: 0,
         Term: null,
         BankAccount: null,
         RequestedDate: null
@@ -123,20 +123,29 @@
         const selectedType = loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
 
 if (selectedType) {
-
-  await fetchCalculation();
+  if(loanData.value.AmountRequested > 0 && loanData.value.Term !==null){
+    await fetchCalculation();
+  }
 }
-console.log(selectedLoanType.value)
 console.log(calculatedValues.value)
 return selectedType;
     };
 
+ const PersonId = computed(() => {
+        return store.getters["auth/getLoggedInUser"];
+ })
 
+ const id = PersonId.value
+
+ console.log(id)
+
+
+console.log(PersonId)
     const fetchCalculation = async () => {
         try {
-            const response = await axios.get(`${apiUrl}/loanrequest/calculation`, {
-                params: {
-                    PersonId: store.getters["auth/getLoggedInUser"],
+            const response = await axios.post(`${apiUrl}/loanrequest/calculation`, {
+                loanData: {
+                    PersonId: id,
                     LoanTypeId: loanData.value.LoansTypeId,
                     Term: loanData.value.Term,
                     Amount: loanData.value.AmountRequested
