@@ -1,6 +1,5 @@
 <script setup>
-    import DataTable from 'primevue/datatable';
-    import Column from 'primevue/column';
+
     import {
         ref,
         onMounted,
@@ -67,15 +66,15 @@
 
 <template>
     <div class="user-list">
-        <DataTable :value="sortedUsersData" paginator :rows="3" tableStyle="min-width: 80rem">
-            <Column field="FullName" header="Nombre" sortable></Column>
-            <Column field="NumberId" header="Identificación" sortable style="width: 160px"></Column>
-            <Column field="WorkStartDate" header="Fecha de ingreso" sortable style="width: 200px"></Column>
-            <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
-            <Column header="" style="width: 100px"> <template #body="rowData">
+        <data-table :value="sortedUsersData" paginator :rows="3" tableStyle="min-width: 80rem">
+            <data-column field="FullName" header="Nombre" sortable></data-column>
+            <data-column field="NumberId" header="Identificación" sortable style="width: 160px"></data-column>
+            <data-column field="WorkStartDate" header="Fecha de ingreso" sortable style="width: 200px"></data-column>
+            <data-column field="IsActive" header="Estado" sortable style="width: 160px"></data-column>
+            <data-column header="" style="width: 100px"> <template #body="rowData">
                     <base-button class="action-buttons" label="Ver más" @click="updateUser(rowData)" :type="'button'" />
-                </template></Column>
-        </DataTable>
+                </template></data-column>
+        </data-table>
         <div class="actions-container">
             <div class="actions">
                 <base-button :label="backLabel" @click="cancel" :type="'button'" />

@@ -21,41 +21,40 @@
     const store = useStore()
     const toast = useToast();
 
-    const typeData = ref([]);
+    const requestData = ref([]);
     const backLabel = 'Principal';
-    const addLabel = 'Agregar';
     const deletionStatus = ref(false);
 
-    const fetchTypeData = async () => {
-        await store.dispatch('savingsTypes/getAllTypes');
-        const types = store.getters['savingsTypes/getType'];
-        typeData.value = types.map(type => {
+    const fetchRequestData = async () => {
+        await store.dispatch('savingsRequests/getAllSavings');
+        const requests = store.getters['savingsRequests/getSavings'];
+        requestData.value = requests.map(request => {
             return {
-                ...type,
-                IsActive: type.IsActive ? "Activo" : "Inactivo",
-                ApplicationDeadline: new Date(type.ApplicationDeadline).toLocaleString("es-ES", dateFormat),
-                StartDate: new Date(type.StartDate).toLocaleString("es-ES", dateFormat),
+                ...request,
+                IsActive: request.IsActive ? "Activo" : "Inactivo",
+                IsApproved: request.IsApproved  ? "Activo"  : request.IsApproved === null  ? "Pendiente"  : "Rechazado",
+                ApplicationDate: new Date(request.ApplicationDate).toLocaleString("es-ES", dateFormat),
             };
         });
     };
 
-    const storeType = async (id) => {
-        await store.dispatch('savingsTypes/deleteType', {
+    const storeRequest = async (id) => {
+        await store.dispatch('savingsRequests/deleteSavings', {
             rowId: id
         })
     }
 
     const deleteResponse = computed(() => {
-        return store.getters["savingsTypes/getErrorResponse"];
+        return store.getters["savingsRequests/getErrorResponse"];
     });
 
     const deleteRecord = async (rowData) => {
         try {
-            await storeType(rowData.data.SavingsTypeId);
+            await storeRequest(rowData.data.SavingsRequestId);
             if (deleteResponse.value === null) {
                 toast.add({
                     severity: 'warn',
-                    detail: "Tipo de ahorro ha sido eliminado.",
+                    detail: "Solicitud de ahorro ha sido eliminada.",
                     life: 2000
                 });
                 deletionStatus.value = true;
@@ -65,7 +64,7 @@
                     detail: deleteResponse.value,
                     life: 3000
                 });
-                store.commit('savingsTypes/clearErrorResponse');
+                store.commit('savingsRequests/clearErrorResponse');
             }
         } catch (error) {
             toast.add({
@@ -75,16 +74,14 @@
             });
         }
     };
-
     const dateFormat = {
         day: "numeric",
         month: "numeric",
         year: "numeric"
     };
-    
     watch(deletionStatus, (newStatus) => {
         if (newStatus) {
-            fetchTypeData();
+            fetchRequestData();
             deletionStatus.value = false;
         }
     });
@@ -94,33 +91,28 @@
             name: "dashboard"
         });
     }
-
-    const addRecord = () => {
-        router.push({
-            name: "createSavingsType"
-        });
-    }
-
+    
     const updateRecord = (rowData) => {
         router.push({
-            name: "updateSavingsType",
+            name: "updateSavingRequest",
             params: {
-                id: rowData.data.SavingsTypeId
+                id: rowData.data.SavingsRequestId
             },
             props: true,
         });
     };
-    onMounted(fetchTypeData);
+
+    onMounted(fetchRequestData);
 </script>
 
 <template>
     <toast-component />
     <div class="list">
-        <DataTable :value="typeData" paginator :rows="3" tableStyle="min-width: 80rem">
-            <Column field="Description" header="Tipo de ahorro" sortable></Column>
-            <Column field="ApplicationDeadline" header="Último día de inscripción" sortable></Column>
-            <Column field="StartDate" header="Fecha de inicio" sortable></Column>
+        <DataTable :value="requestData" paginator :rows="3" tableStyle="min-width: 80rem">
+            <Column field="SavingsTypeName" header="Tipo de ahorro" sortable></Column>
+            <Column field="ApplicationDate" header="Fecha de solicitud" sortable></Column>         
             <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
+            <Column field="IsApproved" header="Estado de aprobación" sortable></Column>
             <Column header="" style="width: 100px"> <template #body="rowData">
                     <base-button class="action-buttons" label="Editar" @click="updateRecord(rowData)"
                         :type="'button'" />
@@ -134,7 +126,6 @@
         <div class="actions-container">
             <div class="actions">
                 <base-button :label="backLabel" @click="cancel" :type="'button'" />
-                <base-button :label="addLabel" @click="addRecord" :type="'button'" />
             </div>
         </div>
     </div>

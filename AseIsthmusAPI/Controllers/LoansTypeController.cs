@@ -25,7 +25,7 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAll();
         }
 
-        [HttpGet("active-agreements")]
+        [HttpGet("active-loans")]
         public async Task<IEnumerable<LoansType>> GetAllActiveLoanTypes()
         {
             return await _service.GetAllActiveLoans();

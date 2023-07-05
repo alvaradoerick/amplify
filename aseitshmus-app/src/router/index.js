@@ -235,6 +235,7 @@ const routes = [{
           },
         ]
       },
+      //savings types
       {
         path: '/savings-types',
         name: 'savingsTypes',
@@ -265,6 +266,29 @@ const routes = [{
           },
         ]
       },
+            //savings Requests
+            {
+              path: '/savings-requests',
+              name: 'savingsRequests',
+              children: [{
+                  path: '/all-savings-requests',
+                  name: 'savingsRequestList',
+                  component: () => import('../views/admin/savings/AllSavings.vue' /* webpackChunkName: "AllSavings" */ ),
+                  meta: {
+                    title: ' Solicitudes de Ahorro',
+                  }
+                },
+                
+                {
+                  path: '/update-saving-request/:id',
+                  name: 'updateSavingRequest',
+                  component: () => import('../views/admin/savings/UpdateSaving.vue' /* webpackChunkName: "UpdateSaving" */ ),
+                  meta: {
+                    title: 'Aprobación de Solicitud de Ahorro',
+                  }
+                },
+              ]
+            },
     ]
   },
 

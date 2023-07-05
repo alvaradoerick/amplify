@@ -80,6 +80,9 @@
             <a class="nav-link">Ahorros</a>
             <ul v-show="subMenuStates.subMenu3" class="sub-menu">
               <li>
+                <router-link class="nav-link" :to="{name:'savingsRequestList'}">Lista de solicitudes de ahorros</router-link>
+              </li>
+              <li>
                 <router-link class="nav-link" :to="{name:'savingsList'}">Lista de tipos de ahorros</router-link>
               </li>
             </ul>

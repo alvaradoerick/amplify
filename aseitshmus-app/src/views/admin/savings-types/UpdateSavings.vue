@@ -95,7 +95,6 @@
         await store.dispatch('savingsTypes/getTypeById', {
             rowId: typeId.value
         });
-
         const type = store.getters["savingsTypes/getType"];
         try {
             savingsType.value.Description = type.Description,
@@ -116,7 +115,6 @@
         event.preventDefault();
         const isValid = await validateForm();
         if (isValid) {
-            if (isValid) {
                 try {
                     await storeType();
                     toast.add({
@@ -134,7 +132,6 @@
                     });
                 }
             }
-        }
     }
 
 
@@ -165,7 +162,6 @@
                         <drop-down v-model="savingsType.IsActive" :options="status" optionLabel="name" optionValue="value"
                             placeholder="Estado" class="dropdown" id="status"
                             :class="{'p-invalid': v$?.IsActive?.$error}" />
-                        <label for="status">Estado</label>
                         <label for="status">Estado</label>
                     </div>
                 </div>

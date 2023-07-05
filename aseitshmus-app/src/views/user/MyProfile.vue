@@ -211,7 +211,7 @@
                 {{ FirstName }} {{ LastName1 }}
                 {{ LastName2 }}</p>
         </div>
-            <div>
+            <div class="header">
             <div class="form-row">
                 <div class="p-float-label">
                     <input-mask class="input-text form-margin-right" id="employee-phone" type="text"
@@ -292,18 +292,20 @@
     .form-column {
         display: flex;
         flex-direction: column;
-        min-height: 8vh;
+        min-height: 9vh;
         align-items: center;
     }
 
+    .header{
+        margin-top: 1.1rem;
+    }
 
     .form-row {
         display: flex;
         justify-content: space-between;
         align-self: center;
-        margin-bottom: 1.2rem;
-        margin-top: 1rem;
-        width: 80%;
+        margin-top: 2rem;
+        width: 100%;
     }
 
     .form-margin-right {

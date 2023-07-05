@@ -19,6 +19,8 @@ import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
 import InputMask from 'primevue/inputmask';
 import InputNumber from 'primevue/inputnumber';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 
 
 //bootstrap
@@ -49,6 +51,9 @@ app.component('date-picker', Calendar);
 app.component('toast-component', Toast);
 app.component('input-mask', InputMask);
 app.component('input-number', InputNumber );
+app.component('data-table', DataTable );
+app.component('data-column', Column );
+
 
 app.directive('tooltip', Tooltip);
 
