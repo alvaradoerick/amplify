@@ -8,7 +8,7 @@ namespace AseIsthmusAPI.Data.AseIsthmusModels
     public partial class LoanCalculationType
     {
         public string PersonId { get; set; }
-        public int LoanTypeId { get; set; }
+        public int LoansTypeId { get; set; }
         public int Term { get; set; }
         public decimal Amount { get; set; }
     }

@@ -5,20 +5,29 @@ const apiUrl = process.env["VUE_APP_BASED_URL"]
 export default {
 
     //Get
-    // async getLoanCalculation({
-    //     commit,
-    //     rootGetters
-    // }) {
-    //     const token = rootGetters['auth/getToken'];
-    //     const response = await axios.get(`${apiUrl}/loanrequest/calculation`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-    //     const agreementData = response.data;
-    //     commit('setLoanCalculation', agreementData);
-    //     return agreementData;
-    // },
+    async getLoanCalculation({
+        commit,
+        rootGetters
+    }, payload) {
+        const token = rootGetters['auth/getToken'];
+        const PersonId = rootGetters['auth/getLoggedInUser'];
+        const loanData = payload.loanData;
+        const updatedLoanData = {
+            ...loanData,
+            PersonId: PersonId,
+          };
+
+        const response = await axios.post(`${apiUrl}/loanrequest/calculation`,
+        updatedLoanData, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+        const loanDataResponse = response.data;
+        commit('setLoanCalculation', loanDataResponse);
+        return loanDataResponse;
+    },
 
     // async getActiveAgreements({
     //     commit,
@@ -60,7 +69,7 @@ export default {
         const token = rootGetters['auth/getToken'];
             const response = await axios.post(
                 `${apiUrl}/loanrequest/${userId}`,
-                payload.loanData, {
+                payload.loanRequest, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

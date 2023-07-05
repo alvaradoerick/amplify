@@ -21,15 +21,12 @@
 
     const apiUrl = process.env["VUE_APP_BASED_URL"]
 
-    const store = useStore();
+    const {
+        getters,
+        dispatch
+    } = useStore();
     const router = useRouter();
     const toast = useToast();
-
-    // const dateFormat = {
-    //     day: "numeric",
-    //     month: "numeric",
-    //     year: "numeric"
-    // };
 
     const backLabel = 'Cancelar';
     const toReturn = () => {
@@ -42,13 +39,11 @@
     const loanTypesList = ref([]);
     const selectedLoanType = ref(null);
 
-    let responseData = null;
-
-
-
     const selectedBankAccount = ref(null);
     const BankAccountList = ref([]);
-    const loanData = ref({
+
+    //el objeto para completar la solicitud
+    const loanRequest = ref({
         LoansTypeId: selectedLoanType,
         AmountRequested: 0,
         Term: null,
@@ -56,6 +51,7 @@
         RequestedDate: null
     })
 
+    //los calculos para el grid
     const calculatedValues = ref({
         AvailEmployeeAmt: null,
         AvailEmployerAmt: null,
@@ -64,18 +60,18 @@
         TotalAmtToPay: null,
     })
 
-
+    //para actualizar la nueva cuenta bancaria o la existente en el objeto
     const updatedLoanData = computed(() => {
         return {
-            ...loanData.value,
+            ...loanRequest.value,
             BankAccount: selectedBankAccount.value === 'Otra cuenta' ? enteredBankAccount.value :
                 selectedBankAccount.value,
         };
     });
 
     const fetchUserData = async () => {
-        await store.dispatch('users/getById');
-        responseData = store.getters["users/getUsers"];
+        await dispatch('users/getById');
+       let  responseData = getters["users/getUsers"];
         selectedBankAccount.value = responseData.BankAccount ? responseData.BankAccount : null;
         if (responseData.BankAccount !== null && responseData.BankAccount !== undefined) {
             BankAccountList.value = [{
@@ -96,14 +92,13 @@
 
     };
 
-   
     const storeLoan = async () => {
-        await store.dispatch('loanRequests/addLoanRequest', {
-            loanData: updatedLoanData.value,
+        await dispatch('loanRequests/addLoanRequest', {
+            loanRequest: updatedLoanData.value,
         });
     };
 
-    const fetchActiveLoans = async () => {
+    const fetchActiveLoanTypes = async () => {
         try {
             const response = await axios.get(`${apiUrl}/LoansType/active-loans`);
             loanTypesList.value = response.data;
@@ -120,48 +115,31 @@
     };
 
     const getSelectedLoanType = async () => {
+
         const selectedType = loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
-
-if (selectedType) {
-  if(loanData.value.AmountRequested > 0 && loanData.value.Term !==null){
-    await fetchCalculation();
-  }
-}
-console.log(calculatedValues.value)
-return selectedType;
-    };
-
- const PersonId = computed(() => {
-        return store.getters["auth/getLoggedInUser"];
- })
-
- const id = PersonId.value
-
- console.log(id)
-
-
-console.log(PersonId)
-    const fetchCalculation = async () => {
-        try {
-            const response = await axios.post(`${apiUrl}/loanrequest/calculation`, {
-                loanData: {
-                    PersonId: id,
-                    LoanTypeId: loanData.value.LoansTypeId,
-                    Term: loanData.value.Term,
-                    Amount: loanData.value.AmountRequested
-                }
-            });
-            calculatedValues.value = response.data;
-        } catch (error) {
-            toast.add({
-                severity: 'error',
-                detail: error,
-                life: 2000
-            });
+        console.log(selectedLoanType);
+        if (selectedType) {
+             fetchCalculation();
+               console.log("sera aqui?");
         }
+        console.log(selectedType);
+        return selectedType;
     };
+  
 
-
+    const fetchCalculation =  () => {
+        const loanData = {
+            Amount: loanRequest.value.AmountRequested,
+            Term: loanRequest.value.Term,
+            LoansTypeId: selectedLoanType.value,
+        };
+         dispatch('loanRequests/getLoanCalculation', {
+            loanData: loanData,
+        });
+  calculatedValues.value = getters['loanRequests/getLoanCalculation'];
+  console.log(calculatedValues.value)
+    };
+   
     const rules = {
         RequestedDate: {
             required
@@ -171,7 +149,7 @@ console.log(PersonId)
         },
     }
 
-    const v$ = useVuelidate(rules, loanData);
+    const v$ = useVuelidate(rules, loanRequest);
 
     const validateForm = async () => {
         const result = await v$.value.$validate();
@@ -207,12 +185,12 @@ console.log(PersonId)
                     detail: error,
                     life: 2000
                 });
-                console.log(error)
             }
         }
     }
 
-    onMounted(fetchActiveLoans(), fetchUserData(), getSelectedLoanType());
+    onMounted(fetchActiveLoanTypes(), fetchUserData(), getSelectedLoanType());
+
 </script>
 <template>
     <div class="main">
@@ -228,12 +206,12 @@ console.log(PersonId)
                     </div>
                     <div class="p-float-label">
                         <input-number placeholder="Monto quincenal" class=" input-text " id="amount" mode="currency"
-                            currency="USD" locale="en-US" v-model="loanData.AmountRequested"
+                            currency="USD" locale="en-US" v-model="loanRequest.AmountRequested"
                             :class="{'p-invalid': v$?.AmountRequested?.$error}" />
                         <label for="amount">Monto a solicitar</label>
                     </div>
                     <div class="p-float-label  form-margin-left">
-                        <date-picker v-model="loanData.RequestedDate" placeholder="Fecha de solicitud de crédito"
+                        <date-picker v-model="loanRequest.RequestedDate" placeholder="Fecha de solicitud de crédito"
                             class="dropdown" dateFormat="dd-mm-yy" showIcon id="requested-day"
                             :class="{'p-invalid': v$?.RequestedDate?.$error}" />
                         <label for="requested-day">Fecha de solicitud de crédito</label>
@@ -242,7 +220,7 @@ console.log(PersonId)
                 <div class="form-row">
                     <div class="p-float-label">
                         <input-number placeholder="Monto quincenal" class="dropdown form-margin-right" id="term"
-                            v-model="loanData.Term"
+                            v-model="loanRequest.Term"
                             v-tooltip.focus="'De 1 mes hasta 5 años. Para compra de vehículo hasta por 10 años.'"
                             :class="{'p-invalid': v$?.Term?.$error}" />
                         <label for="term">Plazo (meses)</label>
@@ -265,23 +243,23 @@ console.log(PersonId)
 
                         <data-column header="Monto disponible de ahorro:" style="width: 200px">
                             <template #body="{ }">
-                                {{ getSelectedLoanType()?.PercentageEmployeeCont  ?? 'N/A' }}
-
+                                {{ calculatedValues.AvailEmployeeAmt ?? 'N/A' }}
                             </template>
                         </data-column>
                         <data-column header="Monto disponible de aporte:" style="width: 200px">
                             <template #body="{ }">
-                                {{ getSelectedLoanType()?.PercentageEmployerCont ?? 'N/A' }}
+                                {{ calculatedValues.AvailEmployerAmt ?? 'N/A' }}
+                              
                             </template>
                         </data-column>
                         <data-column header="Total disponible:">
                             <template #body="{}">
-                                ferf
+                                {{ calculatedValues.TotalAvailAmount ?? 'N/A' }}
                             </template>
                         </data-column>
                         <data-column header="Tasa de interés:">
                             <template #body="{}">
-                                ferf
+                             
                             </template>
                         </data-column>
                         <data-column header="Cuota quincenal:">

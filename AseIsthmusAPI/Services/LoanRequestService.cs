@@ -103,15 +103,13 @@ namespace AseIsthmusAPI.Services
             DataTable dataTable = new DataTable();
 
             dataTable.Columns.Add("PersonId", typeof(string));
-            dataTable.Columns.Add("LoanTypeId", typeof(int));
+            dataTable.Columns.Add("LoansTypeId", typeof(int));
             dataTable.Columns.Add("Term", typeof(int));
             dataTable.Columns.Add("Amount", typeof(decimal));
- 
-   
-                // Create a new row for each item and populate the column values
+
                 DataRow row = dataTable.NewRow();
                 row["PersonId"] = loanCalculation.PersonId;
-                row["LoanTypeId"] = loanCalculation.LoanTypeId;
+                row["LoansTypeId"] = loanCalculation.LoansTypeId;
                 row["Term"] = loanCalculation.Term;
                 row["Amount"] = loanCalculation.Amount;
 
