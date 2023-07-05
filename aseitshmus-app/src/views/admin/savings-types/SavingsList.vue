@@ -75,11 +75,13 @@
             });
         }
     };
+
     const dateFormat = {
         day: "numeric",
         month: "numeric",
         year: "numeric"
     };
+    
     watch(deletionStatus, (newStatus) => {
         if (newStatus) {
             fetchTypeData();

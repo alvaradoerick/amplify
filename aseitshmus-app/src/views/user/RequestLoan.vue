@@ -118,16 +118,6 @@
         return loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
     };
 
-//     const getSelectedLoanType = () => {
-//   const selectedType = loanTypesList.value.find(
-//     type => type.LoansTypeId === selectedLoanType.value
-//   );
-
-//   if (selectedType) {
-//     const biweeklyAmount = selectedType.AmountRequested * selectedType.Terms;
-//     calculatedValues.value.biweeklyAmount = biweeklyAmount;
-//   }
-// };
 
     const rules = {
         RequestedDate: {
@@ -138,9 +128,6 @@
         },
     }
 
-    // const estimatedSavings = computed(() => {
-    //     return numberOfBiweeklies.value * loanData.value.Amount;
-    // });
     const v$ = useVuelidate(rules, loanData);
 
     const validateForm = async () => {

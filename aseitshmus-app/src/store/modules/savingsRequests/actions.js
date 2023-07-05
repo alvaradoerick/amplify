@@ -20,37 +20,22 @@ export default {
         return savingsData;
     },
 
-    // async getActiveAgreements({
-    //     commit,
-    //     rootGetters
-    // }) {
-    //     const token = rootGetters['auth/getToken'];
-    //     const response = await axios.get(`${apiUrl}/agreement/active-agreements`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-    //     const agreementData = response.data;
-    //     commit('setAgreement', agreementData);
-    //     return agreementData;
-    // },
+    async getSavingsById({
+        commit,
+        rootGetters
+    },payload) {
+        const savingsId = payload.rowId;
 
-    // async getAgreementById({
-    //     commit,
-    //     rootGetters
-    // },payload) {
-    //     const agreementId = payload.rowId;
-
-    //     const token = rootGetters['auth/getToken'];
-    //     const response = await axios.get(`${apiUrl}/agreement/${agreementId}`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-    //     const agreementData = response.data;
-    //     commit('setAgreement', agreementData);
-    //     return agreementData;
-    // },
+        const token = rootGetters['auth/getToken'];
+        const response = await axios.get(`${apiUrl}/savingsrequest/${savingsId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        const savingsData = response.data;
+        commit('setSavings', savingsData);
+        return savingsData;
+    },
 
     //Post
     async addSavingsRequest({
@@ -92,26 +77,26 @@ export default {
         }
     },
 
-    //  //Put or Patch
-    //  async updateAgreement({
-    //     rootGetters
-    // }, payload) {
-    //     try {
-    //         const agreementId = payload.AgreementId;
-    //         const agreement = payload.agreementData;
-    //         const token = rootGetters['auth/getToken'];
-    //         const response = await axios.put(
-    //             `${apiUrl}/agreement/${agreementId}`,
-    //             agreement, {
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`
-    //                 }
-    //             }
-    //         );
-    //         return response
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // },
+     //Put or Patch
+     async updateSavings({
+        rootGetters
+    }, payload) {
+        try {
+            const savingsRequestId = payload.savingsRequestId;
+            const savings = payload.savingsState;
+            const token = rootGetters['auth/getToken'];
+            const response = await axios.patch(
+                `${apiUrl}/savingsrequest/${savingsRequestId}`,
+                savings, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    },
 
 };

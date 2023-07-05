@@ -25,6 +25,22 @@ namespace AseIsthmusAPI.Controllers
         {
             return await _service.GetAll();
         }
+
+        //[Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SavingsRequestOutDto>> GetById([FromRoute] int id)
+        {
+            var savings = await _service.GetById(id);
+
+            if (savings is null)
+            {
+                return NotFound(new { error = "No se pudo encontrar ningun préstamo con ese ID." });
+            }
+            else
+            {
+                return savings;
+            }
+        }
         #endregion
 
         #region Create

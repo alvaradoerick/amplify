@@ -284,7 +284,7 @@ const routes = [{
                   name: 'updateSavingRequest',
                   component: () => import('../views/admin/savings/UpdateSaving.vue' /* webpackChunkName: "UpdateSaving" */ ),
                   meta: {
-                    title: 'Actualizar Solicitud de Ahorro',
+                    title: 'Aprobación de Solicitud de Ahorro',
                   }
                 },
               ]

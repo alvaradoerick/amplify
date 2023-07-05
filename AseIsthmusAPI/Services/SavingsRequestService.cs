@@ -19,13 +19,12 @@ namespace AseIsthmusAPI.Services
         {
             return await _context.SavingsRequests
                .OrderByDescending(a => a.IsApproved == null)
-
                 .ThenByDescending(a => a.IsActive)
                 .Select(a => new SavingsRequestOutDto
                     {
-                     SavingsRequestId = a.SavingsRequestId,
+                        SavingsRequestId = a.SavingsRequestId,
                         PersonId = a.PersonId,
-                        Name = $"{a.Person.FirstName} {a.Person.LastName2}",
+                        Name = $"{a.Person.FirstName} {a.Person.LastName1} {a.Person.LastName2}",
                         NumberId = a.Person.NumberId,
                         SavingsTypeId = a.SavingsTypeId,
                         SavingsTypeName = a.SavingsType.Description,
@@ -35,6 +34,25 @@ namespace AseIsthmusAPI.Services
                         ApprovedDate = a.ApprovedDate,
                         IsApproved = a.IsApproved
                     }).ToListAsync();
+        }
+
+        public async Task<SavingsRequestOutDto?> GetById(int id)
+        {
+            return await _context.SavingsRequests.Where(a => a.SavingsRequestId == id).
+                Select(a => new SavingsRequestOutDto
+                {
+                    SavingsRequestId = a.SavingsRequestId,
+                    PersonId = a.PersonId,
+                    Name = $"{a.Person.FirstName} {a.Person.LastName1} {a.Person.LastName2}",
+                    NumberId = a.Person.NumberId,
+                    SavingsTypeId = a.SavingsTypeId,
+                    SavingsTypeName = a.SavingsType.Description,
+                    ApplicationDate = a.ApplicationDate,
+                    Amount = a.Amount,
+                    IsActive = a.IsActive,
+                    ApprovedDate = a.ApprovedDate,
+                    IsApproved = a.IsApproved
+                }).SingleOrDefaultAsync();
         }
 
         public async Task<SavingsRequest> ApproveSaving(int id, SavingsRequestInByAdminDto saving) {
