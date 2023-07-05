@@ -23,7 +23,9 @@ namespace AseIsthmusAPI.Controllers
         public ActionResult<sp_GetLoanCalculation_Result> GetLoanCalculation(string personId, int loanTypeId, int term, decimal amount)
         {
             var result = _service.GetLoanCalculation(personId, loanTypeId, term, amount);
-            return Ok(result);
+
+
+            return Ok(result.Result);
         }
         #endregion
 

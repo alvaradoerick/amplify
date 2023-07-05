@@ -61,7 +61,6 @@ namespace AseIsthmusAPI.Services
 
             var loanCalculationResult = new sp_GetLoanCalculation_Result
             {
-                // Assign the properties from the output parameters
                 AvailEmployeeAmt = availEmployeeAmtParameter.Value.Equals(DBNull.Value) ? 0m : (decimal)availEmployeeAmtParameter.Value,
                 AvailEmployerAmt = availEmployerAmtParameter.Value.Equals(DBNull.Value) ? 0m : (decimal)availEmployerAmtParameter.Value,
                 TotalAvailAmount = totalAvailAmountParameter.Value.Equals(DBNull.Value) ? 0m : (decimal)totalAvailAmountParameter.Value,
