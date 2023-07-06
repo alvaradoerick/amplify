@@ -13,7 +13,8 @@
     import {
         ref,
         onMounted,
-        computed
+        computed,
+        watch
     } from 'vue';
     import {
         useToast
@@ -21,15 +22,12 @@
 
     const apiUrl = process.env["VUE_APP_BASED_URL"]
 
-    const store = useStore();
+    const {
+        getters,
+        dispatch
+    } = useStore();
     const router = useRouter();
     const toast = useToast();
-
-    // const dateFormat = {
-    //     day: "numeric",
-    //     month: "numeric",
-    //     year: "numeric"
-    // };
 
     const backLabel = 'Cancelar';
     const toReturn = () => {
@@ -42,36 +40,42 @@
     const loanTypesList = ref([]);
     const selectedLoanType = ref(null);
 
-    let responseData = null;
-    // const calculatedValues= ref({
-    //     employeeAvailable:null,
-    //     totalAvailable:null,
-    //     employerAvailablet:null,
-    //     biweeklyAmount:null,
-    //     totalPay:null,
-    // })
-
     const selectedBankAccount = ref(null);
     const BankAccountList = ref([]);
-    const loanData = ref({
+    const currentType = ref(null);
+
+
+    //el objeto para completar la solicitud
+    const loanRequest = ref({
         LoansTypeId: selectedLoanType,
-        AmountRequested: 0.00,
-        Term: null,
+        AmountRequested: 0,
+        Term: 0,
         BankAccount: null,
         RequestedDate: null
     })
 
+    //los calculos para el grid
+    const calculatedValues = ref({
+        AvailEmployeeAmt: 0,
+        AvailEmployerAmt: 0,
+        TotalAvailAmount: 0,
+        BiweeklyFee: 0,
+        TotalAmtToPay: 0,
+        Rate: 0
+    })
+
+    //para actualizar la nueva cuenta bancaria o la existente en el objeto
     const updatedLoanData = computed(() => {
         return {
-            ...loanData.value,
+            ...loanRequest.value,
             BankAccount: selectedBankAccount.value === 'Otra cuenta' ? enteredBankAccount.value :
                 selectedBankAccount.value,
         };
     });
 
     const fetchUserData = async () => {
-        await store.dispatch('users/getById');
-        responseData = store.getters["users/getUsers"];
+        await dispatch('users/getById');
+        let responseData = getters["users/getUsers"];
         selectedBankAccount.value = responseData.BankAccount ? responseData.BankAccount : null;
         if (responseData.BankAccount !== null && responseData.BankAccount !== undefined) {
             BankAccountList.value = [{
@@ -89,16 +93,15 @@
                 label: 'Otra cuenta'
             }];
         }
-
     };
 
     const storeLoan = async () => {
-        await store.dispatch('loanRequests/addLoanRequest', {
-            loanData: updatedLoanData.value,
+        await dispatch('loanRequests/addLoanRequest', {
+            loanRequest: updatedLoanData.value,
         });
     };
 
-    const fetchActiveLoans = async () => {
+    const fetchActiveLoanTypes = async () => {
         try {
             const response = await axios.get(`${apiUrl}/LoansType/active-loans`);
             loanTypesList.value = response.data;
@@ -114,10 +117,17 @@
         }
     };
 
-    const getSelectedLoanType = () => {
-        return loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
+    const fetchCalculation = async () => {
+        const loanData = {
+            Amount: loanRequest.value.AmountRequested,
+            Term: loanRequest.value.Term,
+            LoansTypeId: selectedLoanType.value,
+        };
+        await dispatch('loanRequests/getLoanCalculation', {
+            loanData: loanData,
+        });
+        calculatedValues.value = getters['loanRequests/getLoanCalculation'];
     };
-
 
     const rules = {
         RequestedDate: {
@@ -126,11 +136,45 @@
         Term: {
             required
         },
+        AmountRequested: {
+            required
+        },
     }
 
-    const v$ = useVuelidate(rules, loanData);
+    watch(selectedLoanType, () => {
+        fetchCalculation();
+        currentType.value = loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
+
+    });
+
+    watch(calculatedValues.value, (newValue) => {
+        console.log(newValue)
+        fetchCalculation();
+    });
+
+    const validateTerms = () => {
+        if (currentType.value.Term < loanRequest.value.Term) {
+            toast.add({
+                severity: 'error',
+                detail: 'El plazo ingresado no es válido.',
+                life: 2000
+            });
+            return false;
+        } else if (loanRequest.value.Term === 0) {
+            toast.add({
+                severity: 'error',
+                detail: 'Favor ingresar al menos un mes como plazo.',
+                life: 2000
+            });
+            return false;
+        }
+        return true;
+    }
+
+    const v$ = useVuelidate(rules, loanRequest);
 
     const validateForm = async () => {
+        const isTermValid = validateTerms();
         const result = await v$.value.$validate();
         if (!result) {
             if (v$.value.$errors[0].$validator === 'required') {
@@ -139,8 +183,10 @@
                     detail: 'Todos los campos son requeridos.',
                     life: 2000
                 });
+                return false
+            } else if (!isTermValid) {
+                return false
             }
-            return false
         }
         return true;
     }
@@ -148,6 +194,7 @@
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
+
         if (isValid) {
             try {
                 await storeLoan();
@@ -164,13 +211,11 @@
                     detail: error,
                     life: 2000
                 });
-                console.log(error)
             }
         }
     }
 
-    onMounted(fetchActiveLoans(), fetchUserData(),getSelectedLoanType());
-
+    onMounted(fetchActiveLoanTypes(), fetchUserData());
 </script>
 <template>
     <div class="main">
@@ -186,12 +231,12 @@
                     </div>
                     <div class="p-float-label">
                         <input-number placeholder="Monto quincenal" class=" input-text " id="amount" mode="currency"
-                            currency="USD" locale="en-US" v-model="loanData.AmountRequested"
+                            currency="USD" locale="en-US" v-model="loanRequest.AmountRequested"
                             :class="{'p-invalid': v$?.AmountRequested?.$error}" />
                         <label for="amount">Monto a solicitar</label>
                     </div>
                     <div class="p-float-label  form-margin-left">
-                        <date-picker v-model="loanData.RequestedDate" placeholder="Fecha de solicitud de crédito"
+                        <date-picker v-model="loanRequest.RequestedDate" placeholder="Fecha de solicitud de crédito"
                             class="dropdown" dateFormat="dd-mm-yy" showIcon id="requested-day"
                             :class="{'p-invalid': v$?.RequestedDate?.$error}" />
                         <label for="requested-day">Fecha de solicitud de crédito</label>
@@ -200,7 +245,7 @@
                 <div class="form-row">
                     <div class="p-float-label">
                         <input-number placeholder="Monto quincenal" class="dropdown form-margin-right" id="term"
-                            v-model="loanData.Term"
+                            v-model="loanRequest.Term"
                             v-tooltip.focus="'De 1 mes hasta 5 años. Para compra de vehículo hasta por 10 años.'"
                             :class="{'p-invalid': v$?.Term?.$error}" />
                         <label for="term">Plazo (meses)</label>
@@ -217,42 +262,52 @@
                     </div>
                 </div>
                 <div v-if="loanTypesList.length > 0">
-          <data-table :value="[loanTypesList.find(type => type.LoansTypeId === selectedLoanType)]" showGridlines :paginator="false">
+                    <data-table :value="calculatedValues" showGridlines :paginator="false">
+                        <data-column header="Monto disponible de ahorro:" style="width: 200px">
+                            <template #body="{ }">
+                                <label
+                                    v-if="(calculatedValues.AvailEmployeeAmt !== null)">$</label>{{ calculatedValues.AvailEmployeeAmt ?? 'N/A' }}<label
+                                    v-if="(calculatedValues.AvailEmployeeAmt - Math.floor(calculatedValues.AvailEmployeeAmt)) === 0">.00</label>
+                            </template>
+                        </data-column>
+                        <data-column header="Monto disponible de aporte:" style="width: 200px">
+                            <template #body="{ }">
+                                <label
+                                    v-if="(calculatedValues.AvailEmployerAmt !== null)">$</label>{{ calculatedValues.AvailEmployerAmt }}<label
+                                    v-if="(calculatedValues.AvailEmployerAmt - Math.floor(calculatedValues.AvailEmployerAmt)) === 0">.00</label>
+                            </template>
+                        </data-column>
+                        <data-column header="Total disponible:">
+                            <template #body="{}">
+                                <label
+                                    v-if="(calculatedValues.TotalAvailAmount !== null)">$</label>{{ calculatedValues.TotalAvailAmount ?? 'N/A' }}<label
+                                    v-if="(calculatedValues.TotalAvailAmount - Math.floor(calculatedValues.TotalAvailAmount)) === 0">.00</label>
+                            </template>
+                        </data-column>
+                        <data-column header="Tasa de interés:">
+                            <template #body="{}">
+                                {{ calculatedValues.Rate }}<label
+                                    v-if="(calculatedValues.Rate - Math.floor(calculatedValues.Rate)) === 0">.00</label>%
+                            </template>
+                        </data-column>
+                        <data-column header="Cuota quincenal:">
+                            <template #body="{}">
 
+                                <label
+                                    v-if="(calculatedValues.BiweeklyFee !== null)">$</label>{{ calculatedValues.BiweeklyFee }}<label
+                                    v-if="(calculatedValues.BiweeklyFee - Math.floor(calculatedValues.BiweeklyFee)) === 0">.00</label>
 
-            <data-column  header="Monto disponible de ahorro:" style="width: 200px">
-              <template #body="{ }">
-                {{ getSelectedLoanType()?.PercentageEmployeeCont  ?? 'N/A' }}
-  
-  </template>
-            </data-column>
-            <data-column header="Monto disponible de aporte:" style="width: 200px">
-              <template #body="{ }">
-                {{ getSelectedLoanType()?.PercentageEmployerCont ?? 'N/A' }}
-              </template>
-            </data-column>
-            <data-column header="Total disponible:">
-              <template #body="{}">
-                ferf
-              </template>
-            </data-column>
-            <data-column header="Tasa de interés:">
-              <template #body="{}">
-                ferf
-              </template>
-            </data-column>
-            <data-column header="Cuota quincenal:">
-              <template #body="{}">
-                ferf
-              </template>
-            </data-column>
-            <data-column header="Total a pagar:">
-              <template #body="{}">
-                ferf
-              </template>
-            </data-column>
-          </data-table>
-        </div>
+                            </template>
+                        </data-column>
+                        <data-column header="Total a pagar:">
+                            <template #body="{}">
+                                <label
+                                    v-if="(calculatedValues.TotalAmtToPay !== null)">$</label>{{ calculatedValues.TotalAmtToPay }}<label
+                                    v-if="(calculatedValues.TotalAmtToPay - Math.floor(calculatedValues.TotalAmtToPay)) === 0">.00</label>
+                            </template>
+                        </data-column>
+                    </data-table>
+                </div>
             </div>
             <div class="actions">
                 <base-button :label="backLabel" @click="toReturn" small :type="'button'" />

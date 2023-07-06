@@ -10,4 +10,7 @@ export default {
     setSavings(state, savings) {
         state.savings = savings;
     },
+    setLoanCalculation(state, loanCalculation) {
+        state.loanCalculation = loanCalculation;
+    },
 }

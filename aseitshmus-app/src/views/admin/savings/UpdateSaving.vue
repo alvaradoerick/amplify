@@ -18,7 +18,6 @@
     } from '@vuelidate/validators'
     import useVuelidate from '@vuelidate/core'
 
-
     const router = useRouter();
     const route = useRoute();
     const toast = useToast();

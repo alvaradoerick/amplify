@@ -7,4 +7,8 @@ export default {
         return state.savings ;
     },
 
+    getLoanCalculation(state) {
+        return state.loanCalculation ;
+    },
+
 }
