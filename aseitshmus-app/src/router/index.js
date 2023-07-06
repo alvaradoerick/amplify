@@ -245,6 +245,7 @@ const routes = [{
                   component: () => import('../views/admin/loans/AllLoans.vue' /* webpackChunkName: "AllLoans" */ ),
                   meta: {
                     title: ' Solicitudes de Préstamos',
+                   
                   }
                 },
       

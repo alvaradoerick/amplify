@@ -1,16 +1,16 @@
 <script setup>
-    import UserNav from '@/components/UI/UserNav.vue'
+  import NavMenu from '@/components/UI/NavMenu.vue'
 </script>
 <template>
-    <div>
-        <user-nav class="menu"></user-nav>
-        <base-card class="container">
-            <router-view />
-        </base-card>
-    </div>
+  <div>
+    <nav-menu class="menu"></nav-menu>
+    <base-card class="container">
+      <router-view />
+    </base-card>
+  </div>
 </template>
 <style scoped>
-.menu {
+  .menu {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -31,6 +31,4 @@
     width: 300px;
     margin-bottom: 20px;
   }
-
-
 </style>
