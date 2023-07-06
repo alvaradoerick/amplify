@@ -36,7 +36,7 @@
     };
 
     const isLoggedIn = store.getters["auth/isAuthenticated"];
-    const role =  store.getters["auth/getRole"];
+    const role = store.getters["auth/getRole"];
 </script>
 
 <template>
@@ -90,7 +90,7 @@
                         </ul>
                     </li>
                     <li class="nav-item" @mouseover="showSubMenu('subMenu3')" @mouseleave="hideSubMenu('subMenu3')"
-                        v-if="isLoggedIn">
+                        v-if="isLoggedIn  && role===1 || role === 2 || role === 3">
                         <a class="nav-link">Préstamos</a>
                         <ul v-show="subMenuStates.subMenu3" class="sub-menu">
                             <li v-if="role !==4">
@@ -120,11 +120,12 @@
 
                     <!--User Menu-->
                     <li class="nav-item" v-if="isLoggedIn && role !==1">
-                        <router-link class="nav-link" to="/my-dashboard">Principal</router-link>
+                        <router-link class="nav-link" :to="{name:'myDashboard'}">Principal</router-link>
                     </li>
-                    <li class="nav-item" @click="showSubMenu1" @mouseleave="hideSubMenu1" v-if="isLoggedIn && role !==1">
+                    <li class="nav-item"  @mouseover="showSubMenu('subMenu1')" @mouseleave="hideSubMenu('subMenu1')"
+                        v-if="isLoggedIn && role !==1">
                         <a class="nav-link">Mi Cuenta</a>
-                        <ul v-show="isSubMenu1Visible" class="sub-menu">
+                        <ul v-show="subMenuStates.subMenu1" class="sub-menu"  v-if=" role !==1">
                             <li>
                                 <router-link class="nav-link" :to="{name:'myProfile'}">Mi Perfil</router-link>
                             </li>
@@ -134,9 +135,10 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="nav-item" @click="showSubMenu2" @mouseleave="hideSubMenu2" v-if="isLoggedIn && role !==1">
+                    <li class="nav-item" @mouseover="showSubMenu('subMenu2')" @mouseleave="hideSubMenu('subMenu2')"
+                        v-if="isLoggedIn && role !==1">
                         <a class="nav-link">Solicitudes</a>
-                        <ul v-show="isSubMenu2Visible" class="sub-menu">
+                        <ul v-show="subMenuStates.subMenu2" class="sub-menu">
                             <li>
                                 <router-link class="nav-link" :to="{name:'requestLoan'}">Préstamos</router-link>
                             </li>
