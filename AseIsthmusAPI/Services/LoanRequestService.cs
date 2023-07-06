@@ -14,6 +14,76 @@ namespace AseIsthmusAPI.Services
         {
             _context = context;
         }
+        public async Task<IEnumerable<LoanRequestOutDto>> GetAll()
+        {
+            return await _context.LoanRequests
+               .OrderByDescending(a => a.IsApproved == null)
+                .ThenByDescending(a => a.IsActive)
+                .Select(a => new LoanRequestOutDto
+                {
+                    LoanRequestId = a.LoanRequestId,
+                    PersonId = a.PersonId,
+                    Name = $"{a.Person.FirstName} {a.Person.LastName1} {a.Person.LastName2}",
+                    NumberId = a.Person.NumberId,
+                    LoansTypeId = a.LoansTypeId,
+                    LoanTypeName = a.LoansType.Description,
+                    RequestedDate = a.RequestedDate,
+                    AmountRequested = a.AmountRequested,
+                    Term = a.Term,
+                    BankAccount = a.BankAccount,
+                    IsActive = a.IsActive,
+                    ApprovedDate = a.ApprovedDate,
+                    IsApproved = a.IsApproved
+                }).ToListAsync();
+        }
+        public async Task<LoanRequestOutDto?> GetById(int id)
+        {
+            return await _context.LoanRequests.Where(a => a.LoanRequestId == id).
+                Select(a => new LoanRequestOutDto
+                {
+                    LoanRequestId = a.LoanRequestId,
+                    PersonId = a.PersonId,
+                    Name = $"{a.Person.FirstName} {a.Person.LastName1} {a.Person.LastName2}",
+                    NumberId = a.Person.NumberId,
+                    LoansTypeId = a.LoansTypeId,
+                    LoanTypeName = a.LoansType.Description,
+                    RequestedDate = a.RequestedDate,
+                    AmountRequested = a.AmountRequested,
+                    Term = a.Term,
+                    BankAccount = a.BankAccount,
+                    IsActive = a.IsActive,
+                    ApprovedDate = a.ApprovedDate,
+                    IsApproved = a.IsApproved
+                }).SingleOrDefaultAsync();
+        }
+
+        public async Task<LoanRequest> ApproveLoan(int id, LoanRequestInByAdminDto saving)
+        {
+            var existingLoan = await _context.LoanRequests.FindAsync(id);
+
+            if (existingLoan is not null)
+            {
+
+                existingLoan.IsApproved = saving.IsApproved;
+                if (saving.IsApproved == false)
+                {
+                    existingLoan.ApprovedDate = null;
+                    existingLoan.IsActive = false;
+                }
+                else
+                {
+                    existingLoan.ApprovedDate = DateTime.Now;
+                    existingLoan.IsActive = true;
+                }
+
+
+
+
+                await _context.SaveChangesAsync();
+                return existingLoan;
+            }
+            else return null;
+        }
 
         public async Task<LoanRequest> Create(string id, LoanRequestInDto loanRequest)
         {
@@ -106,6 +176,17 @@ namespace AseIsthmusAPI.Services
 
             return loanCalculationResult;
 
+        }
+
+        public async Task Delete(int id)
+        {
+            var loanToDelete = await _context.LoanRequests.Where(a => a.LoanRequestId == id).FirstOrDefaultAsync();
+
+            if (loanToDelete is not null)
+            {
+                _context.LoanRequests.Remove(loanToDelete);
+                await _context.SaveChangesAsync();
+            }
         }
 
         private DataTable ConvertLoanCalculationTypeToDataTable(LoanCalculationType loanCalculation)

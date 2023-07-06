@@ -28,6 +28,22 @@ namespace AseIsthmusAPI.Controllers
 
             return Ok(result);
         }
+
+        //[Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<LoanRequestOutDto>> GetById([FromRoute] int id)
+        {
+            var savings = await _service.GetById(id);
+
+            if (savings is null)
+            {
+                return NotFound(new { error = "No se pudo encontrar ningun préstamo con ese ID." });
+            }
+            else
+            {
+                return savings;
+            }
+        }
         #endregion
 
         #region Create
@@ -46,6 +62,42 @@ namespace AseIsthmusAPI.Controllers
             return Ok(loan);
         }
     }
-    #endregion
-}
+        #endregion
+
+        #region Update
+
+        // [Authorize]
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ApproveLoan([FromRoute] int id, [FromBody] LoanRequestInByAdminDto loan)
+        {
+            var loanToUpdate = await _service.ApproveLoan(id, loan);
+
+            if (loanToUpdate is not null)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound(new { error = "No se pudo actualizar el préstamo." });
+            }
+        }
+        #endregion
+
+        #region Delete
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                await _service.Delete(id);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { error = "No se pudo eliminar el préstamo." });
+            }
+        }
+        #endregion
+    }
 }
