@@ -26,19 +26,19 @@
     const backLabel = 'Cancelar';
     const savingsList = () => {
         router.push({
-            name: "savingsRequestList"
+            name: "loanRequestList"
         });
     }
     const approveLabel = 'Aprobar';
     const rejectLabel = 'Rechazar';
 
-    const savingsData = ref({
+    const loanData = ref({
         Name: null,
         NumberId: null,
-        SavingsTypeId: null,
-        SavingsTypeName: null,
-        Amount: null,
-        ApplicationDate: null,
+        LoansTypeId: null,
+        LoanTypeName: null,
+        AmountRequested: null,
+        RequestedDate: null,
         IsActive: null,
         ApprovedDate: null,
 
@@ -50,25 +50,25 @@
         year: "numeric"
     };
 
-    const savingsState = ref({
+    const loanState = ref({
         IsApproved: null,
     })
 
-    const savingsRequestId = ref(route.params.id);
+    const loanRequestId = ref(route.params.id);
     const rules = {
         IsApproved: {
             required
         }
     };
 
-    const storeSaving = async () => {
+    const storeLoan = async () => {
         await store.dispatch('loanRequests/updateSavings', {
-            savingsRequestId: savingsRequestId.value,
-            savingsState: savingsState.value
+            loanRequestId: loanRequestId.value,
+            loanState: loanState.value
         })
     }
 
-    const v$ = useVuelidate(rules, savingsState);
+    const v$ = useVuelidate(rules, loanState);
     const validateForm = async () => {
         const result = await v$.value.$validate();
         if (!result) {
@@ -84,23 +84,23 @@
         return true;
     }
 
-    const fetchSavingsData = async () => {
-        await store.dispatch('loanRequests/getSavingsById', {
-            rowId: savingsRequestId.value
+    const fetchLoanData = async () => {
+        await store.dispatch('loanRequests/getLoanById', {
+            rowId: loanRequestId.value
         });
 
-        const request = store.getters["loanRequests/getSavings"];
+        const request = store.getters["loanRequests/getLoans"];
         try {
-            savingsData.value.Name = request.Name,
-                savingsData.value.NumberId = request.NumberId,
-                savingsData.value.SavingsTypeId = request.SavingsTypeId,
-                savingsData.value.SavingsTypeName = request.SavingsTypeName,
-                savingsData.value.ApplicationDate = new Date(request.ApplicationDate),
-                savingsData.value.Amount = request.Amount,
-                savingsData.value.IsActive = request.IsActive ? 'Activo' : 'Inactivo',
-                savingsData.value.ApprovedDate = request.ApprovedDate ? new Date(request.ApprovedDate)
+                loanData.value.Name = request.Name,
+                loanData.value.NumberId = request.NumberId,
+                loanData.value.LoansTypeId = request.LoansTypeId,
+                loanData.value.LoanTypeName = request.LoanTypeName,
+                loanData.value.RequestedDate = new Date(request.RequestedDate),
+                loanData.value.AmountRequested = request.Amount,
+                loanData.value.IsActive = request.IsActive ? 'Activo' : 'Inactivo',
+                loanData.value.ApprovedDate = request.ApprovedDate ? new Date(request.ApprovedDate)
                 .toLocaleString("es-ES", dateFormat) : "N/A",
-                savingsState.value.IsApproved = request.IsApproved !== null ? (request.IsApproved ? 'Aprobado' :
+                loanState.value.IsApproved = request.IsApproved !== null ? (request.IsApproved ? 'Aprobado' :
                     "Rechazado") : 'Pendiente'
         } catch (error) {
             toast.add({
@@ -117,11 +117,11 @@
         if (isValid) {
             try {
                 if (event.target.innerText === approveLabel) {
-                    savingsState.value.IsApproved = 1;
+                    loanState.value.IsApproved = 1;
                 } else if (event.target.innerText === rejectLabel) {
-                    savingsState.value.IsApproved = 0;
+                    loanState.value.IsApproved = 0;
                 }
-                await storeSaving();
+                await storeLoan();
                 toast.add({
                     severity: 'success',
                     detail: "Sus cambios han sido guardados.",
@@ -139,8 +139,7 @@
         }
     }
 
-
-    onMounted(fetchSavingsData);
+    onMounted(fetchLoanData);
 </script>
 
 <template>
@@ -148,43 +147,43 @@
         <toast-component />
         <div class="form">
             <div>
-                <strong><label>Código del ahorro:</label></strong>
-                <label>&nbsp;{{ savingsRequestId}}</label>
+                <strong><label>Código del préstamo:</label></strong>
+                <label>&nbsp;{{ loanRequestId}}</label>
                 <br>
                 <br>
                 <strong><label>Nombre completo:</label></strong>
-                <label>&nbsp;{{ savingsData.Name}}</label>
+                <label>&nbsp;{{ loanData.Name}}</label>
                 <br>
                 <br>
                 <strong><label>Tipo de ahorro:</label></strong>
-                <label>&nbsp;{{ savingsData.SavingsTypeName}}</label>
+                <label>&nbsp;{{ loanData.LoanTypeName}}</label>
                 <br>
                 <br>
                 <strong><label>Fecha de solicitud:</label></strong>
-                <label>&nbsp;{{  new Date(savingsData.ApplicationDate).toLocaleString("es-ES", dateFormat)}}</label>
+                <label>&nbsp;{{  new Date(loanData.RequestedDate).toLocaleString("es-ES", dateFormat) }}</label>
                 <br>
                 <br>
-                <strong><label>Cuota de ahorro (quincenal):</label></strong>
-                <label>&nbsp; ${{savingsData.Amount}}<span
-                        v-if="(savingsData.Amount - Math.floor(savingsData.Amount)) === 0">.00</span></label>
+                <strong><label>Cuota de préstamo (quincenal):</label></strong>
+                <label>&nbsp; ${{loanData.Amount}}<span
+                        v-if="(loanData.AmountRequested - Math.floor(loanData.AmountRequested)) === 0 || loanData.AmountRequested  === null">.00</span></label>
                 <br>
                 <br>
-                <strong><label>Estado del ahorro:</label></strong>
-                <label>&nbsp;{{ savingsData.IsActive}}</label>
+                <strong><label>Estado del préstamo:</label></strong>
+                <label>&nbsp;{{ loanData.IsActive}}</label>
                 <br>
                 <br>
-                <strong><label>Estado del ahorro:</label></strong>
-                <label>&nbsp;{{ savingsState.IsApproved}}</label>
+                <strong><label>Estado del préstamo:</label></strong>
+                <label>&nbsp;{{ loanState.IsApproved}}</label>
                 <br>
                 <br>
-                <strong><label>Fecha de aprobación (cuando aplique):</label></strong>
-                <label>&nbsp;{{ savingsData.ApprovedDate}}</label>
+                <strong><label>Fecha de aprobación:</label></strong>
+                <label>&nbsp;{{ loanData.ApprovedDate}}</label>
                 <br>
                 <br>
                 <div class="actions">
                     <base-button :label="backLabel" small @click="savingsList" :type="'button'" />
                     <base-button :label="approveLabel" class="green" small @click="submitData" :type="'submit'" />
-                    <base-button :label="rejectLabel"  class="red" v-if="savingsState.IsApproved !== true" small @click="submitData"
+                    <base-button :label="rejectLabel"  class="red" v-if="loanState.IsApproved !== true" small @click="submitData"
                         :type="'submit'" />
                 </div>
             </div>

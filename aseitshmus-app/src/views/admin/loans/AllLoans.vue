@@ -96,7 +96,7 @@
         router.push({
             name: "updateLoanRequest",
             params: {
-                id: rowData.data.SavingsRequestId
+                id: rowData.data.LoanRequestId
             },
             props: true,
         });

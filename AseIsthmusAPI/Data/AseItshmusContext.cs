@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AseIsthmusAPI.Data.AseIsthmusModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -63,11 +64,10 @@ public partial class AseItshmusContext : DbContext
         modelBuilder.Entity<LoanCalculationType>(entity =>
         {
             entity.ToTable("LoanCalculationTypes");
-            entity.HasNoKey(); 
-            entity.Property(e => e.PersonId).HasMaxLength(12); 
+            entity.HasNoKey();
+            entity.Property(e => e.PersonId).HasMaxLength(12);
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
         });
-
         modelBuilder.Entity<Agreement>(entity =>
         {
             entity.Property(e => e.PersonId).HasMaxLength(12);
@@ -184,6 +184,7 @@ public partial class AseItshmusContext : DbContext
             entity.Property(e => e.BankAccount).HasMaxLength(25);
             entity.Property(e => e.PersonId).HasMaxLength(12);
             entity.Property(e => e.RequestedDate).HasColumnType("date");
+            entity.Property(e => e.ReviewRequiredDate).HasColumnType("date");
 
             entity.HasOne(d => d.LoansType).WithMany(p => p.LoanRequests)
                 .HasForeignKey(d => d.LoansTypeId)
@@ -333,7 +334,6 @@ public partial class AseItshmusContext : DbContext
         });
 
         OnModelCreatingPartial(modelBuilder);
-
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

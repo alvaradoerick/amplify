@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AseIsthmusAPI.Data.AseIsthmusModels;
 
-namespace AseIsthmusAPI.Data.AseIsthmusModels;
+
+namespace AseIsthmusAPI.Data;
 
 public partial class LoanRequest
 {
@@ -24,6 +24,12 @@ public partial class LoanRequest
     public bool? IsApproved { get; set; }
 
     public DateTime? ApprovedDate { get; set; }
+
+    public bool? IsReviewRequired { get; set; }
+
+    public bool? IsReviewApproved { get; set; }
+
+    public DateTime? ReviewRequiredDate { get; set; }
 
     public virtual ICollection<LoanBalance> LoanBalances { get; set; } = new List<LoanBalance>();
 
