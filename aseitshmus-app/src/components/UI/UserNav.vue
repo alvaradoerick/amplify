@@ -39,7 +39,7 @@
 
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/"><img src="../../assets/logo.png" alt="Logo" />
+                        <router-link class="nav-link" to="/"><img src="../../assets/logo.jpg" alt="Logo" />
                         </router-link>
                     </li>
                     <li class="nav-item">

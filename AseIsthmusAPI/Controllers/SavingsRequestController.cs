@@ -34,7 +34,7 @@ namespace AseIsthmusAPI.Controllers
 
             if (savings is null)
             {
-                return NotFound(new { error = "No se pudo encontrar ningun préstamo con ese ID." });
+                return NotFound(new { error = "No se pudo encontrar ningun ahorro con ese ID." });
             }
             else
             {

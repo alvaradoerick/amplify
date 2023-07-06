@@ -3,7 +3,7 @@
         <div class="menu collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <router-link class="nav-link" to="/"><img src="../../assets/logo.png" alt="Logo" /></router-link>
+                    <router-link class="nav-link" to="/"><img class="logo-image" src="../../assets/logo2.png" alt="Logo" /></router-link>
                 </li>
                 <li class="nav-item">
                     <router-link class="nav-link" :to="{name:'login'}">Iniciar Sesión</router-link>
@@ -32,8 +32,8 @@
     }
 
     img {
-        height: 30px;
-        width: 40px;
+        height: 38px;
+        width: 80px;
         margin-left: 10px
     }
 

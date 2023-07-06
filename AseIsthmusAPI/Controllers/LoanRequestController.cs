@@ -19,14 +19,27 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
         #region Get
-
-        [HttpPost("calculation")]
-        public async Task<IActionResult> GetLoanCalculation([FromBody]LoanCalculationType loanCalculation)
+        [HttpGet]
+        public async Task<IEnumerable<LoanRequestOutDto>> Get()
         {
-            var result = await _service.GetLoanCalculation(loanCalculation);
+            return await _service.GetAll();
+        }
+       
 
+        //[Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<LoanRequestOutDto>> GetById([FromRoute] int id)
+        {
+            var savings = await _service.GetById(id);
 
-            return Ok(result);
+            if (savings is null)
+            {
+                return NotFound(new { error = "No se pudo encontrar ningun préstamo con ese ID." });
+            }
+            else
+            {
+                return savings;
+            }
         }
         #endregion
 
@@ -46,6 +59,52 @@ namespace AseIsthmusAPI.Controllers
             return Ok(loan);
         }
     }
-    #endregion
-}
+        #endregion
+
+        #region Update
+
+        // [Authorize]
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ApproveLoan([FromRoute] int id, [FromBody] LoanRequestInByAdminDto loan)
+        {
+            var loanToUpdate = await _service.ApproveLoan(id, loan);
+
+            if (loanToUpdate is not null)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound(new { error = "No se pudo actualizar el préstamo." });
+            }
+        }
+
+        [HttpPost("calculation")]
+        public async Task<IActionResult> GetLoanCalculation([FromBody] LoanCalculationType loanCalculation)
+        {
+            var result = await _service.GetLoanCalculation(loanCalculation);
+
+
+            return Ok(result);
+        }
+
+        #endregion
+
+        #region Delete
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                await _service.Delete(id);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { error = "No se pudo eliminar el préstamo." });
+            }
+        }
+        #endregion
+    }
 }

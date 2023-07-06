@@ -44,7 +44,7 @@
 
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <router-link class="nav-link" to="/"><img src="../../assets/logo.png" alt="Logo" /></router-link>
+            <router-link class="nav-link" to="/"><img src="../../assets/logo.jpg" alt="Logo" /></router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" :to="{name:'dashboard'}">Principal</router-link>
@@ -71,6 +71,9 @@
           <li class="nav-item" @mouseover="showSubMenu('subMenu3')" @mouseleave="hideSubMenu('subMenu3')">
             <a class="nav-link">Préstamos</a>
             <ul v-show="subMenuStates.subMenu3" class="sub-menu">
+              <li>
+                <router-link class="nav-link" :to="{name:'loanRequestList'}">Lista de solicitudes de préstamos</router-link>
+              </li>
               <li>
                 <router-link class="nav-link" :to="{name:'typeList'}">Lista de tipos de préstamos</router-link>
               </li>

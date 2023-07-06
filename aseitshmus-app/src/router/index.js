@@ -62,7 +62,7 @@ const routes = [{
           title: 'Convenios Activos',
         }
       },
-//change pw
+      //change pw
       {
         path: '/password',
         name: 'changePassword',
@@ -235,6 +235,29 @@ const routes = [{
           },
         ]
       },
+            //loan Requests
+            {
+              path: '/loans-requests',
+              name: 'loansRequests',
+              children: [{
+                  path: '/all-loans-requests',
+                  name: 'loanRequestList',
+                  component: () => import('../views/admin/loans/AllLoans.vue' /* webpackChunkName: "AllLoans" */ ),
+                  meta: {
+                    title: ' Solicitudes de Préstamos',
+                  }
+                },
+      
+                {
+                  path: '/update-loan-request/:id',
+                  name: 'updateLoanRequest',
+                  component: () => import('../views/admin/loans/UpdateLoan.vue' /* webpackChunkName: "UpdateLoan" */ ),
+                  meta: {
+                    title: 'Aprobación de Solicitud de Préstamo',
+                  }
+                },
+              ]
+            },
       //savings types
       {
         path: '/savings-types',
@@ -266,29 +289,29 @@ const routes = [{
           },
         ]
       },
-            //savings Requests
-            {
-              path: '/savings-requests',
-              name: 'savingsRequests',
-              children: [{
-                  path: '/all-savings-requests',
-                  name: 'savingsRequestList',
-                  component: () => import('../views/admin/savings/AllSavings.vue' /* webpackChunkName: "AllSavings" */ ),
-                  meta: {
-                    title: ' Solicitudes de Ahorro',
-                  }
-                },
-                
-                {
-                  path: '/update-saving-request/:id',
-                  name: 'updateSavingRequest',
-                  component: () => import('../views/admin/savings/UpdateSaving.vue' /* webpackChunkName: "UpdateSaving" */ ),
-                  meta: {
-                    title: 'Aprobación de Solicitud de Ahorro',
-                  }
-                },
-              ]
-            },
+      //savings Requests
+      {
+        path: '/savings-requests',
+        name: 'savingsRequests',
+        children: [{
+            path: '/all-savings-requests',
+            name: 'savingsRequestList',
+            component: () => import('../views/admin/savings/AllSavings.vue' /* webpackChunkName: "AllSavings" */ ),
+            meta: {
+              title: ' Solicitudes de Ahorro',
+            }
+          },
+
+          {
+            path: '/update-saving-request/:id',
+            name: 'updateSavingRequest',
+            component: () => import('../views/admin/savings/UpdateSaving.vue' /* webpackChunkName: "UpdateSaving" */ ),
+            meta: {
+              title: 'Aprobación de Solicitud de Ahorro',
+            }
+          },
+        ]
+      },
     ]
   },
 
