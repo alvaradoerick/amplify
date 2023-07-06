@@ -1,16 +1,16 @@
 <script setup>
-import AdminNav from '@/components/UI/AdminNav.vue'
+  import NavMenu from '@/components/UI/NavMenu.vue'
 </script>
 <template>
-    <div>
-        <admin-nav class="menu"></admin-nav>
-        <base-card class="container">
-            <router-view />
-        </base-card>
-    </div>
+  <div>
+    <nav-menu class="menu"></nav-menu>
+    <base-card class="container">
+      <router-view />
+    </base-card>
+  </div>
 </template>
 <style scoped>
-.menu {
+  .menu {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;

@@ -4,7 +4,7 @@ export default {
     },
 
     isAuthenticated(state) {
-        return state.token;
+        return !!state.token;
     },
 
     getLoggedInUser(state) {

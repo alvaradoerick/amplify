@@ -1,9 +1,9 @@
 <script setup>
-  import AuthNav from '@/components/UI/AuthNav.vue'
+  import NavMenu from '@/components/UI/NavMenu.vue'
 </script>
 <template>
   <div>
-    <auth-nav class="menu"></auth-nav>
+    <nav-menu class="menu"></nav-menu>
     <base-card class="container">
       <router-view />
     </base-card>
@@ -14,7 +14,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: center;
+    align-items: flex-end;
     width: 100%;
     margin-top: .5rem;
     margin-bottom: 4rem;
@@ -25,7 +25,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
   }
 
   .input-text {
