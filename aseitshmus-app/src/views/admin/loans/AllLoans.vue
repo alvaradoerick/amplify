@@ -26,26 +26,26 @@
     const deletionStatus = ref(false);
 
     const fetchRequestData = async () => {
-        await store.dispatch('savingsRequests/getAllSavings');
-        const requests = store.getters['savingsRequests/getSavings'];
+        await store.dispatch('loanRequests/getAllLoans');
+        const requests = store.getters['loanRequests/getLoans'];
         requestData.value = requests.map(request => {
             return {
                 ...request,
                 IsActive: request.IsActive ? "Activo" : "Inactivo",
                 IsApproved: request.IsApproved  ? "Activo"  : request.IsApproved === null  ? "Pendiente"  : "Rechazado",
-                ApplicationDate: new Date(request.ApplicationDate).toLocaleString("es-ES", dateFormat),
+                RequestedDate: new Date(request.RequestedDate).toLocaleString("es-ES", dateFormat),
             };
         });
     };
 
     const storeRequest = async (id) => {
-        await store.dispatch('savingsRequests/deleteSavings', {
+        await store.dispatch('loanRequests/deleteLoan', {
             rowId: id
         })
     }
 
     const deleteResponse = computed(() => {
-        return store.getters["savingsRequests/getErrorResponse"];
+        return store.getters["loanRequests/getErrorResponse"];
     });
 
     const deleteRecord = async (rowData) => {
@@ -64,7 +64,7 @@
                     detail: deleteResponse.value,
                     life: 3000
                 });
-                store.commit('savingsRequests/clearErrorResponse');
+                store.commit('loanRequests/clearErrorResponse');
             }
         } catch (error) {
             toast.add({
@@ -94,7 +94,7 @@
     
     const updateRecord = (rowData) => {
         router.push({
-            name: "updateSavingRequest",
+            name: "updateLoanRequest",
             params: {
                 id: rowData.data.SavingsRequestId
             },
@@ -109,8 +109,8 @@
     <toast-component />
     <div class="list">
         <DataTable :value="requestData" paginator :rows="3" tableStyle="min-width: 80rem">
-            <Column field="SavingsTypeName" header="Tipo de ahorro" sortable></Column>
-            <Column field="ApplicationDate" header="Fecha de solicitud" sortable></Column>         
+            <Column field="LoanTypeName" header="Tipo de préstamo" sortable></Column>
+            <Column field="RequestedDate" header="Fecha de solicitud" sortable></Column>         
             <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
             <Column field="IsApproved" header="Estado de aprobación" sortable></Column>
             <Column header="" style="width: 100px"> <template #body="rowData">

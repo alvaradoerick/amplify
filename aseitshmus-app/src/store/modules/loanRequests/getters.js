@@ -3,8 +3,8 @@ export default {
         return state.errorResponse;
     },
     
-    getSavings(state) {
-        return state.savings ;
+    getLoans(state) {
+        return state.loans ;
     },
 
     getLoanCalculation(state) {

@@ -1,6 +1,6 @@
 export default {
     errorResponse: null,
-    savings: [],
+    loans: [],
     loanCalculation: null,
 
 }

@@ -62,7 +62,7 @@
     };
 
     const storeSaving = async () => {
-        await store.dispatch('savingsRequests/updateSavings', {
+        await store.dispatch('loanRequests/updateSavings', {
             savingsRequestId: savingsRequestId.value,
             savingsState: savingsState.value
         })
@@ -85,11 +85,11 @@
     }
 
     const fetchSavingsData = async () => {
-        await store.dispatch('savingsRequests/getSavingsById', {
+        await store.dispatch('loanRequests/getSavingsById', {
             rowId: savingsRequestId.value
         });
 
-        const request = store.getters["savingsRequests/getSavings"];
+        const request = store.getters["loanRequests/getSavings"];
         try {
             savingsData.value.Name = request.Name,
                 savingsData.value.NumberId = request.NumberId,

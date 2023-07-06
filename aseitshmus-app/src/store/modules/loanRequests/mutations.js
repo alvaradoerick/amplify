@@ -7,8 +7,8 @@ export default {
         state.errorResponse = null;
     },
 
-    setSavings(state, savings) {
-        state.savings = savings;
+    setLoan(state, loans) {
+        state.loans = loans;
     },
     setLoanCalculation(state, loanCalculation) {
         state.loanCalculation = loanCalculation;

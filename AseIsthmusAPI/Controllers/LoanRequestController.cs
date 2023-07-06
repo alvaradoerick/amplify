@@ -19,15 +19,12 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
         #region Get
-
-        [HttpPost("calculation")]
-        public async Task<IActionResult> GetLoanCalculation([FromBody]LoanCalculationType loanCalculation)
+        [HttpGet]
+        public async Task<IEnumerable<LoanRequestOutDto>> Get()
         {
-            var result = await _service.GetLoanCalculation(loanCalculation);
-
-
-            return Ok(result);
+            return await _service.GetAll();
         }
+       
 
         //[Authorize]
         [HttpGet("{id}")]
@@ -81,6 +78,16 @@ namespace AseIsthmusAPI.Controllers
                 return NotFound(new { error = "No se pudo actualizar el préstamo." });
             }
         }
+
+        [HttpPost("calculation")]
+        public async Task<IActionResult> GetLoanCalculation([FromBody] LoanCalculationType loanCalculation)
+        {
+            var result = await _service.GetLoanCalculation(loanCalculation);
+
+
+            return Ok(result);
+        }
+
         #endregion
 
         #region Delete
