@@ -10,5 +10,6 @@ namespace AseIsthmusAPI.Data
         public decimal TotalAvailAmount { get; set; }
         public decimal BiweeklyFee { get; set; }
         public decimal TotalAmtToPay { get; set; }
+        public decimal Rate { get; set; }
     }
 }

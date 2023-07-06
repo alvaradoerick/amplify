@@ -13,7 +13,7 @@
     import {
         ref,
         onMounted,
-        computed
+        computed, watch
     } from 'vue';
     import {
         useToast
@@ -46,19 +46,47 @@
     const loanRequest = ref({
         LoansTypeId: selectedLoanType,
         AmountRequested: 0,
-        Term: null,
+        Term: 0,
         BankAccount: null,
         RequestedDate: null
     })
 
     //los calculos para el grid
-    const calculatedValues = ref({
-        AvailEmployeeAmt: null,
-        AvailEmployerAmt: null,
-        TotalAvailAmount: null,
-        BiweeklyFee: null,
-        TotalAmtToPay: null,
-    })
+    // const calculatedValues = ref({
+    //     AvailEmployeeAmt: null,
+    //     AvailEmployerAmt: null,
+    //     TotalAvailAmount: null,
+    //     BiweeklyFee: null,
+    //     TotalAmtToPay: null,
+    //     Rate: null
+    // })
+
+    const calculatedValues = ref([
+  {
+    label: 'Monto disponible de ahorro:',
+    value: null
+  },
+  {
+    label: 'Monto disponible de aporte:',
+    value: null
+  },
+  {
+    label: 'Total disponible:',
+    value: null
+  },
+  {
+    label: 'Total disponible:',
+    value: null
+  },
+  {
+    label: 'Tasa de interés:',
+    value: null
+  },
+  {
+    label: 'Total a pagar:',
+    value: null
+  },
+])
 
     //para actualizar la nueva cuenta bancaria o la existente en el objeto
     const updatedLoanData = computed(() => {
@@ -114,26 +142,13 @@
         }
     };
 
-    const getSelectedLoanType = async () => {
-
-        const selectedType = loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
-        console.log(selectedLoanType);
-        if (selectedType) {
-             fetchCalculation();
-               console.log("sera aqui?");
-        }
-        console.log(selectedType);
-        return selectedType;
-    };
-  
-
-    const fetchCalculation =  () => {
+    const fetchCalculation = async   ()  => {
         const loanData = {
             Amount: loanRequest.value.AmountRequested,
             Term: loanRequest.value.Term,
             LoansTypeId: selectedLoanType.value,
         };
-         dispatch('loanRequests/getLoanCalculation', {
+        await dispatch('loanRequests/getLoanCalculation', {
             loanData: loanData,
         });
   calculatedValues.value = getters['loanRequests/getLoanCalculation'];
@@ -148,6 +163,14 @@
             required
         },
     }
+
+    watch(selectedLoanType, () => {
+  fetchCalculation();
+});
+watch(calculatedValues.value, () => {
+  fetchCalculation();
+});
+
 
     const v$ = useVuelidate(rules, loanRequest);
 
@@ -189,7 +212,7 @@
         }
     }
 
-    onMounted(fetchActiveLoanTypes(), fetchUserData(), getSelectedLoanType());
+    onMounted(fetchActiveLoanTypes(), fetchUserData());
 
 </script>
 <template>
@@ -237,10 +260,7 @@
                     </div>
                 </div>
                 <div v-if="loanTypesList.length > 0">
-                    <data-table :value="[loanTypesList.find(type => type.LoansTypeId === selectedLoanType)]"
-                        showGridlines :paginator="false">
-
-
+                    <data-table :value="calculatedValues" showGridlines :paginator="false">
                         <data-column header="Monto disponible de ahorro:" style="width: 200px">
                             <template #body="{ }">
                                 {{ calculatedValues.AvailEmployeeAmt ?? 'N/A' }}
@@ -259,17 +279,17 @@
                         </data-column>
                         <data-column header="Tasa de interés:">
                             <template #body="{}">
-                             
+                                {{ calculatedValues.Rate }}
                             </template>
                         </data-column>
                         <data-column header="Cuota quincenal:">
                             <template #body="{}">
-                                ferf
+                                {{ calculatedValues.BiweeklyFee }}
                             </template>
                         </data-column>
                         <data-column header="Total a pagar:">
                             <template #body="{}">
-                                ferf
+                                {{ calculatedValues.TotalAmtToPay  }}
                             </template>
                         </data-column>
                     </data-table>

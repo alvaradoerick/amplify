@@ -74,15 +74,23 @@ namespace AseIsthmusAPI.Services
                 Scale = 2
             };
 
+            var rateParameter = new SqlParameter("@rate", SqlDbType.Decimal)
+            {
+                Direction = ParameterDirection.Output,
+                Precision = 18,
+                Scale = 2
+            };
+
 
             await _context.Database.ExecuteSqlRawAsync(
-                "EXEC sp_GetLoanCalculation @loanData, @availEmployeeAmt OUTPUT, @availEmployerAmt OUTPUT, @totalAvailAmount OUTPUT, @biweeklyFee OUTPUT, @totalAmtPay OUTPUT",
+                "EXEC sp_GetLoanCalculation @loanData, @availEmployeeAmt OUTPUT, @availEmployerAmt OUTPUT, @totalAvailAmount OUTPUT, @biweeklyFee OUTPUT, @totalAmtPay OUTPUT, @rate OUTPUT",
                 loanDataParameter,
                 availEmployeeAmtParameter,
                 availEmployerAmtParameter,
                 totalAvailAmountParameter,
                 biweeklyFeeParameter,
-                totalAmtPayParameter
+                totalAmtPayParameter,
+                rateParameter
             );
 
             var loanCalculationResult = new sp_GetLoanCalculation_Result
@@ -91,7 +99,9 @@ namespace AseIsthmusAPI.Services
                 AvailEmployerAmt = availEmployerAmtParameter.Value.Equals(DBNull.Value) ? 0m : (decimal)availEmployerAmtParameter.Value,
                 TotalAvailAmount = totalAvailAmountParameter.Value.Equals(DBNull.Value) ? 0m : (decimal)totalAvailAmountParameter.Value,
                 BiweeklyFee = biweeklyFeeParameter.Value.Equals(DBNull.Value) ? 0m : (decimal)biweeklyFeeParameter.Value,
-                TotalAmtToPay = totalAmtPayParameter.Value.Equals(DBNull.Value) ? 0m : (decimal)totalAmtPayParameter.Value
+                TotalAmtToPay = totalAmtPayParameter.Value.Equals(DBNull.Value) ? 0m : (decimal)totalAmtPayParameter.Value,
+                Rate = rateParameter.Value.Equals(DBNull.Value) ? 0m : (decimal)rateParameter.Value
+
             };
 
             return loanCalculationResult;
