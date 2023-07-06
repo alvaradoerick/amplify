@@ -42,6 +42,8 @@
 
     const selectedBankAccount = ref(null);
     const BankAccountList = ref([]);
+    const currentType = ref(null);
+
 
     //el objeto para completar la solicitud
     const loanRequest = ref({
@@ -91,7 +93,6 @@
                 label: 'Otra cuenta'
             }];
         }
-
     };
 
     const storeLoan = async () => {
@@ -126,7 +127,6 @@
             loanData: loanData,
         });
         calculatedValues.value = getters['loanRequests/getLoanCalculation'];
-        console.log(calculatedValues.value)
     };
 
     const rules = {
@@ -136,10 +136,15 @@
         Term: {
             required
         },
+        AmountRequested: {
+            required
+        },
     }
 
     watch(selectedLoanType, () => {
         fetchCalculation();
+        currentType.value = loanTypesList.value.find(type => type.LoansTypeId === selectedLoanType.value);
+
     });
 
     watch(calculatedValues.value, (newValue) => {
@@ -147,10 +152,29 @@
         fetchCalculation();
     });
 
+    const validateTerms = () => {
+        if (currentType.value.Term < loanRequest.value.Term) {
+            toast.add({
+                severity: 'error',
+                detail: 'El plazo ingresado no es válido.',
+                life: 2000
+            });
+            return false;
+        } else if (loanRequest.value.Term === 0) {
+            toast.add({
+                severity: 'error',
+                detail: 'Favor ingresar al menos un mes como plazo.',
+                life: 2000
+            });
+            return false;
+        }
+        return true;
+    }
 
     const v$ = useVuelidate(rules, loanRequest);
 
     const validateForm = async () => {
+        const isTermValid = validateTerms();
         const result = await v$.value.$validate();
         if (!result) {
             if (v$.value.$errors[0].$validator === 'required') {
@@ -159,8 +183,10 @@
                     detail: 'Todos los campos son requeridos.',
                     life: 2000
                 });
+                return false
+            } else if (!isTermValid) {
+                return false
             }
-            return false
         }
         return true;
     }
@@ -168,6 +194,7 @@
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
+
         if (isValid) {
             try {
                 await storeLoan();
@@ -259,7 +286,8 @@
                         </data-column>
                         <data-column header="Tasa de interés:">
                             <template #body="{}">
-                                {{ calculatedValues.Rate }}<label v-if="(calculatedValues.Rate - Math.floor(calculatedValues.Rate)) === 0">.00</label>%
+                                {{ calculatedValues.Rate }}<label
+                                    v-if="(calculatedValues.Rate - Math.floor(calculatedValues.Rate)) === 0">.00</label>%
                             </template>
                         </data-column>
                         <data-column header="Cuota quincenal:">
