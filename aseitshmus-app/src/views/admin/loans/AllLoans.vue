@@ -50,11 +50,11 @@
 
     const deleteRecord = async (rowData) => {
         try {
-            await storeRequest(rowData.data.SavingsRequestId);
+            await storeRequest(rowData.data.LoanRequestId);
             if (deleteResponse.value === null) {
                 toast.add({
                     severity: 'warn',
-                    detail: "Solicitud de ahorro ha sido eliminada.",
+                    detail: "Solicitud de préstamo ha sido eliminada.",
                     life: 2000
                 });
                 deletionStatus.value = true;
