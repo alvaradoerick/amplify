@@ -13,7 +13,8 @@
     import {
         ref,
         onMounted,
-        computed, watch
+        computed,
+        watch
     } from 'vue';
     import {
         useToast
@@ -52,41 +53,14 @@
     })
 
     //los calculos para el grid
-    // const calculatedValues = ref({
-    //     AvailEmployeeAmt: null,
-    //     AvailEmployerAmt: null,
-    //     TotalAvailAmount: null,
-    //     BiweeklyFee: null,
-    //     TotalAmtToPay: null,
-    //     Rate: null
-    // })
-
-    const calculatedValues = ref([
-  {
-    label: 'Monto disponible de ahorro:',
-    value: null
-  },
-  {
-    label: 'Monto disponible de aporte:',
-    value: null
-  },
-  {
-    label: 'Total disponible:',
-    value: null
-  },
-  {
-    label: 'Total disponible:',
-    value: null
-  },
-  {
-    label: 'Tasa de interés:',
-    value: null
-  },
-  {
-    label: 'Total a pagar:',
-    value: null
-  },
-])
+    const calculatedValues = ref({
+        AvailEmployeeAmt: 0,
+        AvailEmployerAmt: 0,
+        TotalAvailAmount: 0,
+        BiweeklyFee: 0,
+        TotalAmtToPay: 0,
+        Rate: 0
+    })
 
     //para actualizar la nueva cuenta bancaria o la existente en el objeto
     const updatedLoanData = computed(() => {
@@ -99,7 +73,7 @@
 
     const fetchUserData = async () => {
         await dispatch('users/getById');
-       let  responseData = getters["users/getUsers"];
+        let responseData = getters["users/getUsers"];
         selectedBankAccount.value = responseData.BankAccount ? responseData.BankAccount : null;
         if (responseData.BankAccount !== null && responseData.BankAccount !== undefined) {
             BankAccountList.value = [{
@@ -142,7 +116,7 @@
         }
     };
 
-    const fetchCalculation = async   ()  => {
+    const fetchCalculation = async () => {
         const loanData = {
             Amount: loanRequest.value.AmountRequested,
             Term: loanRequest.value.Term,
@@ -151,10 +125,10 @@
         await dispatch('loanRequests/getLoanCalculation', {
             loanData: loanData,
         });
-  calculatedValues.value = getters['loanRequests/getLoanCalculation'];
-  console.log(calculatedValues.value)
+        calculatedValues.value = getters['loanRequests/getLoanCalculation'];
+        console.log(calculatedValues.value)
     };
-   
+
     const rules = {
         RequestedDate: {
             required
@@ -165,11 +139,13 @@
     }
 
     watch(selectedLoanType, () => {
-  fetchCalculation();
-});
-watch(calculatedValues.value, () => {
-  fetchCalculation();
-});
+        fetchCalculation();
+    });
+
+    watch(calculatedValues.value, (newValue) => {
+        console.log(newValue)
+        fetchCalculation();
+    });
 
 
     const v$ = useVuelidate(rules, loanRequest);
@@ -213,7 +189,6 @@ watch(calculatedValues.value, () => {
     }
 
     onMounted(fetchActiveLoanTypes(), fetchUserData());
-
 </script>
 <template>
     <div class="main">
@@ -263,33 +238,44 @@ watch(calculatedValues.value, () => {
                     <data-table :value="calculatedValues" showGridlines :paginator="false">
                         <data-column header="Monto disponible de ahorro:" style="width: 200px">
                             <template #body="{ }">
-                                {{ calculatedValues.AvailEmployeeAmt ?? 'N/A' }}
+                                <label
+                                    v-if="(calculatedValues.AvailEmployeeAmt !== null)">$</label>{{ calculatedValues.AvailEmployeeAmt ?? 'N/A' }}<label
+                                    v-if="(calculatedValues.AvailEmployeeAmt - Math.floor(calculatedValues.AvailEmployeeAmt)) === 0">.00</label>
                             </template>
                         </data-column>
                         <data-column header="Monto disponible de aporte:" style="width: 200px">
                             <template #body="{ }">
-                                {{ calculatedValues.AvailEmployerAmt ?? 'N/A' }}
-                              
+                                <label
+                                    v-if="(calculatedValues.AvailEmployerAmt !== null)">$</label>{{ calculatedValues.AvailEmployerAmt }}<label
+                                    v-if="(calculatedValues.AvailEmployerAmt - Math.floor(calculatedValues.AvailEmployerAmt)) === 0">.00</label>
                             </template>
                         </data-column>
                         <data-column header="Total disponible:">
                             <template #body="{}">
-                                {{ calculatedValues.TotalAvailAmount ?? 'N/A' }}
+                                <label
+                                    v-if="(calculatedValues.TotalAvailAmount !== null)">$</label>{{ calculatedValues.TotalAvailAmount ?? 'N/A' }}<label
+                                    v-if="(calculatedValues.TotalAvailAmount - Math.floor(calculatedValues.TotalAvailAmount)) === 0">.00</label>
                             </template>
                         </data-column>
                         <data-column header="Tasa de interés:">
                             <template #body="{}">
-                                {{ calculatedValues.Rate }}
+                                {{ calculatedValues.Rate }}<label v-if="(calculatedValues.Rate - Math.floor(calculatedValues.Rate)) === 0">.00</label>%
                             </template>
                         </data-column>
                         <data-column header="Cuota quincenal:">
                             <template #body="{}">
-                                {{ calculatedValues.BiweeklyFee }}
+
+                                <label
+                                    v-if="(calculatedValues.BiweeklyFee !== null)">$</label>{{ calculatedValues.BiweeklyFee }}<label
+                                    v-if="(calculatedValues.BiweeklyFee - Math.floor(calculatedValues.BiweeklyFee)) === 0">.00</label>
+
                             </template>
                         </data-column>
                         <data-column header="Total a pagar:">
                             <template #body="{}">
-                                {{ calculatedValues.TotalAmtToPay  }}
+                                <label
+                                    v-if="(calculatedValues.TotalAmtToPay !== null)">$</label>{{ calculatedValues.TotalAmtToPay }}<label
+                                    v-if="(calculatedValues.TotalAmtToPay - Math.floor(calculatedValues.TotalAmtToPay)) === 0">.00</label>
                             </template>
                         </data-column>
                     </data-table>
