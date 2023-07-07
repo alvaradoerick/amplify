@@ -1,43 +1,43 @@
 <script setup>
     import DataTable from 'primevue/datatable';
     import Column from 'primevue/column';
-    import {
-        ref,
-        onMounted,
-        computed,
-        watch
-    } from 'vue';
-    import {
-        useStore
-    } from 'vuex';
-    import {
-        useRouter
-    } from 'vue-router';
-    import {
-        useToast
-    } from 'primevue/usetoast';
+    import { ref, onMounted, computed, watch } from 'vue';
+    import { useStore } from 'vuex';
+    import { useRouter } from 'vue-router';
+    import {  useToast } from 'primevue/usetoast';
 
     const router = useRouter();
     const store = useStore()
     const toast = useToast();
 
-    const requestData = ref([]);
     const backLabel = 'Principal';
     const deletionStatus = ref(false);
 
-    const fetchRequestData = async () => {
-        await store.dispatch('loanRequests/getAllLoans');
-        const requests = store.getters['loanRequests/getLoans'];
-        requestData.value = requests.map(request => {
+    const requestData = computed(() => {
+        const loans = store.getters["loanRequests/getLoans"];
+        
+        return loans.map(request => {
             return {
                 ...request,
                 IsActive: request.IsActive ? "Activo" : "Inactivo",
                 IsApproved: request.IsApproved  ? "Activo"  : request.IsApproved === null  ? "Pendiente"  : "Rechazado",
                 RequestedDate: new Date(request.RequestedDate).toLocaleString("es-ES", dateFormat),
-            };
+            }
         });
-    };
+    });
 
+    const fetchRequestData = async () => {
+        try {
+            await store.dispatch('loanRequests/getAllLoans');
+        } catch(error) {
+            toast.add({
+                severity: 'error',
+                detail: error,
+                life: 3000
+            });
+        }
+    }
+    
     const storeRequest = async (id) => {
         await store.dispatch('loanRequests/deleteLoan', {
             rowId: id

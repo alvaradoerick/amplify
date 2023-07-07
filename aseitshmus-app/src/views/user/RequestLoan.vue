@@ -54,15 +54,6 @@
         RequestedDate: null
     })
 
-    //los calculos para el grid
-    const calculatedValues = ref({
-        AvailEmployeeAmt: 0,
-        AvailEmployerAmt: 0,
-        TotalAvailAmount: 0,
-        BiweeklyFee: 0,
-        TotalAmtToPay: 0,
-        Rate: 0
-    })
 
     //para actualizar la nueva cuenta bancaria o la existente en el objeto
     const updatedLoanData = computed(() => {
@@ -101,6 +92,9 @@
         });
     };
 
+    const calculatedValues = computed(() => {
+        return getters['loanRequests/getLoanCalculation'] || [];
+    });
     const fetchActiveLoanTypes = async () => {
         try {
             const response = await axios.get(`${apiUrl}/LoansType/active-loans`);
@@ -128,6 +122,8 @@
         });
         calculatedValues.value = getters['loanRequests/getLoanCalculation'];
     };
+
+   
 
     const rules = {
         RequestedDate: {
@@ -215,7 +211,10 @@
         }
     }
 
-    onMounted(fetchActiveLoanTypes(), fetchUserData());
+    onMounted(async () => {
+        await fetchActiveLoanTypes();
+        await fetchUserData();
+    });
 </script>
 <template>
     <div class="main">
@@ -261,49 +260,47 @@
                         <label for="other-account">Otra cuenta</label>
                     </div>
                 </div>
-                <div v-if="loanTypesList.length > 0">
-                    <data-table :value="calculatedValues" showGridlines :paginator="false">
+                <div v-if="calculatedValues">
+                    <data-table :value="calculatedValues" showGridlines>
                         <data-column header="Monto disponible de ahorro:" style="width: 200px">
-                            <template #body="{ }">
+                            <template #body="slotProps ">
                                 <label
-                                    v-if="(calculatedValues.AvailEmployeeAmt !== null)">$</label>{{ calculatedValues.AvailEmployeeAmt ?? 'N/A' }}<label
-                                    v-if="(calculatedValues.AvailEmployeeAmt - Math.floor(calculatedValues.AvailEmployeeAmt)) === 0">.00</label>
+                                    v-if="(slotProps.data.AvailEmployeeAmt !== null)">$</label>{{ slotProps.data.AvailEmployeeAmt ?? 'N/A' }}<label
+                                    v-if="(slotProps.data.AvailEmployeeAmt - Math.floor(slotProps.data.AvailEmployeeAmt)) === 0">.00</label>
                             </template>
                         </data-column>
                         <data-column header="Monto disponible de aporte:" style="width: 200px">
-                            <template #body="{ }">
+                            <template #body="slotProps">
                                 <label
-                                    v-if="(calculatedValues.AvailEmployerAmt !== null)">$</label>{{ calculatedValues.AvailEmployerAmt }}<label
-                                    v-if="(calculatedValues.AvailEmployerAmt - Math.floor(calculatedValues.AvailEmployerAmt)) === 0">.00</label>
+                                    v-if="(slotProps.data.AvailEmployerAmt !== null)">$</label>{{ slotProps.data.AvailEmployerAmt }}<label
+                                    v-if="(slotProps.data.AvailEmployerAmt - Math.floor(slotProps.data.AvailEmployerAmt)) === 0">.00</label>
                             </template>
                         </data-column>
                         <data-column header="Total disponible:">
-                            <template #body="{}">
+                            <template #body="slotProps">
                                 <label
-                                    v-if="(calculatedValues.TotalAvailAmount !== null)">$</label>{{ calculatedValues.TotalAvailAmount ?? 'N/A' }}<label
-                                    v-if="(calculatedValues.TotalAvailAmount - Math.floor(calculatedValues.TotalAvailAmount)) === 0">.00</label>
+                                    v-if="(slotProps.data.TotalAvailAmount !== null)">$</label>{{ slotProps.data.TotalAvailAmount ?? 'N/A' }}<label
+                                    v-if="(slotProps.data.TotalAvailAmount - Math.floor(slotProps.data.TotalAvailAmount)) === 0">.00</label>
                             </template>
                         </data-column>
                         <data-column header="Tasa de interés:">
-                            <template #body="{}">
-                                {{ calculatedValues.Rate }}<label
-                                    v-if="(calculatedValues.Rate - Math.floor(calculatedValues.Rate)) === 0">.00</label>%
+                            <template #body="slotProps">
+                                {{ slotProps.data.Rate }}<label
+                                    v-if="(slotProps.data.Rate - Math.floor(slotProps.data.Rate)) === 0">.00</label>%
                             </template>
                         </data-column>
                         <data-column header="Cuota quincenal:">
-                            <template #body="{}">
-
+                            <template #body="slotProps">
                                 <label
-                                    v-if="(calculatedValues.BiweeklyFee !== null)">$</label>{{ calculatedValues.BiweeklyFee }}<label
-                                    v-if="(calculatedValues.BiweeklyFee - Math.floor(calculatedValues.BiweeklyFee)) === 0">.00</label>
-
+                                    v-if="(slotProps.data.BiweeklyFee !== null)">$</label>{{ slotProps.data.BiweeklyFee }}<label
+                                    v-if="(slotProps.data.BiweeklyFee - Math.floor(slotProps.data.BiweeklyFee)) === 0">.00</label>
                             </template>
                         </data-column>
                         <data-column header="Total a pagar:">
-                            <template #body="{}">
+                            <template #body="slotProps">
                                 <label
-                                    v-if="(calculatedValues.TotalAmtToPay !== null)">$</label>{{ calculatedValues.TotalAmtToPay }}<label
-                                    v-if="(calculatedValues.TotalAmtToPay - Math.floor(calculatedValues.TotalAmtToPay)) === 0">.00</label>
+                                    v-if="(slotProps.data.TotalAmtToPay !== null)">$</label>{{ slotProps.data.TotalAmtToPay }}<label
+                                    v-if="(slotProps.data.TotalAmtToPay - Math.floor(slotProps.data.TotalAmtToPay)) === 0">.00</label>
                             </template>
                         </data-column>
                     </data-table>
