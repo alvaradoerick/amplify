@@ -1,11 +1,7 @@
 <script setup>
-    import {
-        useStore
-    } from 'vuex';
-    import {
-        ref
-    } from 'vue';
-
+    import {useStore} from 'vuex';
+    import {ref} from 'vue';
+    import {roles} from "../../constants/RolesConst.js";
     const store = useStore();
 
     const logout = async () => {
@@ -35,8 +31,8 @@
         }
     };
 
-    const isLoggedIn = store.getters["auth/isAuthenticated"];
-    const role = store.getters["auth/getRole"];
+    const isLoggedIn = store.getters['auth/isAuthenticated']
+  const role = store.getters['auth/getRole']
 </script>
 
 <template>
@@ -63,11 +59,11 @@
                     </li>
 
                     <!--Admin Menu-->
-                    <li class="nav-item" v-if="isLoggedIn && role ===1">
+                    <li class="nav-item" v-if="isLoggedIn && role ==roles.ADMINISTRATOR">
                         <router-link class="nav-link" :to="{name:'dashboard'}">Principal</router-link>
                     </li>
                     <li class="nav-item" @mouseover="showSubMenu('subMenu1')" @mouseleave="hideSubMenu('subMenu1')"
-                        v-if="isLoggedIn && role ===1">
+                        v-if="isLoggedIn && role == roles.ADMINISTRATOR">
                         <a class="nav-link">Usuarios</a>
                         <ul v-show="subMenuStates.subMenu1" class="sub-menu">
                             <li>
@@ -76,7 +72,7 @@
                         </ul>
                     </li>
                     <li class="nav-item" @mouseover="showSubMenu('subMenu2')" @mouseleave="hideSubMenu('subMenu2')"
-                        v-if="isLoggedIn && role ===1">
+                        v-if="isLoggedIn && role == roles.ADMINISTRATOR">
                         <a class="nav-link">Convenios</a>
                         <ul v-show="subMenuStates.subMenu2" class="sub-menu">
                             <li>
@@ -90,21 +86,21 @@
                         </ul>
                     </li>
                     <li class="nav-item" @mouseover="showSubMenu('subMenu3')" @mouseleave="hideSubMenu('subMenu3')"
-                        v-if="isLoggedIn  && role===1 || role === 2 || role === 3">
+                        v-if="isLoggedIn  && role == roles.ADMINISTRATOR || role == roles.PRESIDENT || role == roles.VICEPRESIDENT">
                         <a class="nav-link">Préstamos</a>
                         <ul v-show="subMenuStates.subMenu3" class="sub-menu">
-                            <li v-if="role !==4">
+                            <li v-if="role == roles.ADMINISTRATOR || role == roles.PRESIDENT || role == roles.VICEPRESIDENT">
                                 <router-link class="nav-link" :to="{name:'loanRequestList'}">Lista de solicitudes de
                                     préstamos</router-link>
                             </li>
-                            <li v-if="role ===1">
+                            <li v-if="role == roles.ADMINISTRATOR">
                                 <router-link class="nav-link" :to="{name:'typeList'}">Lista de tipos de préstamos
                                 </router-link>
                             </li>
                         </ul>
                     </li>
                     <li class="nav-item" @mouseover="showSubMenu('subMenu4')" @mouseleave="hideSubMenu('subMenu4')"
-                        v-if="isLoggedIn && role ===1">
+                        v-if="isLoggedIn && role == roles.ADMINISTRATOR">
                         <a class="nav-link">Ahorros</a>
                         <ul v-show="subMenuStates.subMenu3" class="sub-menu">
                             <li>
@@ -119,13 +115,13 @@
                     </li>
 
                     <!--User Menu-->
-                    <li class="nav-item" v-if="isLoggedIn && role !==1">
+                    <li class="nav-item" v-if="isLoggedIn && role != roles.ADMINISTRATOR">
                         <router-link class="nav-link" :to="{name:'myDashboard'}">Principal</router-link>
                     </li>
                     <li class="nav-item"  @mouseover="showSubMenu('subMenu1')" @mouseleave="hideSubMenu('subMenu1')"
-                        v-if="isLoggedIn && role !==1">
+                        v-if="isLoggedIn ">
                         <a class="nav-link">Mi Cuenta</a>
-                        <ul v-show="subMenuStates.subMenu1" class="sub-menu"  v-if=" role !==1">
+                        <ul v-show="subMenuStates.subMenu1" class="sub-menu" >
                             <li>
                                 <router-link class="nav-link" :to="{name:'myProfile'}">Mi Perfil</router-link>
                             </li>
@@ -136,7 +132,7 @@
                         </ul>
                     </li>
                     <li class="nav-item" @mouseover="showSubMenu('subMenu2')" @mouseleave="hideSubMenu('subMenu2')"
-                        v-if="isLoggedIn && role !==1">
+                        v-if="isLoggedIn && role != roles.ADMINISTRATOR">
                         <a class="nav-link">Solicitudes</a>
                         <ul v-show="subMenuStates.subMenu2" class="sub-menu">
                             <li>

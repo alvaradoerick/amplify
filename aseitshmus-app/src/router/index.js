@@ -4,20 +4,20 @@ import {
 } from 'vue-router'
 import store from '@/store/'
 import RegistrationWizard from '@/views/authentication/RegistrationWizard.vue'
-
+import {roles} from "../constants/RolesConst.js";
 
 
 
 const routes = [{
     path: '/',
     component: () => import('../layouts/Auth.vue' /* webpackChunkName: "auth" */ ),
-    children: [{
+    children: [
+      {
         path: '',
         name: 'login',
         component: () => import('../views/authentication/LoginForm.vue' /* webpackChunkName: "LoginForm" */ ),
         meta: {}
       },
-      //agreements
       {
         path: '/agreements',
         name: 'allAgreements',
@@ -57,7 +57,7 @@ const routes = [{
         component: () => import('../views/home/UserHome.vue' /* webpackChunkName: "UserHome" */ ),
         meta: {
           title: 'Resumen de Cuenta',
-          role: ['2','3','4']
+          role: [roles.ASSOCIATE,roles.PRESIDENT,roles.VICEPRESIDENT]
         },
       },
       {
@@ -66,8 +66,6 @@ const routes = [{
         component: () => import('../views/user/MyProfile.vue' /* webpackChunkName: "MyProfile" */ ),
         meta: {
           title: 'Mi Perfíl',
-          authentication: true,
-          role: ['2','3','4']
         }
       },
       
@@ -78,8 +76,6 @@ const routes = [{
         component: () => import('../views/user/ResetPassword.vue' /* webpackChunkName: "ResetPassword" */ ),
         meta: {
           title: 'Cambiar Contraseña',
-          authentication: true,
-          role: ['2','3','4']
         }
 
       },
@@ -90,8 +86,7 @@ const routes = [{
         component: () => import('../views/user/RequestLoan.vue' /* webpackChunkName: "RequestLoan" */ ),
         meta: {
           title: 'Solicitar Préstamo',
-          authentication: true,
-          role: ['2','3','4']
+          role: [roles.ASSOCIATE,roles.PRESIDENT,roles.VICEPRESIDENT]
         }
 
       },
@@ -103,7 +98,7 @@ const routes = [{
         meta: {
           title: 'Solicitar Ahorro',
           authentication: true,
-          role: ['2','3','4']
+          role: [roles.ASSOCIATE,roles.PRESIDENT,roles.VICEPRESIDENT]
         }
 
       }
@@ -124,7 +119,7 @@ const routes = [{
         meta: {
           title: 'Resumen de Información',
           authentication: true,
-          role: ['1']
+          role: [roles.ADMINISTRATOR]
         }
       },
       //agreements
@@ -138,7 +133,7 @@ const routes = [{
             component: () => import('../views/admin/agreements/AgreementList.vue' /* webpackChunkName: "AgreementList" */ ),
             meta: {
               title: 'Convenios',     
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -147,7 +142,7 @@ const routes = [{
             component: () => import('../views/admin/agreements/CreateAgreement.vue' /* webpackChunkName: "CreateAgreement" */ ),
             meta: {
               title: 'Crear Convenio',
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -156,7 +151,7 @@ const routes = [{
             component: () => import('../views/admin/agreements/UpdateAgreement.vue' /* webpackChunkName: "UpdateAgreement" */ ),
             meta: {
               title: 'Editar Convenio',
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
 
@@ -174,7 +169,7 @@ const routes = [{
             meta: {
               title: 'Categorías',
               authentication: true,
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -185,7 +180,7 @@ const routes = [{
             meta: {
               title: 'Crear Categoría',
               authentication: true,
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -195,7 +190,7 @@ const routes = [{
             meta: {
               title: 'Actualizar Categoría',
               authentication: true,
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
         ]
@@ -212,7 +207,7 @@ const routes = [{
             meta: {
               title: 'Usuarios',
               authentication: true,
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -222,7 +217,7 @@ const routes = [{
             meta: {
               title: 'Actualizar Usuario',
               authentication: true,
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -232,7 +227,7 @@ const routes = [{
             meta: {
               title: 'Actualizar Beneficiarios',
               authentication: true,
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
         ]
@@ -249,7 +244,7 @@ const routes = [{
             meta: {
               title: ' Tipos de Préstamo',
               authentication: true,
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -260,7 +255,7 @@ const routes = [{
             meta: {
               title: 'Crear Tipo de Préstamo',
               authentication: true,
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -270,7 +265,7 @@ const routes = [{
             meta: {
               title: 'Actualizar Tipo de Préstamo',
               authentication: true,
-              role: ['1']
+              role: [roles.ADMINISTRATOR]
             }
           },
         ]
@@ -287,7 +282,7 @@ const routes = [{
             meta: {
               authentication: true,
               title: ' Solicitudes de Préstamos',
-              role: ['1','2','3']
+              role: [roles.ADMINISTRATOR,roles.PRESIDENT,roles.VICEPRESIDENT]
             }
           },
 
@@ -298,7 +293,7 @@ const routes = [{
             meta: {
               authentication: true,
               title: 'Aprobación de Solicitud de Préstamo',
-              role: ['1','2','3']
+              role: [roles.ADMINISTRATOR,roles.PRESIDENT,roles.VICEPRESIDENT]
             }
           },
         ]
@@ -313,8 +308,8 @@ const routes = [{
             name: 'savingsList',
             component: () => import('../views/admin/savings-types/SavingsList.vue' /* webpackChunkName: "SavingsList" */ ),
             meta: {
-              role: ['1'],
               title: ' Tipos de Ahorro',
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -324,7 +319,7 @@ const routes = [{
             props: true,
             meta: {
               title: 'Crear Tipo de Ahorro',
-              role: ['1'],
+              role: [roles.ADMINISTRATOR]
             }
           },
           {
@@ -333,7 +328,7 @@ const routes = [{
             component: () => import('../views/admin/savings-types/UpdateSavings.vue' /* webpackChunkName: "UpdateSavings" */ ),
             meta: {
               title: 'Actualizar Tipo de Ahorro',
-              role: ['1'],
+              role: [roles.ADMINISTRATOR]
             }
           },
         ]
@@ -351,7 +346,7 @@ const routes = [{
             component: () => import('../views/admin/savings/AllSavings.vue' /* webpackChunkName: "AllSavings" */ ),
             meta: {
               title: ' Solicitudes de Ahorro',
-              role: ['1'],
+              role: [roles.ADMINISTRATOR]
             }
           },
 
@@ -361,7 +356,7 @@ const routes = [{
             component: () => import('../views/admin/savings/UpdateSaving.vue' /* webpackChunkName: "UpdateSaving" */ ),
             meta: {
               title: 'Aprobación de Solicitud de Ahorro',
-              role: ['1'],
+              role: [roles.ADMINISTRATOR]
             }
           },
         ]
@@ -380,7 +375,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isLoggedIn = store.getters['auth/isAuthenticated']
-  const role = [store.getters['auth/getRole']]
+  const role = store.getters['auth/getRole']
   if (to.meta.authentication && !isLoggedIn) {
     next({ name: 'login' })
     console.log('no esta validado')
