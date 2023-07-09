@@ -2,6 +2,7 @@
 using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,14 +20,16 @@ namespace AseIsthmusAPI.Controllers
             _service = service;
         }
         #region Get
+
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<LoanRequestOutDto>> Get()
         {
             return await _service.GetAll();
         }
-       
 
-        //[Authorize]
+
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<LoanRequestOutDto>> GetById([FromRoute] int id)
         {
@@ -45,7 +48,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Create
 
-        // [Authorize]
+        [Authorize]
         [HttpPost("{id}")]
     public async Task<IActionResult> Create([FromRoute] string id, LoanRequestInDto loan)
     {
@@ -63,7 +66,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Update
 
-        // [Authorize]
+        [Authorize]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ApproveLoan([FromRoute] int id, [FromBody] LoanRequestInByAdminDto loan)
         {
@@ -78,6 +81,9 @@ namespace AseIsthmusAPI.Controllers
                 return NotFound(new { error = "No se pudo actualizar el préstamo." });
             }
         }
+        #endregion
+
+        #region methods
 
         [HttpPost("calculation")]
         public async Task<IActionResult> GetLoanCalculation([FromBody] LoanCalculationType loanCalculation)
@@ -92,6 +98,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Delete
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {

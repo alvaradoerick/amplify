@@ -1,37 +1,22 @@
-import axios from "axios";
-
-const apiUrl = process.env["VUE_APP_BASED_URL"]
+import api from '../../../api/AxiosInterceptors.js';
 
 export default {
 
     //Get
     async getAllSavings({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/savingsrequest`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/savingsrequest`);   
         const savingsData = response.data;
         commit('setSavings', savingsData);
         return savingsData;
     },
 
     async getSavingsById({
-        commit,
-        rootGetters
+        commit
     },payload) {
-        const savingsId = payload.rowId;
-
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/savingsrequest/${savingsId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const savingsId = payload.rowId
+        const response = await api.get(`/savingsrequest/${savingsId}`);   
         const savingsData = response.data;
         commit('setSavings', savingsData);
         return savingsData;
@@ -42,34 +27,17 @@ export default {
         rootGetters
     }, payload) {
         const userId = rootGetters['auth/getLoggedInUser'];
-        const token = rootGetters['auth/getToken'];
-            const response = await axios.post(
-                `${apiUrl}/savingsrequest/${userId}`,
-                payload.savingsData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
+        const response = await api.post(`/savingsrequest/${userId}`, payload.savingsData);   
             return response;
     },
     
-
-
     //Delete
     async deleteSavings({
-        commit,rootGetters
+        commit
     }, payload) {
         try {
-            const token = rootGetters['auth/getToken'];
             const savingsRequestId = payload.rowId;
-            const response = await axios.delete(
-                `${apiUrl}/savingsrequest/${savingsRequestId}`,{
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.delete(`/savingsrequest/${savingsRequestId}`);   
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
@@ -79,20 +47,13 @@ export default {
 
      //Put or Patch
      async updateSavings({
-        rootGetters
+        _
     }, payload) {
         try {
+            console.log(_)
             const savingsRequestId = payload.savingsRequestId;
             const savings = payload.savingsState;
-            const token = rootGetters['auth/getToken'];
-            const response = await axios.patch(
-                `${apiUrl}/savingsrequest/${savingsRequestId}`,
-                savings, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.patch(`/savingsrequest/${savingsRequestId}`, savings);   
             return response
         } catch (error) {
             console.log(error)

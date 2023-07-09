@@ -1,50 +1,30 @@
-import axios from "axios";
-
-const apiUrl = process.env["VUE_APP_BASED_URL"]
+import api from '../../../api/AxiosInterceptors.js';
 
 export default {
 
     async getAllTypes({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/LoansType`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/LoansType`); 
         const typeData = response.data;
         commit('setType', typeData);
         return typeData;
     },
 
     async getActiveTypes({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/LoansType/active-categories`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/LoansType/active-categories`); 
         const typeData = response.data;
         commit('setType', typeData);
         return typeData;
     },
 
     async getTypeById({
-        commit,
-        rootGetters
+        commit
     }, payload) {
         const typeId = payload.rowId;
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/LoansType/${typeId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/LoansType/${typeId}`); 
         const typeData = response.data;
         commit('setType', typeData);
         return typeData;
@@ -52,35 +32,20 @@ export default {
 
     //Post
     async addType({
-        rootGetters
+        _
     }, payload) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.post(
-            `${apiUrl}/LoansType`,
-            payload.loanType, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        console.log(_)
+        const response = await api.post(`/LoansType`, payload.loanType); 
         return response;
     },
 
     //Delete
     async deleteType({
-        commit,
-        rootGetters
+        commit
     }, payload) {
         try {
-            const token = rootGetters['auth/getToken'];
             const typeId = payload.rowId;
-            const response = await axios.delete(
-                `${apiUrl}/LoansType/${typeId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.delete(`/LoansType/${typeId}`); 
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
@@ -90,21 +55,12 @@ export default {
 
     //Put or Patch
     async updateType({
-        rootGetters,
         commit
     }, payload) {
         try {
             const typeId = payload.typeId;
             const loanType = payload.loanType;
-            const token = rootGetters['auth/getToken'];
-            const response = await axios.put(
-                `${apiUrl}/LoansType/${typeId}`,
-                loanType, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.put(`/LoansType/${typeId}`,loanType); 
             return response
         } catch (error) {
             const errorMessage = error.response.data.error;

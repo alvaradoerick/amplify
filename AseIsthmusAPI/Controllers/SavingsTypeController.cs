@@ -1,5 +1,6 @@
 ﻿using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,21 +19,20 @@ namespace AseIsthmusAPI.Controllers
         }
 
         #region Get
-        // [Authorize]
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<SavingsType>> Get()
         {
             return await _service.GetAll();
         }
 
-        // [Authorize]
         [HttpGet("active-savings")]
         public async Task<IEnumerable<SavingsType>> GetAllActiveSavings()
         {
             return await _service.GetAllActiveSavings();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<SavingsType>> GetById([FromRoute] int id)
         {
@@ -51,7 +51,7 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Create
-        // [Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] SavingsType savingsType)
         {
@@ -64,7 +64,7 @@ namespace AseIsthmusAPI.Controllers
         #region Update
 
         [HttpPut("{id}")]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] SavingsType savingsType)
         {
             var savingsTypeToUpdate = await _service.GetById(id);
@@ -84,7 +84,7 @@ namespace AseIsthmusAPI.Controllers
         #region Delete
 
         [HttpDelete("{id}")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
 

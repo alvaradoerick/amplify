@@ -378,14 +378,10 @@ router.beforeEach((to, from, next) => {
   const role = store.getters['auth/getRole']
   if (to.meta.authentication && !isLoggedIn) {
     next({ name: 'login' })
-    console.log('no esta validado')
   } else if (to.meta.role && !to.meta.role.some(metaRole => role.includes(metaRole))) {
-    
-    console.log('entra en el malo')
       store.dispatch('auth/logout');
   } else {
     next();
-    console.log('entra en el bueno')
   }
 })
 

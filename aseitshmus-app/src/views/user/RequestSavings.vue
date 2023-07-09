@@ -61,7 +61,7 @@
             }
         } catch (error) {
             toast.add({
-                severity: 'success',
+                severity: 'error',
                 detail: error,
                 life: 2000
             });

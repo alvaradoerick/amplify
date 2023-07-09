@@ -1,50 +1,30 @@
-import axios from "axios";
-
-const apiUrl = process.env["VUE_APP_BASED_URL"]
+import api from '../../../api/AxiosInterceptors.js';
 
 export default {
 
     async getAllTypes({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/SavingsType`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/SavingsType`);   
         const typeData = response.data;
         commit('setType', typeData);
         return typeData;
     },
 
     async getActiveTypes({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/SavingsType/active-categories`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/SavingsType/active-categories`);  
         const typeData = response.data;
         commit('setType', typeData);
         return typeData;
     },
 
     async getTypeById({
-        commit,
-        rootGetters
+        commit
     }, payload) {
         const typeId = payload.rowId;
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/SavingsType/${typeId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/SavingsType/${typeId}`);  
         const typeData = response.data;
         commit('setType', typeData);
         return typeData;
@@ -52,35 +32,20 @@ export default {
 
     //Post
     async addType({
-        rootGetters
+_
     }, payload) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.post(
-            `${apiUrl}/SavingsType`,
-            payload.savingsType, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        console.log(_)
+        const response = await api.post(`/SavingsType`, payload.savingsType);  
         return response;
     },
 
     //Delete
     async deleteType({
-        commit,
-        rootGetters
+        commit
     }, payload) {
-        try {
-            const token = rootGetters['auth/getToken'];
+        try {   
             const typeId = payload.rowId;
-            const response = await axios.delete(
-                `${apiUrl}/SavingsType/${typeId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.delete(`/SavingsType/${typeId}`);
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
@@ -90,21 +55,12 @@ export default {
 
     //Put or Patch
     async updateType({
-        rootGetters,
         commit
     }, payload) {
         try {
             const typeId = payload.typeId;
             const savingsType = payload.savingsType;
-            const token = rootGetters['auth/getToken'];
-            const response = await axios.put(
-                `${apiUrl}/SavingsType/${typeId}`,
-                savingsType, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.put(`/SavingsTypeSavingsType/${typeId}`, savingsType);  
             return response
         } catch (error) {
             const errorMessage = error.response.data.error;

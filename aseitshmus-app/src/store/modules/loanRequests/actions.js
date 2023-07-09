@@ -1,38 +1,23 @@
-import axios from "axios";
-
-const apiUrl = process.env["VUE_APP_BASED_URL"]
+import api from '../../../api/AxiosInterceptors.js';
 
 export default {
 
     //Get
 
     async getAllLoans({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/loanrequest`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/loanrequest`); 
         const loanData = response.data;
         commit('setLoan', loanData);
         return loanData;
     },
 
     async getLoanById({
-        commit,
-        rootGetters
+        commit
     }, payload) {
         const loanId = payload.rowId;
-
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/loanrequest/${loanId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/loanrequest/${loanId}`); 
         const loanData = response.data;
         commit('setLoan', loanData);
         return loanData;
@@ -40,24 +25,15 @@ export default {
 
     //Post
     async getLoanCalculation({
-        commit,
-        rootGetters
+        commit,rootGetters
     }, payload) {
-        const token = rootGetters['auth/getToken'];
         const PersonId = rootGetters['auth/getLoggedInUser'];
         const loanData = payload.loanData;
         const updatedLoanData = {
             ...loanData,
             PersonId: PersonId,
         };
-
-        const response = await axios.post(`${apiUrl}/loanrequest/calculation`,
-            updatedLoanData, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        const response = await api.post(`/loanrequest/calculation`,updatedLoanData); 
         const loanDataResponse = response.data;
         commit('setLoanCalculation', loanDataResponse);
         return loanDataResponse;
@@ -67,33 +43,17 @@ export default {
         rootGetters
     }, payload) {
         const userId = rootGetters['auth/getLoggedInUser'];
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.post(
-            `${apiUrl}/loanrequest/${userId}`,
-            payload.loanRequest, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
+        const response = await api.post(`/loanrequest/${userId}`,payload.loanRequest); 
         return response;
     },
 
     //Delete
     async deleteLoan({
-        commit,
-        rootGetters
+        commit
     }, payload) {
         try {
-            const token = rootGetters['auth/getToken'];
             const loanRequestId = payload.rowId;
-            const response = await axios.delete(
-                `${apiUrl}/loanrequest/${loanRequestId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.delete(`/loanrequest/${loanRequestId}`); 
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
@@ -103,20 +63,13 @@ export default {
 
     //Put or Patch
     async updateLoan({
-        rootGetters
+        _
     }, payload) {
         try {
+            console.log(_);
             const loanRequestId = payload.loanRequestId;
             const loan = payload.loanState;
-            const token = rootGetters['auth/getToken'];
-            const response = await axios.patch(
-                `${apiUrl}/loanrequest/${loanRequestId}`,
-                loan, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.patch(`/loanrequest/${loanRequestId}`,loan); 
             return response
         } catch (error) {
             console.log(error)

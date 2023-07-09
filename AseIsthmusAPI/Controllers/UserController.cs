@@ -28,14 +28,14 @@ namespace AseIsthmusAPI.Controllers
 
         #region Get
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<UserDtoOut>> Get()
         {
             return await _service.GetAll();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDtoOut>> GetById([FromRoute] string id)
         {
@@ -139,7 +139,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Delete
 
-        //[Authorize]
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

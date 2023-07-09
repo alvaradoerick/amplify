@@ -1,8 +1,6 @@
-import axios from "axios";
 import dayjs from 'dayjs';
+import api from '../../../api/AxiosInterceptors.js';
 
-
-const apiUrl = process.env["VUE_APP_BASED_URL"]
 export default {
 
     async register({
@@ -14,8 +12,7 @@ export default {
             const workInfo = payload.workInfo;
             const addressInfo = payload.addressInfo;
             const beneficiaryInfo = payload.beneficiaryInfo;
-            const response = await axios.post(
-                `${apiUrl}/user`, {
+            const response = await api.post(`/user`, {
                     ...personalInfo,
                     ...workInfo,
                     ...addressInfo,
@@ -40,7 +37,7 @@ export default {
         commit, dispatch
     }, payload) {
         try {
-            const response = await axios.post(`${apiUrl}/login/authenticate`, payload.formData);
+            const response = await api.post(`/login/authenticate`, payload.formData);
             localStorage.setItem('token', response.data.Token);
             localStorage.setItem('loggedInUser', response.data.PersonId);
             localStorage.setItem('role', response.data.RoleId);
@@ -80,8 +77,7 @@ export default {
     }, payload) {
         try {
             const resetData = payload.resetData;
-            const response = await axios.patch(
-                `${apiUrl}/password/resetPassword`,
+            const response = await api.patch(`/password/resetPassword`,
                 resetData
             )
 

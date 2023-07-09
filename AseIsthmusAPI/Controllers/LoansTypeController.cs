@@ -1,6 +1,7 @@
 ﻿using AseIsthmusAPI.Data.AseIsthmusModels;
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         #region Get
-
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<LoansType>> Get()
         {
@@ -31,7 +32,7 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAllActiveLoans();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<LoanTypeOutDto>> GetById([FromRoute] int id)
         {
@@ -51,7 +52,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Create
 
-        // [Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(LoanTypeInDto loanType)
         {
@@ -70,6 +71,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Delete
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
@@ -89,7 +91,7 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Update
-        // [Authorize]
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] LoanTypeInDto loanType)
         {

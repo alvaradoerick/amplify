@@ -1,16 +1,12 @@
-import axios from "axios";
+import api from '../../../api/AxiosInterceptors.js';
 
-const apiUrl = process.env["VUE_APP_BASED_URL"]
 export default {
 
     async addBeneficiaries({
         commit
     }, payload) {
         try {
-            const response = await axios.post(
-                `${apiUrl}/users/${payload.PersonId}/beneficiary`,
-                payload.beneficiaryInfo
-            )
+            const response = await api.post(`/users/${payload.PersonId}/beneficiary`,payload.beneficiaryInfo);
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
@@ -18,35 +14,22 @@ export default {
         }
     },
     async getBeneficiaries({
-        commit,
-        rootGetters
+        commit
     },payload) {
-        const token = rootGetters['auth/getToken'];
+       
         const PersonId = payload.PersonId;
-        const response = await axios.get(`${apiUrl}/users/${PersonId}/beneficiary`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await api.get(`/users/${PersonId}/beneficiary`);
         const beneficiariesData = response.data;
         commit('setBeneficiaries', beneficiariesData);
         return beneficiariesData;
     },
 
     async deleteBeneficiaries({
-        commit,
-        rootGetters
+        commit
     }, payload) {
         try {
-            const token = rootGetters['auth/getToken'];
             const PersonId = payload.PersonId;
-            const response = await axios.delete(
-                `${apiUrl}/users/${PersonId}/beneficiary`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.delete(`/users/${PersonId}/beneficiary`);
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;

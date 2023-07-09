@@ -23,21 +23,22 @@ namespace AseIsthmusAPI.Controllers
         }
 
         #region Get
-        // [Authorize]
+
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<CategoryAgreement>> Get()
         {
             return await _service.GetAll();
         }
 
-        // [Authorize]
+        [Authorize]
         [HttpGet("active-categories")]
         public async Task<IEnumerable<CategoryAgreement>> GetAllActiveCategories()
         {
             return await _service.GetAllActiveCategories();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryAgreement>> GetById([FromRoute] int id)
         {
@@ -56,7 +57,8 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Create
-        // [Authorize]
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CategoryAgreement categoryAgreement)
         {
@@ -69,7 +71,7 @@ namespace AseIsthmusAPI.Controllers
         #region Update
 
         [HttpPut("{id}")]
-        // [Authorize]
+        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] CategoryAgreement categoryAgreement)
         {
             var categoryAgreementToUpdate = await _service.GetById(id);
@@ -87,9 +89,8 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Delete
-
+        [Authorize]
         [HttpDelete("{id}")]
-        //[Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
 
