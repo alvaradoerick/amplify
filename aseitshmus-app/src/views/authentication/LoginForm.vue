@@ -100,7 +100,7 @@
             try{
             await storeLogin();
             if (token.value) {
-        if (role.value === roles.ADMINISTRATOR) {            
+        if (role.value == roles.ADMINISTRATOR) {            
             router.push({ name: "dashboard" });
         }
          else {           

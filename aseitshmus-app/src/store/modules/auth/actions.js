@@ -37,21 +37,43 @@ export default {
     },
 
     async login({
-        commit
+        commit, dispatch
     }, payload) {
         try {
             const response = await axios.post(`${apiUrl}/login/authenticate`, payload.formData);
-            const token = response.data.Token;
-            const user = response.data.PersonId;
-            const role = response.data.RoleId;
-            commit('setToken', token);
-            commit('setLoggedInUser', user);
-            commit('setRole', role);
+            localStorage.setItem('token', response.data.Token);
+            localStorage.setItem('loggedInUser', response.data.PersonId);
+            localStorage.setItem('role', response.data.RoleId);
+            await  dispatch('fetchLoginData');
         } catch (error) {
             const errorMessage = error.response.data.error;
             commit('setErrorResponse', errorMessage);
         }
     },
+
+    async logout({
+        commit, dispatch
+    }) {
+        try {
+            localStorage.removeItem('token');
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('role');
+            commit('clearData')
+            await  dispatch('fetchLoginData');
+        } catch (error) {
+            const errorMessage = error.response.data.error;
+            commit('setErrorResponse', errorMessage);
+        }
+    },
+
+    async fetchLoginData({ commit }) {
+        return new Promise((resolve) => {
+            commit('setToken', localStorage.getItem('token'));
+            commit('setLoggedInUser', localStorage.getItem('loggedInUser'));
+            commit('setRole', localStorage.getItem('role'));
+            resolve();
+          });
+      },
 
     async resetPasswordUnauthenticated({
         commit,

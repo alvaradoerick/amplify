@@ -5,6 +5,23 @@
 </template>
 
 
+<script>
+   import {
+        useStore
+    } from 'vuex';
+export default {
+  name: 'App',
+  data(){
+    return{
+        store: useStore()
+    }
+  },
+  created() {
+    this.store.dispatch('auth/fetchLoginData');
+  },
+};
+</script>
+
 <style lang="scss">
 
 @font-face {
