@@ -1,53 +1,31 @@
-import axios from "axios";
-
-
-const apiUrl = process.env["VUE_APP_BASED_URL"]
+import api from '../../../api/AxiosInterceptors.js';
 
 export default {
 
     //Get
     async getAllAgreements({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/agreement`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/agreement`);
         const agreementData = response.data;
         commit('setAgreement', agreementData);
         return agreementData;
     },
 
     async getActiveAgreements({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/agreement/active-agreements`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/agreement/active-agreements`);  
         const agreementData = response.data;
         commit('setAgreement', agreementData);
         return agreementData;
     },
 
     async getAgreementById({
-        commit,
-        rootGetters
+        commit
     },payload) {
         const agreementId = payload.rowId;
-
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/agreement/${agreementId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/agreement/${agreementId}`);
         const agreementData = response.data;
         commit('setAgreement', agreementData);
         return agreementData;
@@ -55,17 +33,10 @@ export default {
 
     //Post
     async addAgreement({
-        rootGetters
+        _
     }, payload) {
-        const token = rootGetters['auth/getToken'];
-            const response = await axios.post(
-                `${apiUrl}/agreement`,
-                payload.agreementData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
+        console.log(_)
+        const response = await api.post(`/agreement`,payload.agreementData);
             return response;
     },
     
@@ -76,18 +47,11 @@ export default {
 
     //Delete
     async deleteAgreement({
-        commit,rootGetters
+        commit
     }, payload) {
         try {
-            const token = rootGetters['auth/getToken'];
             const agreementId = payload.rowId;
-            const response = await axios.delete(
-                `${apiUrl}/agreement/${agreementId}`,{
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.delete(`/agreement${agreementId}`);
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
@@ -97,20 +61,13 @@ export default {
 
      //Put or Patch
      async updateAgreement({
-        rootGetters
+        _
     }, payload) {
         try {
+            console.log(_)
             const agreementId = payload.AgreementId;
             const agreement = payload.agreementData;
-            const token = rootGetters['auth/getToken'];
-            const response = await axios.put(
-                `${apiUrl}/agreement/${agreementId}`,
-                agreement, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.put(`/agreement/${agreementId}`,agreement);
             return response
         } catch (error) {
             console.log(error)

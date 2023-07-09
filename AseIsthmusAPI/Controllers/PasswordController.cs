@@ -23,7 +23,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         #region Authenticated update
-
+        [Authorize]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ResetPasswordAuthenticated([FromRoute] string id, [FromBody] ResetPasswordDto resetPassword)
         {

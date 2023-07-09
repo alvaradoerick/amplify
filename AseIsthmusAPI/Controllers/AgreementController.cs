@@ -35,7 +35,7 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAllActiveAgreements();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<AgreementDtoOut>> GetById([FromRoute] int id)
         {
@@ -43,7 +43,7 @@ namespace AseIsthmusAPI.Controllers
 
             if (agreement is null)
             {
-                return NotFound(new { error = "No se pudo encontrar ninguna categoría." });
+                return NotFound(new { error = "No se pudo encontrar ningun convenio." });
             }
             else
             {
@@ -55,7 +55,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Create
 
-        // [Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(AgreementDtoIn agreementDtoIn)
         {
@@ -73,7 +73,7 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Delete
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
@@ -90,7 +90,7 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Update
-        // [Authorize]
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AgreementDtoIn agreement)
         {

@@ -2,6 +2,7 @@
 using AseIsthmusAPI.Data.DTOs;
 using AseIsthmusAPI.Services;
 using AseIsthmusAPI.Templates;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
@@ -24,6 +25,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Get
 
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<Beneficiary>?> Get([FromRoute] string id) {
 
@@ -60,6 +62,8 @@ namespace AseIsthmusAPI.Controllers
         /// </summary>
         /// <param name="updatePasswordRequestDto"></param>
         /// <returns></returns>
+
+        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromRoute] string id)
         {

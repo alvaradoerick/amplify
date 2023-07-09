@@ -1,51 +1,30 @@
-import axios from "axios";
-
-
-const apiUrl = process.env["VUE_APP_BASED_URL"]
+import api from '../../../api/AxiosInterceptors.js';
 
 export default {
 
     async getAllCategories({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/categoryagreement`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/categoryagreement`); 
         const categoryData = response.data;
         commit('setCategory', categoryData);
         return categoryData;
     },
 
     async getActiveCategories({
-        commit,
-        rootGetters
+        commit
     }) {
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/categoryagreement/active-categories`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/categoryagreement/active-categories`); 
         const categoryData = response.data;
         commit('setCategory', categoryData);
         return categoryData;
     },
 
     async getCategoryById({
-        commit,
-        rootGetters
+        commit
     },payload) {
         const categoryId = payload.rowId;
-        const token = rootGetters['auth/getToken'];
-        const response = await axios.get(`${apiUrl}/categoryagreement/${categoryId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        const response = await api.get(`/categoryagreement/${categoryId}`); 
         const categoryData = response.data;
         commit('setCategory', categoryData);
         return categoryData;
@@ -53,34 +32,20 @@ export default {
 
     //Post
     async addCategory({
-        rootGetters
+        _
     }, payload) {
-        const token = rootGetters['auth/getToken'];
-            const response = await axios.post(
-                `${apiUrl}/categoryagreement`,
-                payload.agreementCategory, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
+        console.log(_)
+        const response = await api.post(`/categoryagreement`,payload.agreementCategory); 
             return response;
     },
 
     //Delete
     async deleteCategory({
-        commit,rootGetters
+        commit
     }, payload) {
         try {
-            const token = rootGetters['auth/getToken'];
             const categoryId = payload.rowId;
-            const response = await axios.delete(
-                `${apiUrl}/categoryagreement/${categoryId}`,{
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.delete(`/categoryagreement/${categoryId}`); 
             return response;
         } catch (error) {
             const errorMessage = error.response.data.error;
@@ -89,21 +54,14 @@ export default {
     },
 
     //Put or Patch
-    async updateCategory({
-        rootGetters,commit
+    async updateCategory(
+        {
+        commit
     }, payload) {
         try {
             const categoryId = payload.categoryId;
             const agreementCategory = payload.agreementCategory;
-            const token = rootGetters['auth/getToken'];
-            const response = await axios.put(
-                `${apiUrl}/categoryagreement/${categoryId}`,
-                agreementCategory, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await api.put(`/categoryagreement/${categoryId}`,agreementCategory); 
             return response
         } catch (error) {
             const errorMessage = error.response.data.error;
