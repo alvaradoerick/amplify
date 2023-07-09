@@ -9,7 +9,7 @@
     const store = useStore();
 
     const logout = async () => {
-        store.commit("auth/clearToken");
+        store.dispatch("auth/logout");
     };
 
     const subMenuStates = {

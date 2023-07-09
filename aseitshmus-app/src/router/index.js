@@ -385,17 +385,18 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
-  const isLoggedIn = store.getters['auth/getToken']
-  const role = store.getters['auth/getRole']
+  const isLoggedIn = store.getters['auth/isAuthenticated']
+  console.log(isLoggedIn)
+  //const role = store.getters['auth/getRole']
   if (to.meta.authentication && !isLoggedIn) {
     next({
       name: 'login'
     })
-  } else if (to.meta.role && !to.meta.role.includes(role)) {
-    next({
-      name: 'login'
-    })
-    store.commit("auth/clearToken");
+  // } else if (to.meta.role && !to.meta.role.includes(role)) {
+  //   next({
+  //     name: 'login'
+  //   })
+  //   store.commit("auth/clearToken");
   } else {
     next()
   }
