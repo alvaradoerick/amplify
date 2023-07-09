@@ -15,29 +15,12 @@ namespace AseIsthmusAPI.Services
             _configuration = configuration;
 
         }
-        //public void sendemail(string emailtemplate, string subject, string emailto)
-        //{
-
-        //    var email = new mimemessage();
-        //    // se pone el coorreo, en este caso, se uso de thereal https://ethereal.email/create
-        //    email.from.add(mailboxaddress.parse("krudin7.6@gmal.com"));
-        //    email.to.add(mailboxaddress.parse(emailto));
-        //    email.subject = subject;
-        //    email.body = new textpart(textformat.html) { text = emailtemplate };
-
-
-        //    using var smtp = new smtpclient();
-        //    smtp.connect(_configuration.getsection("emailhost").value, 587, securesocketoptions.starttls);// smtp.connect("smtp.gmail.com")
-        //    smtp.authenticate(_configuration.getsection("emailusername").value, _configuration.getsection("emailpassword").value);
-        //    smtp.send(email);
-        //    smtp.disconnect(true);
-        //}
 
         public void SendEmail(string emailTemplate, string subject, string emailTo, string pdfFilePath = null)
         {
             var email = new MimeMessage();
             // se pone el coorreo, en este caso, se uso de thereal https://ethereal.email/create
-            email.From.Add(MailboxAddress.Parse("krudin7.6@gmail.com"));
+            email.From.Add(MailboxAddress.Parse("configurationAso@gmail.com"));
             email.To.Add(MailboxAddress.Parse(emailTo));
             email.Subject = subject;
             email.Body = new TextPart(TextFormat.Html) { Text = emailTemplate };

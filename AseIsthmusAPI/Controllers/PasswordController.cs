@@ -49,7 +49,7 @@ namespace AseIsthmusAPI.Controllers
         /// </summary>
         /// <param name="updatePasswordRequestDto"></param>
         /// <returns></returns>
-        [HttpPatch("resetPassword")]
+        [HttpPatch]
         public async Task<IActionResult> ResetPasswordUnauthenticated([FromBody] UpdatePasswordRequestDto updatePasswordRequestDto)
         {
             HtmlContentProvider emailTemplate = new HtmlContentProvider();
