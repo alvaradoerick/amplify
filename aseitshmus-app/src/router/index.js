@@ -57,7 +57,7 @@ const routes = [{
         component: () => import('../views/home/UserHome.vue' /* webpackChunkName: "UserHome" */ ),
         meta: {
           title: 'Resumen de Cuenta',
-          role: [2, 3, 4]
+          role: ['2','3','4']
         },
       },
       {
@@ -67,7 +67,7 @@ const routes = [{
         meta: {
           title: 'Mi Perfíl',
           authentication: true,
-          role: [2, 3, 4]
+          role: ['2','3','4']
         }
       },
       
@@ -79,7 +79,7 @@ const routes = [{
         meta: {
           title: 'Cambiar Contraseña',
           authentication: true,
-          role: [2, 3, 4]
+          role: ['2','3','4']
         }
 
       },
@@ -91,7 +91,7 @@ const routes = [{
         meta: {
           title: 'Solicitar Préstamo',
           authentication: true,
-          role: [2, 3, 4]
+          role: ['2','3','4']
         }
 
       },
@@ -103,7 +103,7 @@ const routes = [{
         meta: {
           title: 'Solicitar Ahorro',
           authentication: true,
-          role: [2, 3, 4]
+          role: ['2','3','4']
         }
 
       }
@@ -124,7 +124,7 @@ const routes = [{
         meta: {
           title: 'Resumen de Información',
           authentication: true,
-          role: [1],
+          role: ['1']
         }
       },
       //agreements
@@ -138,7 +138,7 @@ const routes = [{
             component: () => import('../views/admin/agreements/AgreementList.vue' /* webpackChunkName: "AgreementList" */ ),
             meta: {
               title: 'Convenios',     
-              role: [1],
+              role: ['1']
             }
           },
           {
@@ -147,7 +147,7 @@ const routes = [{
             component: () => import('../views/admin/agreements/CreateAgreement.vue' /* webpackChunkName: "CreateAgreement" */ ),
             meta: {
               title: 'Crear Convenio',
-              role: [1],
+              role: ['1']
             }
           },
           {
@@ -156,7 +156,7 @@ const routes = [{
             component: () => import('../views/admin/agreements/UpdateAgreement.vue' /* webpackChunkName: "UpdateAgreement" */ ),
             meta: {
               title: 'Editar Convenio',
-              role: [1],
+              role: ['1']
             }
           },
 
@@ -174,7 +174,7 @@ const routes = [{
             meta: {
               title: 'Categorías',
               authentication: true,
-              role: [1],
+              role: ['1']
             }
           },
           {
@@ -185,7 +185,7 @@ const routes = [{
             meta: {
               title: 'Crear Categoría',
               authentication: true,
-              role: [1],
+              role: ['1']
             }
           },
           {
@@ -195,7 +195,7 @@ const routes = [{
             meta: {
               title: 'Actualizar Categoría',
               authentication: true,
-              role: [1],
+              role: ['1']
             }
           },
         ]
@@ -212,7 +212,7 @@ const routes = [{
             meta: {
               title: 'Usuarios',
               authentication: true,
-              role: [1],
+              role: ['1']
             }
           },
           {
@@ -222,7 +222,7 @@ const routes = [{
             meta: {
               title: 'Actualizar Usuario',
               authentication: true,
-              role: [1],
+              role: ['1']
             }
           },
           {
@@ -232,7 +232,7 @@ const routes = [{
             meta: {
               title: 'Actualizar Beneficiarios',
               authentication: true,
-              role: [1],
+              role: ['1']
             }
           },
         ]
@@ -249,7 +249,7 @@ const routes = [{
             meta: {
               title: ' Tipos de Préstamo',
               authentication: true,
-              role: [1],
+              role: ['1']
             }
           },
           {
@@ -260,7 +260,7 @@ const routes = [{
             meta: {
               title: 'Crear Tipo de Préstamo',
               authentication: true,
-              role: [1],
+              role: ['1']
             }
           },
           {
@@ -270,7 +270,7 @@ const routes = [{
             meta: {
               title: 'Actualizar Tipo de Préstamo',
               authentication: true,
-              role: [1],
+              role: ['1']
             }
           },
         ]
@@ -287,7 +287,7 @@ const routes = [{
             meta: {
               authentication: true,
               title: ' Solicitudes de Préstamos',
-              role: [1, 2, 3]
+              role: ['1','2','3']
             }
           },
 
@@ -298,7 +298,7 @@ const routes = [{
             meta: {
               authentication: true,
               title: 'Aprobación de Solicitud de Préstamo',
-              role: [1, 2, 3]
+              role: ['1','2','3']
             }
           },
         ]
@@ -313,8 +313,7 @@ const routes = [{
             name: 'savingsList',
             component: () => import('../views/admin/savings-types/SavingsList.vue' /* webpackChunkName: "SavingsList" */ ),
             meta: {
-              authentication: true,
-              role: [1],
+              role: ['1'],
               title: ' Tipos de Ahorro',
             }
           },
@@ -325,8 +324,7 @@ const routes = [{
             props: true,
             meta: {
               title: 'Crear Tipo de Ahorro',
-              authentication: true,
-              role: [1]
+              role: ['1'],
             }
           },
           {
@@ -335,8 +333,7 @@ const routes = [{
             component: () => import('../views/admin/savings-types/UpdateSavings.vue' /* webpackChunkName: "UpdateSavings" */ ),
             meta: {
               title: 'Actualizar Tipo de Ahorro',
-              authentication: true,
-              role: [1]
+              role: ['1'],
             }
           },
         ]
@@ -347,7 +344,6 @@ const routes = [{
         name: 'savingsRequests',
         meta: {
           authentication: true,
-          role: [1]
         },
         children: [{
             path: '/all-savings-requests',
@@ -355,8 +351,7 @@ const routes = [{
             component: () => import('../views/admin/savings/AllSavings.vue' /* webpackChunkName: "AllSavings" */ ),
             meta: {
               title: ' Solicitudes de Ahorro',
-              authentication: true,
-              role: [1]
+              role: ['1'],
             }
           },
 
@@ -366,8 +361,7 @@ const routes = [{
             component: () => import('../views/admin/savings/UpdateSaving.vue' /* webpackChunkName: "UpdateSaving" */ ),
             meta: {
               title: 'Aprobación de Solicitud de Ahorro',
-              authentication: true,
-              role: [1]
+              role: ['1'],
             }
           },
         ]
@@ -386,22 +380,19 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const isLoggedIn = store.getters['auth/isAuthenticated']
-  console.log(isLoggedIn)
-  //const role = store.getters['auth/getRole']
+  const role = [store.getters['auth/getRole']]
   if (to.meta.authentication && !isLoggedIn) {
-    next({
-      name: 'login'
-    })
-  // } else if (to.meta.role && !to.meta.role.includes(role)) {
-  //   next({
-  //     name: 'login'
-  //   })
-  //   store.commit("auth/clearToken");
+    next({ name: 'login' })
+    console.log('no esta validado')
+  } else if (to.meta.role && !to.meta.role.some(metaRole => role.includes(metaRole))) {
+    
+    console.log('entra en el malo')
+      store.dispatch('auth/logout');
   } else {
-    next()
+    next();
+    console.log('entra en el bueno')
   }
 })
-
 
 
 

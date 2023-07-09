@@ -58,6 +58,7 @@ export default {
             localStorage.removeItem('token');
             localStorage.removeItem('loggedInUser');
             localStorage.removeItem('role');
+            commit('clearData')
             await  dispatch('fetchLoginData');
         } catch (error) {
             const errorMessage = error.response.data.error;

@@ -23,7 +23,9 @@ export default {
         state.password = password;
     },
 
-    clearToken(state) {
+    clearData(state) {
         state.token = null;
+        state.role = null;
+        state.loggedInUser = null;
     },
 }
