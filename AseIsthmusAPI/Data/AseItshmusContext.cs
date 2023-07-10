@@ -30,6 +30,8 @@ public partial class AseItshmusContext : DbContext
 
     public virtual DbSet<District> Districts { get; set; }
 
+    public virtual DbSet<Document> Documents { get; set; }
+
     public virtual DbSet<LoanBalance> LoanBalances { get; set; }
 
     public virtual DbSet<LoanRequest> LoanRequests { get; set; }
@@ -145,6 +147,11 @@ public partial class AseItshmusContext : DbContext
                 .HasForeignKey(d => d.CantonId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_District_Canton");
+        });
+
+        modelBuilder.Entity<Document>(entity =>
+        {
+            entity.HasKey(e => e.DocumentId).HasName("PK_[Documents");
         });
 
         modelBuilder.Entity<LoanBalance>(entity =>
@@ -294,12 +301,12 @@ public partial class AseItshmusContext : DbContext
             entity.HasKey(e => e.PersonId);
 
             entity.ToTable(tb =>
-                {
-                    tb.HasTrigger("trg_AddUserLogin");
-                    tb.HasTrigger("trg_DeleteUserAndBeneficiaries");
-                    tb.HasTrigger("trg_DeleteUserAndLogin");
-                    tb.HasTrigger("trg_PreventUserDeletion");
-                });
+            {
+                tb.HasTrigger("trg_AddUserLogin");
+                tb.HasTrigger("trg_DeleteUserAndBeneficiaries");
+                tb.HasTrigger("trg_DeleteUserAndLogin");
+                tb.HasTrigger("trg_PreventUserDeletion");
+            });
 
             entity.HasIndex(e => e.EmailAddress, "IX_Email").IsUnique();
 

@@ -16,7 +16,7 @@ namespace AseIsthmusAPI.Services
 
         }
 
-        public void SendEmail(string emailTemplate, string subject, string emailTo, string pdfFilePath = null)
+        public void SendEmail(string emailTemplate, string subject, string emailTo, string googleDriveLink = null)
         {
             var email = new MimeMessage();
             // se pone el coorreo, en este caso, se uso de thereal https://ethereal.email/create
@@ -25,14 +25,14 @@ namespace AseIsthmusAPI.Services
             email.Subject = subject;
             email.Body = new TextPart(TextFormat.Html) { Text = emailTemplate };
 
-            if (!string.IsNullOrEmpty(pdfFilePath))
+            if (!string.IsNullOrEmpty(googleDriveLink))
             {
                 var attachment = new MimePart("application", "pdf")
                 {
-                    Content = new MimeContent(File.OpenRead(pdfFilePath), ContentEncoding.Default),
+                    Content = new MimeContent(File.OpenRead(googleDriveLink), ContentEncoding.Default),
                     ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
                     ContentTransferEncoding = ContentEncoding.Base64,
-                    FileName = Path.GetFileName(pdfFilePath)
+                    FileName = Path.GetFileName(googleDriveLink)
                 };
 
                 var multipart = new Multipart("mixed")
