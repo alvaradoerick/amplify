@@ -39,7 +39,8 @@ builder.Services.AddScoped<SavingsTypeService>();
 builder.Services.AddScoped<LoansTypeService>();
 builder.Services.AddScoped<ContributionUsageService>();
 builder.Services.AddScoped<SavingsRequestService>();
-builder.Services.AddScoped<LoanRequestService>(); 
+builder.Services.AddScoped<LoanRequestService>();
+builder.Services.AddScoped<DocumentsService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {

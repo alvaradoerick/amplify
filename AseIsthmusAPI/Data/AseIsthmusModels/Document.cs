@@ -7,5 +7,7 @@ public partial class Document
 {
     public int DocumentId { get; set; }
 
-    public string GoogleDriveLink { get; set; } = null!;
+    public string DocumentTypeLink { get; set; } = null!;
+
+    public string? Link { get; set; }
 }
