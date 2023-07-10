@@ -30,7 +30,6 @@
     const moreInfo = 'Me interesa';
     const tabs = ref([ALL]);
 
-    //methods
     watch(activeTab, (value) => {
         dispatch('agreements/setActiveCategory', tabs.value[value]);
     }, {
@@ -82,8 +81,8 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        overflow: auto;
-        height: 48vh;
+        overflow: none;
+        height: 100%;
     }
     
     .button {
@@ -102,7 +101,7 @@
 
     .card {
         display: flex;
-        width: 14rem;
+        width: 23rem;
         flex-direction: column;
         margin-bottom: 2rem;
         margin-right: 2rem;

@@ -31,7 +31,6 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAll();
         }
 
-        [Authorize]
         [HttpGet("active-categories")]
         public async Task<IEnumerable<CategoryAgreement>> GetAllActiveCategories()
         {

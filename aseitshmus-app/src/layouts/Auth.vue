@@ -25,6 +25,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 100%;
+    margin-bottom: 1rem;
   }
 
   .input-text {
