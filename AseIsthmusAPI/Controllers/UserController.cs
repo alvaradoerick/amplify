@@ -15,13 +15,15 @@ namespace AseIsthmusAPI.Controllers
     {
         private readonly UserService _service;
         private readonly EmailService _emailService;
+        private readonly DocumentsService _documentService;
 
         #region Constructors 
 
-        public UserController(UserService service, EmailService emailService)
+        public UserController(UserService service, EmailService emailService, DocumentsService documentService)
         {
             _service = service;
             _emailService = emailService;
+            _documentService = documentService;
         }
 
         #endregion
@@ -167,32 +169,74 @@ namespace AseIsthmusAPI.Controllers
 
         #region Patch user status
 
-        [Authorize]
+        //[Authorize(Policy = "Administrator")]
+        //[HttpPatch("activateuser/{id}")]
+        //public async Task<IActionResult> ManageUserStatus([FromRoute] string id)
+        //{
+        //    var user = await _service.GetById(id);
+        //    HtmlContentProvider emailTemplate = new HtmlContentProvider();
+        //    var result =  await _service.ManageUserStatus(id);
+
+        //   if (user is not null && result is not null)
+        //    {
+        //        if (result.Equals("Activated"))
+        //        {
+        //            string pdfFilePath = @"Templates/G1_SC603_J_Requerimientos.pdf";
+        //            _emailService.SendEmail(emailTemplate.ApprovalEmailContent(), "Activación de usuario", user.EmailAddress, pdfFilePath);
+        //            return Ok(result);
+        //        }
+        //        else { 
+        //            return Ok(result); 
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return BadRequest(new { error = "No se pudo procesar su pedido." });
+        //    }
+
+        //}
+
+        [Authorize(Policy = "Administrator")]
         [HttpPatch("activateuser/{id}")]
         public async Task<IActionResult> ManageUserStatus([FromRoute] string id)
         {
             var user = await _service.GetById(id);
             HtmlContentProvider emailTemplate = new HtmlContentProvider();
-            var result =  await _service.ManageUserStatus(id);
-        
-           if (user is not null && result is not null)
+            var result = await _service.ManageUserStatus(id);
+           
+            if (user is not null && result is not null)
             {
                 if (result.Equals("Activated"))
                 {
-                    string pdfFilePath = @"Templates/G1_SC603_J_Requerimientos.pdf";
-                    _emailService.SendEmail(emailTemplate.ApprovalEmailContent(), "Activación de usuario", user.EmailAddress, pdfFilePath);
-                    return Ok(result);
+                    string welcome = "Bienvenida";
+                    string googleDriveLink = await _documentService.FetchGoogleLink(welcome);
+
+
+                    if (googleDriveLink != null)
+                    {
+                        _emailService.SendEmail(emailTemplate.ApprovalEmailContent(), "Activación de usuario", user.EmailAddress, googleDriveLink);
+                        return Ok(result);
+                    }
+                    else {
+
+                        _emailService.SendEmail(emailTemplate.ApprovalEmailContent(), "Activación de usuario", user.EmailAddress);
+                        return Ok(result);
+                    }
+
+                   
                 }
-                else { 
-                    return Ok(result); 
+                else
+                {
+                    return Ok(result);
                 }
             }
             else
             {
                 return BadRequest(new { error = "No se pudo procesar su pedido." });
             }
-
         }
+
+
         #endregion
 
         #region Non Actions
