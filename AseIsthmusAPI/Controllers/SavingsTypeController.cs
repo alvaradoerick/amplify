@@ -19,20 +19,19 @@ namespace AseIsthmusAPI.Controllers
         }
 
         #region Get
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpGet]
         public async Task<IEnumerable<SavingsType>> Get()
         {
             return await _service.GetAll();
         }
-
         [HttpGet("active-savings")]
         public async Task<IEnumerable<SavingsType>> GetAllActiveSavings()
         {
             return await _service.GetAllActiveSavings();
         }
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpGet("{id}")]
         public async Task<ActionResult<SavingsType>> GetById([FromRoute] int id)
         {
@@ -51,7 +50,7 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Create
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] SavingsType savingsType)
         {
@@ -63,8 +62,8 @@ namespace AseIsthmusAPI.Controllers
 
         #region Update
 
+        [Authorize(Policy = "Administrator")]
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] SavingsType savingsType)
         {
             var savingsTypeToUpdate = await _service.GetById(id);
@@ -83,8 +82,8 @@ namespace AseIsthmusAPI.Controllers
 
         #region Delete
 
+        [Authorize(Policy = "Administrator")]
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
 

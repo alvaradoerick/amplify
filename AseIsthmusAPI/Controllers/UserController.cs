@@ -80,7 +80,7 @@ namespace AseIsthmusAPI.Controllers
         /// <param name="id"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpPatch("employee/{id}")]
         public async Task<IActionResult> Update([FromRoute] string id, UpdateProfileAdminDto user)
         {
@@ -139,7 +139,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Delete
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

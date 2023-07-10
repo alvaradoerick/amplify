@@ -35,7 +35,7 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAllActiveAgreements();
         }
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpGet("{id}")]
         public async Task<ActionResult<AgreementDtoOut>> GetById([FromRoute] int id)
         {
@@ -55,7 +55,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Create
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Create(AgreementDtoIn agreementDtoIn)
         {
@@ -73,7 +73,7 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Delete
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
@@ -90,7 +90,7 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Update
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AgreementDtoIn agreement)
         {

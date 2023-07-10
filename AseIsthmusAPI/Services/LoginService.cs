@@ -17,6 +17,19 @@ namespace AseIsthmusAPI.Services
             _passwordService = passwordService; 
         }
 
+        public async Task<string> GetRoleDescription(int roleId)
+        {
+            var roleDescription = await _context.Roles
+       .Include(l => l.Users)
+       .FirstOrDefaultAsync(x => x.RoleId == roleId);
+
+            if (roleDescription == null)
+            {
+              return null;
+            }
+
+            return roleDescription.RoleDescription;
+        }
         public async Task<Login?> GetLogin(LoginDto login)
         {
             var loginEntity = await _context.Logins
@@ -25,12 +38,11 @@ namespace AseIsthmusAPI.Services
 
             if (loginEntity == null)
             {
-              return null;
+                return null;
             }
 
-            return loginEntity ;
+            return loginEntity;
         }
 
-        
     }
 }
