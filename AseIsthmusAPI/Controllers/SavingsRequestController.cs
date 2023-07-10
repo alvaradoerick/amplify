@@ -21,14 +21,14 @@ namespace AseIsthmusAPI.Controllers
 
         #region Get
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpGet]
         public async Task<IEnumerable<SavingsRequestOutDto>> Get()
         {
             return await _service.GetAll();
         }
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpGet("{id}")]
         public async Task<ActionResult<SavingsRequestOutDto>> GetById([FromRoute] int id)
         {
@@ -47,7 +47,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Create
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpPost("{id}")]
         public async Task<IActionResult> Create([FromRoute]string id, SavingsRequestInDto savings)
         {
@@ -65,7 +65,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Update
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ApproveSavings([FromRoute] int id, [FromBody]SavingsRequestInByAdminDto savings)
         {
@@ -84,7 +84,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Delete
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {

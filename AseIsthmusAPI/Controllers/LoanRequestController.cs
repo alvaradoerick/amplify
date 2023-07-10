@@ -21,7 +21,7 @@ namespace AseIsthmusAPI.Controllers
         }
         #region Get
 
-        [Authorize]
+        [Authorize(Policy = "Loan-Approvers")]
         [HttpGet]
         public async Task<IEnumerable<LoanRequestOutDto>> Get()
         {
@@ -29,7 +29,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
 
-        [Authorize]
+        [Authorize(Policy = "Loan-Approvers")]
         [HttpGet("{id}")]
         public async Task<ActionResult<LoanRequestOutDto>> GetById([FromRoute] int id)
         {
@@ -66,7 +66,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Update
 
-        [Authorize]
+        [Authorize(Policy = "Loan-Approvers")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ApproveLoan([FromRoute] int id, [FromBody] LoanRequestInByAdminDto loan)
         {
@@ -98,7 +98,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Delete
 
-        [Authorize]
+        [Authorize(Policy = "Loan-Approvers")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {

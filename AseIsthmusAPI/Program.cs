@@ -54,10 +54,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization(options =>
 {
-   // options.AddPolicy("administrator", policy => policy.RequireClaim("RoleType", "Administrador"));
-
-    //para agregar la politica al metodo solo se pone
-    //[Authorize(Policy = "nombre de la politica, puede ser administrator")]
+   options.AddPolicy("Administrator", policy => policy.RequireClaim("RoleType", "Administrador"));
+    options.AddPolicy("Loan-Approvers", policy => policy.RequireClaim("RoleType", "Administrador", "Presidente", "Vice Presidente"));
 });
 
 var app = builder.Build();

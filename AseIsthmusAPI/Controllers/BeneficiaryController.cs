@@ -25,7 +25,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Get
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpGet]
         public async Task<IEnumerable<Beneficiary>?> Get([FromRoute] string id) {
 
@@ -63,7 +63,7 @@ namespace AseIsthmusAPI.Controllers
         /// <param name="updatePasswordRequestDto"></param>
         /// <returns></returns>
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromRoute] string id)
         {

@@ -50,13 +50,14 @@ namespace AseIsthmusAPI.Controllers
 
         private async Task<string> GenerateToken(User user)
         {
-            //var roleDescription = await _roleService.GetRoleDescriptionById(user.RoleId);
+            
+            var roleDescription = await _service.GetRoleDescription(user.RoleId);
 
             var claims = new[]
             {
         new Claim(ClaimTypes.Name, user.FirstName),
         new Claim(ClaimTypes.Email, user.EmailAddress),
-       // new Claim("RoleType", await roleDescription)
+        new Claim("RoleType", roleDescription)
     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value));

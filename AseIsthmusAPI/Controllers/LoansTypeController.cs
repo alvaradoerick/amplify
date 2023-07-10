@@ -19,7 +19,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         #region Get
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpGet]
         public async Task<IEnumerable<LoansType>> Get()
         {
@@ -32,7 +32,7 @@ namespace AseIsthmusAPI.Controllers
             return await _service.GetAllActiveLoans();
         }
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpGet("{id}")]
         public async Task<ActionResult<LoanTypeOutDto>> GetById([FromRoute] int id)
         {
@@ -40,7 +40,7 @@ namespace AseIsthmusAPI.Controllers
 
             if (agreement is null)
             {
-                return NotFound(new { error = "No se pudo encontrar ninguna categoría." });
+                return NotFound(new { error = "No se pudo encontrar ningun tipo de préstamo." });
             }
             else
             {
@@ -52,7 +52,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Create
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Create(LoanTypeInDto loanType)
         {
@@ -71,7 +71,7 @@ namespace AseIsthmusAPI.Controllers
 
         #region Delete
 
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
@@ -82,7 +82,7 @@ namespace AseIsthmusAPI.Controllers
             }
             catch (Exception)
             {
-                return BadRequest(new { error = "No se pudo eliminar el convenio." });
+                return BadRequest(new { error = "No se pudo eliminar el tipo de préstamo.." });
             }
 
 
@@ -91,7 +91,7 @@ namespace AseIsthmusAPI.Controllers
         #endregion
 
         #region Update
-        [Authorize]
+        [Authorize(Policy = "Administrator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] LoanTypeInDto loanType)
         {
@@ -103,7 +103,7 @@ namespace AseIsthmusAPI.Controllers
             }
             else
             {
-                return NotFound(new { error = "No se pudo actualizar el convenio." });
+                return NotFound(new { error = "No se pudo actualizar el tipo de préstamo.." });
             }
         }
         #endregion
