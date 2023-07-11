@@ -33,15 +33,15 @@ namespace AseIsthmusAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<LoanRequestOutDto>> GetById([FromRoute] int id)
         {
-            var savings = await _service.GetById(id);
+            var loan = await _service.GetById(id);
 
-            if (savings is null)
+            if (loan is null)
             {
                 return NotFound(new { error = "No se pudo encontrar ningun préstamo con ese ID." });
             }
             else
             {
-                return savings;
+                return loan;
             }
         }
         #endregion
@@ -79,6 +79,40 @@ namespace AseIsthmusAPI.Controllers
             else
             {
                 return NotFound(new { error = "No se pudo actualizar el préstamo." });
+            }
+        }
+
+        [Authorize(Policy = "Administrator")]
+        [HttpPut("request-review/{id}")]
+        public async Task<ActionResult> RequestLoanReview([FromRoute] int id)
+        {
+            var loan = await _service.GetById(id);
+
+            if (loan is null)
+            {
+                return NotFound(new { error = "No se pudo encontrar ningun préstamo con ese ID." });
+            }
+            else
+            {
+              await  _service.RequestLoanReview(id);
+                return NoContent();
+            }
+        }
+
+        //[Authorize(Policy = "Administrator")]
+        [HttpPut("respond-review/{id}")]
+        public async Task<ActionResult> RespondLoanReview([FromRoute] int id, [FromBody] bool response)
+        {
+            var loan = await _service.GetById(id);
+
+            if (loan is null)
+            {
+                return NotFound(new { error = "No se pudo encontrar ningun préstamo con ese ID." });
+            }
+            else
+            {
+               await _service.RespondLoanReview(id, response);
+                return NoContent();
             }
         }
         #endregion

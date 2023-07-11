@@ -33,8 +33,11 @@ namespace AseIsthmusAPI.Services
                     BankAccount = a.BankAccount,
                     IsActive = a.IsActive,
                     ApprovedDate = a.ApprovedDate,
-                    IsApproved = a.IsApproved
-                }).ToListAsync();
+                    IsApproved = a.IsApproved,
+                    IsReviewRequired=  a.IsReviewRequired,
+                    IsReviewApproved = a.IsReviewApproved,
+                    ReviewRequiredDate = a.ReviewRequiredDate
+    }).ToListAsync();
         }
         public async Task<LoanRequestOutDto?> GetById(int id)
         {
@@ -53,9 +56,47 @@ namespace AseIsthmusAPI.Services
                     BankAccount = a.BankAccount,
                     IsActive = a.IsActive,
                     ApprovedDate = a.ApprovedDate,
-                    IsApproved = a.IsApproved
+                    IsApproved = a.IsApproved,
+                    IsReviewRequired = a.IsReviewRequired,
+                    IsReviewApproved = a.IsReviewApproved,
+                    ReviewRequiredDate = a.ReviewRequiredDate
                 }).SingleOrDefaultAsync();
         }
+
+        public async Task RequestLoanReview(int loanRequestId)
+        {
+            var loanIdParameter = new SqlParameter("@loanId", SqlDbType.Int)
+            {
+                Value = loanRequestId
+            };
+
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC sp_RequestLoanReview @loanId",
+                loanIdParameter
+            );
+
+        }
+
+        public async Task RespondLoanReview(int loanRequestId, bool response )
+        {
+            var loanIdParameter = new SqlParameter("@loanId", SqlDbType.Int)
+            {
+  
+                Value = loanRequestId
+            };
+            var reviewResponseParameter = new SqlParameter("@reviewResponse", SqlDbType.Bit)
+            {
+                Value = response
+            };
+
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC sp_UpdateReviewResponse @loanId, @reviewResponse",
+                loanIdParameter,
+                reviewResponseParameter
+            );
+
+        }
+
 
         public async Task<LoanRequest> ApproveLoan(int id, LoanRequestInByAdminDto saving)
         {
