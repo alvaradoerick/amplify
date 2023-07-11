@@ -83,7 +83,7 @@ namespace AseIsthmusAPI.Controllers
         }
 
         [Authorize(Policy = "Administrator")]
-        [HttpPut("request-review/{id}")]
+        [HttpPatch("request-review/{id}")]
         public async Task<ActionResult> RequestLoanReview([FromRoute] int id)
         {
             var loan = await _service.GetById(id);
@@ -99,8 +99,8 @@ namespace AseIsthmusAPI.Controllers
             }
         }
 
-        //[Authorize(Policy = "Administrator")]
-        [HttpPut("respond-review/{id}")]
+        [Authorize(Policy = "Loan-Approvers")]
+        [HttpPatch("respond-review/{id}")]
         public async Task<ActionResult> RespondLoanReview([FromRoute] int id, [FromBody] bool response)
         {
             var loan = await _service.GetById(id);
