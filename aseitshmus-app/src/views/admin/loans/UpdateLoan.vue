@@ -24,13 +24,14 @@
     const store = useStore();
 
     const backLabel = 'Cancelar';
-    const savingsList = () => {
+    const loanList = () => {
         router.push({
             name: "loanRequestList"
         });
     }
     const approveLabel = 'Aprobar';
     const rejectLabel = 'Rechazar';
+    const reviewerlabel = 'Requiere Revisión';
 
     const loanData = ref({
         Name: null,
@@ -40,10 +41,10 @@
         AmountRequested: null,
         RequestedDate: null,
         IsActive: null,
+        Term: null,
         ApprovedDate: null,
 
     })
-
     const dateFormat = {
         day: "numeric",
         month: "numeric",
@@ -51,10 +52,11 @@
     };
 
     const loanState = ref({
-        IsApproved: null,
+        IsApproved: null, 
     })
 
     const loanRequestId = ref(route.params.id);
+
     const rules = {
         IsApproved: {
             required
@@ -89,14 +91,15 @@
             rowId: loanRequestId.value
         });
 
-        const request = store.getters["loanRequests/getLoans"];
+        const request = await store.getters["loanRequests/getLoans"];
         try {
                 loanData.value.Name = request.Name,
                 loanData.value.NumberId = request.NumberId,
                 loanData.value.LoansTypeId = request.LoansTypeId,
+                loanData.value.Term = request.Term,
                 loanData.value.LoanTypeName = request.LoanTypeName,
                 loanData.value.RequestedDate = new Date(request.RequestedDate),
-                loanData.value.AmountRequested = request.Amount,
+                loanData.value.AmountRequested = request.AmountRequested,
                 loanData.value.IsActive = request.IsActive ? 'Activo' : 'Inactivo',
                 loanData.value.ApprovedDate = request.ApprovedDate ? new Date(request.ApprovedDate)
                 .toLocaleString("es-ES", dateFormat) : "N/A",
@@ -109,6 +112,7 @@
                 life: 2000
             });
         }
+
     };
 
     const submitData = async (event) => {
@@ -128,7 +132,7 @@
                     life: 2000
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1000));
-                savingsList()
+                loanList()
             } catch (error) {
                 toast.add({
                     severity: 'error',
@@ -138,6 +142,7 @@
             }
         }
     }
+
 
     onMounted(fetchLoanData);
 </script>
@@ -160,31 +165,29 @@
                 <br>
                 <br>
                 <strong><label>Fecha de solicitud:</label></strong>
-                <label>&nbsp;{{  new Date(loanData.RequestedDate).toLocaleString("es-ES", dateFormat) }}</label>
+                <label>&nbsp;{{ new Date(loanData.RequestedDate).toLocaleString("es-ES", dateFormat) }}</label>
                 <br>
                 <br>
-                <strong><label>Cuota de préstamo (quincenal):</label></strong>
-                <label>&nbsp; ${{loanData.Amount}}<span
+                <strong><label>Monto solicitado:</label></strong>
+                <label>&nbsp; ${{loanData.AmountRequested}}<span
                         v-if="(loanData.AmountRequested - Math.floor(loanData.AmountRequested)) === 0 || loanData.AmountRequested  === null">.00</span></label>
+                <br>
+                <br>
+                <strong><label>Plazo:</label></strong>
+                <label>&nbsp;{{ loanData.Term}} mes(es)</label>
                 <br>
                 <br>
                 <strong><label>Estado del préstamo:</label></strong>
                 <label>&nbsp;{{ loanData.IsActive}}</label>
                 <br>
                 <br>
-                <strong><label>Estado del préstamo:</label></strong>
-                <label>&nbsp;{{ loanState.IsApproved}}</label>
-                <br>
-                <br>
-                <strong><label>Fecha de aprobación:</label></strong>
-                <label>&nbsp;{{ loanData.ApprovedDate}}</label>
-                <br>
-                <br>
+
                 <div class="actions">
-                    <base-button :label="backLabel" small @click="savingsList" :type="'button'" />
+                    <base-button :label="backLabel" small @click="loanList" :type="'button'" />
                     <base-button :label="approveLabel" class="green" small @click="submitData" :type="'submit'" />
                     <base-button :label="rejectLabel"  class="red" v-if="loanState.IsApproved !== true" small @click="submitData"
                         :type="'submit'" />
+                        <base-button :label="reviewerlabel" small @click="loanList" :type="'button'" />
                 </div>
             </div>
         </div>
@@ -237,11 +240,13 @@
         flex-direction: row;
         justify-content: flex-end;
         align-self: flex-end;
+        width:45rem
     }
 
     .actions button {
         flex: 1;
         margin-right: 1rem;
+        padding: .60rem;
     }
 
     .green,

@@ -58,15 +58,14 @@ namespace AseIsthmusAPI.Controllers
         new Claim(ClaimTypes.Name, user.FirstName),
         new Claim(ClaimTypes.Email, user.EmailAddress),
         new Claim("RoleType", roleDescription)
-    };
-
+    }; 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var securityToken = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(60),
-                signingCredentials: creds);
+                signingCredentials: creds);  
 
             string token = new JwtSecurityTokenHandler().WriteToken(securityToken);
 

@@ -54,13 +54,44 @@
                     <li class="nav-item" v-if="!isLoggedIn">
                         <router-link class="nav-link" :to="{name:'register'}">Registro</router-link>
                     </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="{name:'allAgreements'}">Convenios</router-link>
-                    </li>
+
+  
 
                     <!--Admin Menu-->
                     <li class="nav-item" v-if="isLoggedIn && role ==roles.ADMINISTRATOR">
                         <router-link class="nav-link" :to="{name:'dashboard'}">Principal</router-link>
+                    </li>
+
+                    <!--User Menu-->
+  <li class="nav-item" v-if="isLoggedIn && role != roles.ADMINISTRATOR">
+                        <router-link class="nav-link" :to="{name:'myDashboard'}">Principal</router-link>
+                    </li>
+
+                      <!--Admin Menu-->
+                    <li class="nav-item"  @mouseover="showSubMenu('subMenu1')" @mouseleave="hideSubMenu('subMenu1')"
+                        v-if="isLoggedIn ">
+                        <a class="nav-link">Mi Cuenta</a>
+                        <ul v-show="subMenuStates.subMenu1" class="sub-menu" >
+                            <li>
+                                <router-link class="nav-link" :to="{name:'myProfile'}">Mi Perfil</router-link>
+                            </li>
+                            <li>
+                                <router-link class="nav-link" :to="{name:'changePassword'}">Cambiar Contraseña
+                                </router-link>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item" @mouseover="showSubMenu('subMenu2')" @mouseleave="hideSubMenu('subMenu2')"
+                        v-if="isLoggedIn && role != roles.ADMINISTRATOR">
+                        <a class="nav-link">Solicitudes</a>
+                        <ul v-show="subMenuStates.subMenu2" class="sub-menu">
+                            <li>
+                                <router-link class="nav-link" :to="{name:'requestLoan'}">Préstamos</router-link>
+                            </li>
+                            <li>
+                                <router-link class="nav-link" :to="{name:'requestSavings'}">Ahorros</router-link>
+                            </li>
+                        </ul>
                     </li>
                     <li class="nav-item" @mouseover="showSubMenu('subMenu1')" @mouseleave="hideSubMenu('subMenu1')"
                         v-if="isLoggedIn && role == roles.ADMINISTRATOR">
@@ -113,37 +144,11 @@
                             </li>
                         </ul>
                     </li>
-
-                    <!--User Menu-->
-                    <li class="nav-item" v-if="isLoggedIn && role != roles.ADMINISTRATOR">
-                        <router-link class="nav-link" :to="{name:'myDashboard'}">Principal</router-link>
+                      <!--agreements-->
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="{name:'allAgreements'}">Convenios</router-link>
                     </li>
-                    <li class="nav-item"  @mouseover="showSubMenu('subMenu1')" @mouseleave="hideSubMenu('subMenu1')"
-                        v-if="isLoggedIn ">
-                        <a class="nav-link">Mi Cuenta</a>
-                        <ul v-show="subMenuStates.subMenu1" class="sub-menu" >
-                            <li>
-                                <router-link class="nav-link" :to="{name:'myProfile'}">Mi Perfil</router-link>
-                            </li>
-                            <li>
-                                <router-link class="nav-link" :to="{name:'changePassword'}">Cambiar Contraseña
-                                </router-link>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item" @mouseover="showSubMenu('subMenu2')" @mouseleave="hideSubMenu('subMenu2')"
-                        v-if="isLoggedIn && role != roles.ADMINISTRATOR">
-                        <a class="nav-link">Solicitudes</a>
-                        <ul v-show="subMenuStates.subMenu2" class="sub-menu">
-                            <li>
-                                <router-link class="nav-link" :to="{name:'requestLoan'}">Préstamos</router-link>
-                            </li>
-                            <li>
-                                <router-link class="nav-link" :to="{name:'requestSavings'}">Ahorros</router-link>
-                            </li>
-                        </ul>
-                    </li>
-
+                  
                     <!--Logout-->
                     <li class="nav-item" v-if="isLoggedIn">
                         <router-link class="nav-link" to="/" @click="logout">Salir</router-link>

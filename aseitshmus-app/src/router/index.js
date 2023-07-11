@@ -280,7 +280,6 @@ const routes = [{
             name: 'loanRequestList',
             component: () => import('../views/admin/loans/AllLoans.vue' /* webpackChunkName: "AllLoans" */ ),
             meta: {
-              authentication: true,
               title: ' Solicitudes de Préstamos',
               role: [roles.ADMINISTRATOR,roles.PRESIDENT,roles.VICEPRESIDENT]
             }
