@@ -58,15 +58,19 @@ namespace AseIsthmusAPI.Controllers
         new Claim(ClaimTypes.Name, user.FirstName),
         new Claim(ClaimTypes.Email, user.EmailAddress),
         new Claim("RoleType", roleDescription)
-    };
-
+    }; 
+            TimeSpan expirationTimeSpan = TimeSpan.FromMinutes(358);
+            TimeSpan startTimeSpan = TimeSpan.FromMinutes(360);
+            DateTime expirationDate = DateTime.UtcNow.Subtract(expirationTimeSpan);
+            DateTime startDate = DateTime.UtcNow.Subtract(startTimeSpan);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.GetSection("JWT:Key").Value));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var securityToken = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(60),
-                signingCredentials: creds);
+                notBefore: startDate,
+        expires: expirationDate,
+        signingCredentials: creds);  
 
             string token = new JwtSecurityTokenHandler().WriteToken(securityToken);
 

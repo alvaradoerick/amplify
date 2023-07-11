@@ -1,6 +1,4 @@
 <script setup>
-    import DataTable from 'primevue/datatable';
-    import Column from 'primevue/column';
     import {
         ref,
         onMounted,
@@ -108,20 +106,21 @@
 <template>
     <toast-component />
     <div class="list">
-        <DataTable :value="requestData" paginator :rows="3" tableStyle="min-width: 80rem">
-            <Column field="SavingsTypeName" header="Tipo de ahorro" sortable></Column>
-            <Column field="ApplicationDate" header="Fecha de solicitud" sortable></Column>         
-            <Column field="IsActive" header="Estado" sortable style="width: 160px"></Column>
-            <Column field="IsApproved" header="Estado de aprobación" sortable></Column>
-            <Column header="" style="width: 100px"> <template #body="rowData">
+        <data-table :value="requestData" paginator :rows="3" tableStyle="min-width: 80rem">
+            <data-column field="Name" header="Nombre" sortable></data-column>
+            <data-column field="SavingsTypeName" header="Tipo de ahorro" sortable></data-column>
+            <data-column field="ApplicationDate" header="Fecha de solicitud" sortable></data-column>         
+            <data-column field="IsActive" header="Estado" sortable style="width: 160px"></data-column>
+            <data-column field="IsApproved" header="Estado de aprobación" sortable></data-column>
+            <data-column header="" style="width: 100px"> <template #body="rowData">
                     <base-button class="action-buttons" label="Editar" @click="updateRecord(rowData)"
                         :type="'button'" />
-                </template></Column>
-            <Column header="" style="width: 100px"> <template #body="rowData">
+                </template></data-column>
+            <data-column header="" style="width: 100px"> <template #body="rowData">
                     <base-button class="action-buttons" label="Eliminar" @click="deleteRecord(rowData)"
                         :type="'button'" />
-                </template></Column>
-        </DataTable>
+                </template></data-column>
+        </data-table>
 
         <div class="actions-container">
             <div class="actions">
