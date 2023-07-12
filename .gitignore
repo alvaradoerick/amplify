@@ -402,3 +402,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/aseitshmus-app/src/api/AxiosInterceptors.js
+/AseIsthmusAPI/Controllers/LoginController.cs
