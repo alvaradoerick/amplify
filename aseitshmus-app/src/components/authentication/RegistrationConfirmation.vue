@@ -13,7 +13,7 @@
     <div>
         <h2>Solicitud enviada</h2>
 <p>Su solicitud ha sido enviada para revisión. Le informamos que se requiere que establezca una nueva contraseña una vez que su cuenta haya sido activada.</p>
-<p>Si lleva menos de 3 meses trabajando en la empresa, su solicitud quedará pendiente hasta que cumpla los <strong>3 meses.</strong></p>
+<p>Si tiene menos de 3 meses trabajando en la empresa, su solicitud quedará pendiente hasta que cumpla los <strong>3 meses.</strong></p>
 <div>
     <p>Una vez que el administrador apruebe su solicitud, podrá acceder a su cuenta y proceder a cambiar su contraseña.</p>
 </div>

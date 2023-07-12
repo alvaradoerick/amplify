@@ -112,7 +112,7 @@ const submitData = async (event) => {
     } catch (error) {
       toast.add({
         severity: 'error',
-        detail: 'Un error ocurrió.',
+        detail: 'Ocurrió un error',
         life: 2000
       });
         }
@@ -211,7 +211,7 @@ const submitData = async (event) => {
 
     .steps {
         margin-bottom: 25px;
-        width: 75%;
+        width: 100%;
     }
 
     .hasError  {
