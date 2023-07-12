@@ -95,6 +95,7 @@
     const calculatedValues = computed(() => {
         return getters['loanRequests/getLoanCalculation'] || [];
     });
+
     const fetchActiveLoanTypes = async () => {
         try {
             const response = await axios.get(`${apiUrl}/LoansType/active-loans`);
@@ -123,8 +124,6 @@
         calculatedValues.value = getters['loanRequests/getLoanCalculation'];
     };
 
-   
-
     const rules = {
         RequestedDate: {
             required
@@ -143,8 +142,7 @@
 
     });
 
-    watch(calculatedValues.value, (newValue) => {
-        console.log(newValue)
+    watch(calculatedValues.value, () => {
         fetchCalculation();
     });
 
@@ -170,7 +168,7 @@
     const v$ = useVuelidate(rules, loanRequest);
 
     const validateForm = async () => {
-        const isTermValid = validateTerms();
+       
         const result = await v$.value.$validate();
         if (!result) {
             if (v$.value.$errors[0].$validator === 'required') {
@@ -179,10 +177,8 @@
                     detail: 'Todos los campos son requeridos.',
                     life: 2000
                 });
-                return false
-            } else if (!isTermValid) {
-                return false
-            }
+            } 
+            return false
         }
         return true;
     }
@@ -190,8 +186,8 @@
     const onSend = async (event) => {
         event.preventDefault();
         const isValid = await validateForm();
-
-        if (isValid) {
+        const isTermValid = validateTerms();
+        if (isValid && isTermValid)  {
             try {
                 await storeLoan();
                 toast.add({

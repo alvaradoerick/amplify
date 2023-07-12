@@ -16,13 +16,15 @@
         if (!Array.isArray(loans)) {
     return [];
   }
-
         return loans.map(request => {
             return {
                 ...request,
                 IsActive: request.IsActive ? "Activo" : "Inactivo",
                 IsApproved: request.IsApproved  ? "Activo"  : request.IsApproved === null  ? "Pendiente"  : "Rechazado",
                 RequestedDate: new Date(request.RequestedDate).toLocaleString("es-ES", dateFormat),
+                IsReviewRequired: request.IsReviewRequired ? "Sí" : request.IsReviewApproved === null & request.IsReviewRequired === true ? "Pendiente"  : "No",
+                IsReviewApproved: request.IsReviewApproved  ? "Aprobado"  : request.IsReviewApproved === null  ? "Pendiente"  : "Rechazado",
+ 
             }
         });
     });
@@ -112,9 +114,10 @@
         <data-table :value="requestData" paginator :rows="3" tableStyle="min-width: 80rem">
             <data-column field="Name" header="Nombre" sortable></data-column>
             <data-column field="LoanTypeName" header="Tipo de préstamo" sortable></data-column>
-            <data-column field="RequestedDate" header="Fecha de solicitud" sortable></data-column>         
-            <data-column field="IsActive" header="Estado" sortable style="width: 160px"></data-column>
-            <data-column field="IsApproved" header="Estado de aprobación" sortable></data-column>
+            <data-column field="RequestedDate" header="Fecha de solicitud" sortable style="width: 130px"></data-column>         
+            <data-column field="IsApproved" header="Estado de aprobación" sortable style="width: 110px"></data-column>
+            <data-column field="IsReviewRequired" header="Requiere revisión" sortable style="width: 110px"></data-column>
+            <data-column field="IsReviewApproved" header="Estado de revisión" sortable style="width: 130px"></data-column>
             <data-column header="" style="width: 100px"> <template #body="rowData">
                     <base-button class="action-buttons" label="Editar" @click="updateRecord(rowData)"
                         :type="'button'" />

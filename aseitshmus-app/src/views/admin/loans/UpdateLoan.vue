@@ -1,6 +1,6 @@
 <script setup>
     import {
-        useStore
+        useStore,
     } from 'vuex'
     import {
         useRouter,
@@ -8,7 +8,8 @@
     } from 'vue-router';
     import {
         ref,
-        onMounted
+        onMounted,
+        computed
     } from 'vue';
     import {
         useToast
@@ -17,21 +18,33 @@
         required
     } from '@vuelidate/validators'
     import useVuelidate from '@vuelidate/core'
+    import api from '../../../api/AxiosInterceptors.js';
+
 
     const router = useRouter();
     const route = useRoute();
     const toast = useToast();
     const store = useStore();
 
-    const backLabel = 'Cancelar';
+    const role = computed(() => {
+        return store.getters["auth/getRole"];
+    });
+
+    const backLabel = 'Atrás';
     const loanList = () => {
         router.push({
             name: "loanRequestList"
         });
-    }
+    };
+
+
     const approveLabel = 'Aprobar';
     const rejectLabel = 'Rechazar';
     const reviewerlabel = 'Requiere Revisión';
+    const reviewerApproveResponselabel = 'Aprobar Revisión';
+    const reviewerRejectResponselabel = 'Rechazar Revisión';
+
+    const loanRequestId = ref(route.params.id);
 
     const loanData = ref({
         Name: null,
@@ -43,8 +56,12 @@
         IsActive: null,
         Term: null,
         ApprovedDate: null,
-
+        IsReviewRequired: null,
+        ReviewRequiredDate: null,
+        IsReviewApproved: null,
+        IsApproved: null
     })
+
     const dateFormat = {
         day: "numeric",
         month: "numeric",
@@ -52,10 +69,71 @@
     };
 
     const loanState = ref({
-        IsApproved: null, 
+        IsApproved: null,
     })
 
-    const loanRequestId = ref(route.params.id);
+    const sendReviewResponse = async (event) => {
+        try {
+            let isReviewApproved = null;
+
+            if (event.target.innerText === reviewerApproveResponselabel) {
+                isReviewApproved = true;
+            } else if (event.target.innerText === reviewerRejectResponselabel) {
+                isReviewApproved = false;
+            }
+            await api.patch(`loanrequest/respond-review/${loanRequestId.value}`, isReviewApproved, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            toast.add({
+                severity: 'success',
+                detail: "Se ha enviado el estado de revisión.",
+                life: 2000
+            });
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            loanList()
+        } catch (error) {
+            toast.add({
+                severity: 'error',
+                detail: error,
+                life: 2000
+            });
+        }
+    };
+
+    const sendReviewRequest = async () => {
+        try {
+            await api.patch(`loanrequest/request-review/${loanRequestId.value}`);
+            toast.add({
+                severity: 'success',
+                detail: "Se ha enviado la solicitud de revisión.",
+                life: 2000
+            });
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            loanList()
+        } catch (error) {
+            toast.add({
+                severity: 'error',
+                detail: error,
+                life: 2000
+            });
+        }
+    };
+
+    const adminButtonsVisible = () => {
+        if (role.value == 1 && loanData.value.IsApproved == 'Pendiente') {
+            return true;
+        }
+        return false;
+    }
+
+    const reviewerButtonsVisible = () => {
+        if ((role.value == 2 || role.value == 3) && loanData.value.ReviewRequiredDate == 'null') {
+            return true;
+        }
+        return false;
+    }
 
     const rules = {
         IsApproved: {
@@ -64,7 +142,7 @@
     };
 
     const storeLoan = async () => {
-        await store.dispatch('loanRequests/updateSavings', {
+        await store.dispatch('loanRequests/updateLoan', {
             loanRequestId: loanRequestId.value,
             loanState: loanState.value
         })
@@ -90,20 +168,28 @@
         await store.dispatch('loanRequests/getLoanById', {
             rowId: loanRequestId.value
         });
-
         const request = await store.getters["loanRequests/getLoans"];
         try {
-                loanData.value.Name = request.Name,
+            loanData.value.Name = request.Name,
                 loanData.value.NumberId = request.NumberId,
                 loanData.value.LoansTypeId = request.LoansTypeId,
                 loanData.value.Term = request.Term,
                 loanData.value.LoanTypeName = request.LoanTypeName,
                 loanData.value.RequestedDate = new Date(request.RequestedDate),
+                loanData.value.ReviewRequiredDate = request.ReviewRequiredDate !== null ? new Date(request.ReviewRequiredDate) : null,
+                loanData.value.ApprovedDate = request.ApprovedDate !== null ? new Date(request.ApprovedDate) : null,                
                 loanData.value.AmountRequested = request.AmountRequested,
                 loanData.value.IsActive = request.IsActive ? 'Activo' : 'Inactivo',
-                loanData.value.ApprovedDate = request.ApprovedDate ? new Date(request.ApprovedDate)
-                .toLocaleString("es-ES", dateFormat) : "N/A",
+                loanData.value.ApprovedDate = request.ApprovedDate !== null ? new Date(request.ApprovedDate) : null;
                 loanState.value.IsApproved = request.IsApproved !== null ? (request.IsApproved ? 'Aprobado' :
+                    "Rechazado") : 'Pendiente',
+                loanData.value.IsReviewRequired = request.IsReviewRequired !== null ? (request
+                    .IsReviewRequired ? 'Sí' :
+                    "No") : 'N/A',
+                loanData.value.IsReviewApproved = request.IsReviewApproved !== null ? (request
+                    .IsReviewApproved ? 'Aprobado' :
+                    "Rechazado") : 'Pendiente',
+                 loanData.value.IsApproved = request.IsApproved !== null ? (request.IsApproved ? 'Aprobado' :
                     "Rechazado") : 'Pendiente'
         } catch (error) {
             toast.add({
@@ -112,7 +198,6 @@
                 life: 2000
             });
         }
-
     };
 
     const submitData = async (event) => {
@@ -128,7 +213,7 @@
                 await storeLoan();
                 toast.add({
                     severity: 'success',
-                    detail: "Sus cambios han sido guardados.",
+                    detail: "El préstamo ha sido actualizado.",
                     life: 2000
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -143,8 +228,8 @@
         }
     }
 
-
     onMounted(fetchLoanData);
+
 </script>
 
 <template>
@@ -157,7 +242,7 @@
                 <br>
                 <br>
                 <strong><label>Nombre completo:</label></strong>
-                <label>&nbsp;{{ loanData.Name}}</label>
+                <label>&nbsp;{{loanData.Name }}</label>
                 <br>
                 <br>
                 <strong><label>Tipo de ahorro:</label></strong>
@@ -181,13 +266,37 @@
                 <label>&nbsp;{{ loanData.IsActive}}</label>
                 <br>
                 <br>
-
+                <strong><label>Requiere revisión del Presidente:</label></strong>
+                <label>&nbsp;{{ loanData.IsReviewRequired}}</label>
+                <br>
+                <br>
+                <strong><label>Fecha de revisión:</label></strong>
+                <label>&nbsp;{{ loanData.ReviewRequiredDate ? new Date(loanData.ReviewRequiredDate).toLocaleString("es-ES", dateFormat) : "N/A" }}</label>
+                <br>
+                <br>
+                <strong><label>Estado del revisión:</label></strong>
+                <label>&nbsp;{{ loanData.IsReviewApproved}}</label>
+                <br>
+                <br>
+                <strong><label>Fecha de aprobación:</label></strong>
+                <label>&nbsp;{{ new Date(loanData.ApprovedDate).toLocaleString("es-ES", dateFormat) }}</label>
+                <br>
+                <br>
+                <div class="actions-container">
                 <div class="actions">
                     <base-button :label="backLabel" small @click="loanList" :type="'button'" />
-                    <base-button :label="approveLabel" class="green" small @click="submitData" :type="'submit'" />
-                    <base-button :label="rejectLabel"  class="red" v-if="loanState.IsApproved !== true" small @click="submitData"
+                    <base-button :label="approveLabel" class="green" small @click="submitData" :type="'submit'"
+                        v-if="loanState.IsApproved === 'Pendiente' && adminButtonsVisible() " />
+                    <base-button :label="rejectLabel" class="red"
+                        v-if="loanState.IsApproved === 'Pendiente' && adminButtonsVisible()" small @click="submitData"
                         :type="'submit'" />
-                        <base-button :label="reviewerlabel" small @click="loanList" :type="'button'" />
+                    <base-button :label="reviewerlabel" small @click="sendReviewRequest" :type="'submit'"
+                        v-if="loanData.IsReviewRequired === null" />
+                    <base-button :label="reviewerApproveResponselabel" class="green" small @click="sendReviewResponse"
+                        :type="'submit'" v-if="loanData.IsReviewRequired === 'Sí' && reviewerButtonsVisible()" />
+                    <base-button :label="reviewerRejectResponselabel" class="red" small @click="sendReviewResponse"
+                        :type="'submit'" v-if="loanData.IsReviewRequired === 'Sí' && reviewerButtonsVisible()" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -233,21 +342,27 @@
     .form-margin-left {
         margin-left: 6rem;
     }
-
+    .actions-container {
+        position: static;
+        bottom: 0;
+        background-color: #fff;
+        width: 100%;
+    }
     .actions {
         margin-top: 2rem;
         display: flex;
         flex-direction: row;
-        justify-content: flex-end;
-        align-self: flex-end;
-        width:45rem
+        align-items: center;
     }
 
     .actions button {
+        display: flex;
         flex: 1;
         margin-right: 1rem;
         padding: .60rem;
     }
+
+
 
     .green,
     .green:hover,

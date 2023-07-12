@@ -23,7 +23,7 @@
     const toast = useToast();
     const store = useStore();
 
-    const backLabel = 'Cancelar';
+    const backLabel = 'Atrás';
     const savingsList = () => {
         router.push({
             name: "savingsRequestList"
@@ -98,8 +98,7 @@
                 savingsData.value.ApplicationDate = new Date(request.ApplicationDate),
                 savingsData.value.Amount = request.Amount,
                 savingsData.value.IsActive = request.IsActive ? 'Activo' : 'Inactivo',
-                savingsData.value.ApprovedDate = request.ApprovedDate ? new Date(request.ApprovedDate)
-                .toLocaleString("es-ES", dateFormat) : "N/A",
+                savingsData.value.ApprovedDate = request.ApprovedDate !== null ? new Date(request.ApprovedDate) : null;
                 savingsState.value.IsApproved = request.IsApproved !== null ? (request.IsApproved ? 'Aprobado' :
                     "Rechazado") : 'Pendiente'
         } catch (error) {
@@ -161,7 +160,7 @@
                 <br>
                 <br>
                 <strong><label>Fecha de solicitud:</label></strong>
-                <label>&nbsp;{{  new Date(savingsData.ApplicationDate).toLocaleString("es-ES", dateFormat)}}</label>
+                <label>&nbsp;{{ savingsData.ApplicationDate ? new Date(savingsData.ApplicationDate).toLocaleString("es-ES", dateFormat) : "N/A" }}</label>
                 <br>
                 <br>
                 <strong><label>Cuota de ahorro (quincenal):</label></strong>

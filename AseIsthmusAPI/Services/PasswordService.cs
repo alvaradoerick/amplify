@@ -50,19 +50,22 @@ namespace AseIsthmusAPI.Services
         /// </summary>
         /// <param name="updatePasswordRequestDto"></param>
         /// <returns></returns>
-        public async Task<string?> ResetPasswordAuthenticated(string id, ResetPasswordDto resetPassword) {
+        public async Task<(string?,string?)> ResetPasswordAuthenticated(string id, ResetPasswordDto resetPassword) {
+          
+            var login = await _context.Logins
+                   .Include(l => l.Person)
+                   .FirstOrDefaultAsync(l => l.PersonId == id);
 
-            var login = await _context.Logins.FirstOrDefaultAsync(l => l.PersonId == id);
             if (login == null || resetPassword == null)
             {
-                return null;
+                return (null, null);
             }
             else
             {
                 var newPassword = resetPassword.Password;
                 login.Pw = HashPassword(newPassword);
                 await _context.SaveChangesAsync();
-                return newPassword;
+                return (newPassword,login.Person.EmailAddress);
             }
         }
 

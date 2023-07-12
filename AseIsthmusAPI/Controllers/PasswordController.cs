@@ -27,14 +27,15 @@ namespace AseIsthmusAPI.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> ResetPasswordAuthenticated([FromRoute] string id, [FromBody] ResetPasswordDto resetPassword)
         {
+            HtmlContentProvider emailTemplate = new HtmlContentProvider();
             if (resetPassword == null) {
                 return BadRequest(new { error = "La contraseña es requerida." });
             }
-            var newPassword = await _service.ResetPasswordAuthenticated(id, resetPassword);
-            if (newPassword != null)
+            var newPasswordResponse = await _service.ResetPasswordAuthenticated(id, resetPassword);
+            if (newPasswordResponse.Item1 != null)
             {
-
-                return Ok(new UpdatePasswordResponseDto { NewPassword = newPassword });
+                _emailService.SendEmail(emailTemplate.GeneratePasswordResetEmailContent(newPasswordResponse.Item1), "Restablecimiento de contraseña", newPasswordResponse.Item2);
+                return Ok(new UpdatePasswordResponseDto { NewPassword = newPasswordResponse.Item1 });
             }
             else
             {

@@ -24,5 +24,10 @@
 
         public DateTime? ApprovedDate { get; set; }
 
+        public bool? IsReviewRequired { get; set; }
+
+        public bool? IsReviewApproved { get; set; }
+
+        public DateTime? ReviewRequiredDate { get; set; }
     }
 }
