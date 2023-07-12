@@ -21,7 +21,8 @@ import InputMask from 'primevue/inputmask';
 import InputNumber from 'primevue/inputnumber';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-
+import ConfirmationService from 'primevue/confirmationservice';
+import ConfirmDialog from 'primevue/confirmdialog';
 
 //bootstrap
 import 'bootstrap/dist/css/bootstrap.css'
@@ -53,6 +54,7 @@ app.component('input-mask', InputMask);
 app.component('input-number', InputNumber );
 app.component('data-table', DataTable );
 app.component('data-column', Column );
+app.component('confirm-dialog', ConfirmDialog );
 
 
 app.directive('tooltip', Tooltip);
@@ -63,5 +65,6 @@ app.use(store);
 app.use(PrimeVue);
 app.use(router);
 app.use(ToastService);
+app.use(ConfirmationService);
 
 app.mount('#app');

@@ -22,6 +22,7 @@
         useToast
     } from 'primevue/usetoast';
 
+    import { useConfirm } from "primevue/useconfirm";
     const toast = useToast();
     const route = useRoute();
     const store = useStore()
@@ -63,7 +64,7 @@
     const roleSelected = ref();
     const statusDB = ref();
 
-
+    const confirm = useConfirm();
     const backLabel = 'Atrás';
     const sendLabel = 'Actualizar';
     const beneficiariesLabel = 'Beneficiarios';
@@ -121,6 +122,7 @@
         return store.getters["users/getErrorResponse"];
     });
 
+
     const manageUser = async () => {
         await manageUserStatus();
         await fetchUserData();
@@ -148,6 +150,20 @@
             }
         }
     }
+
+    const confirmApprove = () => {
+    confirm.require({
+        message: 'Está seguro que quiere aprobar este usuario?',
+        header: 'Confirmación',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+            manageUser();
+        },
+        reject: () => {
+            toast.add({ severity: 'error', detail: 'Se canceló la transacción.', life: 2000 });
+        }
+    });
+};
 
     const UserList = () => {
         router.push({
@@ -304,11 +320,12 @@
                         id="role" placeholder="Rol" class="dropdown" :class="{'p-invalid': v$?.roleSelected?.$error}" />
                     <label for="role">Rol</label>
                 </div>
-            </div>      
+            </div>  
+            <confirm-dialog></confirm-dialog>    
         <div class="actions">
             <base-button class="action-buttons" small :label="backLabel" @click="UserList" :type="'button'" />
             <base-button class="action-buttons" small :label="beneficiariesLabel" @click="updateBeneficiaries" :type="'button'" />
-            <base-button class="action-buttons green" small v-if="statusDB === 0" @click="manageUser" :label="activeLabel"
+            <base-button class="action-buttons green" small v-if="statusDB === 0" @click="confirmApprove" :label="activeLabel"
                 :type="'submit'" />
             <base-button class="action-buttons red" small v-if="statusDB === 1" @click="manageUser" :label="inactiveLabel"
                 :type="'submit'" />
