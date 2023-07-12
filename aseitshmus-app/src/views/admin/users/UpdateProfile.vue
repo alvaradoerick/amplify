@@ -304,8 +304,7 @@
                         id="role" placeholder="Rol" class="dropdown" :class="{'p-invalid': v$?.roleSelected?.$error}" />
                     <label for="role">Rol</label>
                 </div>
-            </div>
-       
+            </div>      
         <div class="actions">
             <base-button class="action-buttons" small :label="backLabel" @click="UserList" :type="'button'" />
             <base-button class="action-buttons" small :label="beneficiariesLabel" @click="updateBeneficiaries" :type="'button'" />

@@ -135,14 +135,6 @@
         return false;
     }
 
-    const singleButton = () => {
-        if ( loanData.value.IsApproved != 'Pendiente' && loanData.value.ReviewRequiredDate != 'null') {
-            return true;
-        }
-        return false;
-    }
-
-
     const rules = {
         IsApproved: {
             required
@@ -184,6 +176,8 @@
                 loanData.value.Term = request.Term,
                 loanData.value.LoanTypeName = request.LoanTypeName,
                 loanData.value.RequestedDate = new Date(request.RequestedDate),
+                loanData.value.ReviewRequiredDate = request.ReviewRequiredDate !== null ? new Date(request.ReviewRequiredDate) : null,
+                loanData.value.ApprovedDate = request.ApprovedDate !== null ? new Date(request.ApprovedDate) : null,                
                 loanData.value.AmountRequested = request.AmountRequested,
                 loanData.value.IsActive = request.IsActive ? 'Activo' : 'Inactivo',
                 loanData.value.ApprovedDate = request.ApprovedDate !== null ? new Date(request.ApprovedDate) : null;
@@ -195,8 +189,7 @@
                 loanData.value.IsReviewApproved = request.IsReviewApproved !== null ? (request
                     .IsReviewApproved ? 'Aprobado' :
                     "Rechazado") : 'Pendiente',
-                    loanData.value.ReviewRequiredDate = request.ReviewRequiredDate !== null ? new Date(request.ReviewRequiredDate) : null,
-                loanData.value.IsApproved = request.IsApproved !== null ? (request.IsApproved ? 'Aprobado' :
+                 loanData.value.IsApproved = request.IsApproved !== null ? (request.IsApproved ? 'Aprobado' :
                     "Rechazado") : 'Pendiente'
         } catch (error) {
             toast.add({
@@ -285,8 +278,13 @@
                 <label>&nbsp;{{ loanData.IsReviewApproved}}</label>
                 <br>
                 <br>
+                <strong><label>Fecha de aprobación:</label></strong>
+                <label>&nbsp;{{ new Date(loanData.ApprovedDate).toLocaleString("es-ES", dateFormat) }}</label>
+                <br>
+                <br>
+                <div class="actions-container">
                 <div class="actions">
-                    <base-button :label="backLabel" small @click="loanList" :type="'button'" :class="{'single-button': singleButton() }" />
+                    <base-button :label="backLabel" small @click="loanList" :type="'button'" />
                     <base-button :label="approveLabel" class="green" small @click="submitData" :type="'submit'"
                         v-if="loanState.IsApproved === 'Pendiente' && adminButtonsVisible() " />
                     <base-button :label="rejectLabel" class="red"
@@ -298,7 +296,7 @@
                         :type="'submit'" v-if="loanData.IsReviewRequired === 'Sí' && reviewerButtonsVisible()" />
                     <base-button :label="reviewerRejectResponselabel" class="red" small @click="sendReviewResponse"
                         :type="'submit'" v-if="loanData.IsReviewRequired === 'Sí' && reviewerButtonsVisible()" />
-
+                    </div>
                 </div>
             </div>
         </div>
@@ -344,27 +342,27 @@
     .form-margin-left {
         margin-left: 6rem;
     }
-
+    .actions-container {
+        position: static;
+        bottom: 0;
+        background-color: #fff;
+        width: 100%;
+    }
     .actions {
         margin-top: 2rem;
         display: flex;
         flex-direction: row;
-        justify-content: flex-start;
-        align-self: flex-start;
-        width: 25rem
+        align-items: center;
     }
 
     .actions button {
+        display: flex;
         flex: 1;
         margin-right: 1rem;
         padding: .60rem;
     }
 
-    .single-button base-button {
-    flex: 1;
-    margin-right: 10rem;
-    padding: 0.6rem;
-  }
+
 
     .green,
     .green:hover,
