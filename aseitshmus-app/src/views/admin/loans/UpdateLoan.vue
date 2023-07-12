@@ -30,7 +30,7 @@
         return store.getters["auth/getRole"];
     });
 
-    const backLabel = 'Cancelar';
+    const backLabel = 'Atrás';
     const loanList = () => {
         router.push({
             name: "loanRequestList"
@@ -46,9 +46,6 @@
 
     const loanRequestId = ref(route.params.id);
 
-
-
-
     const loanData = ref({
         Name: null,
         NumberId: null,
@@ -62,6 +59,7 @@
         IsReviewRequired: null,
         ReviewRequiredDate: null,
         IsReviewApproved: null,
+        IsApproved: null
     })
 
     const dateFormat = {
@@ -104,7 +102,6 @@
         }
     };
 
-
     const sendReviewRequest = async () => {
         try {
             await api.patch(`loanrequest/request-review/${loanRequestId.value}`);
@@ -130,12 +127,21 @@
         }
         return false;
     }
+
     const reviewerButtonsVisible = () => {
-        if ((role.value == 2 || role.value == 3) && loanData.value.ReviewRequiredDate == 'N/A') {
+        if ((role.value == 2 || role.value == 3) && loanData.value.ReviewRequiredDate == 'null') {
             return true;
         }
         return false;
     }
+
+    const singleButton = () => {
+        if ( loanData.value.IsApproved != 'Pendiente' && loanData.value.ReviewRequiredDate != 'null') {
+            return true;
+        }
+        return false;
+    }
+
 
     const rules = {
         IsApproved: {
@@ -144,7 +150,7 @@
     };
 
     const storeLoan = async () => {
-        await store.dispatch('loanRequests/updateSavings', {
+        await store.dispatch('loanRequests/updateLoan', {
             loanRequestId: loanRequestId.value,
             loanState: loanState.value
         })
@@ -180,8 +186,7 @@
                 loanData.value.RequestedDate = new Date(request.RequestedDate),
                 loanData.value.AmountRequested = request.AmountRequested,
                 loanData.value.IsActive = request.IsActive ? 'Activo' : 'Inactivo',
-                loanData.value.ApprovedDate = request.ApprovedDate ? new Date(request.ApprovedDate)
-                .toLocaleString("es-ES", dateFormat) : "N/A",
+                loanData.value.ApprovedDate = request.ApprovedDate !== null ? new Date(request.ApprovedDate) : null;
                 loanState.value.IsApproved = request.IsApproved !== null ? (request.IsApproved ? 'Aprobado' :
                     "Rechazado") : 'Pendiente',
                 loanData.value.IsReviewRequired = request.IsReviewRequired !== null ? (request
@@ -190,9 +195,9 @@
                 loanData.value.IsReviewApproved = request.IsReviewApproved !== null ? (request
                     .IsReviewApproved ? 'Aprobado' :
                     "Rechazado") : 'Pendiente',
-                loanData.value.ReviewRequiredDate = request.ReviewRequiredDate ? new Date(request
-                    .ReviewRequiredDate)
-                .toLocaleString("es-ES", dateFormat) : "N/A"
+                    loanData.value.ReviewRequiredDate = request.ReviewRequiredDate !== null ? new Date(request.ReviewRequiredDate) : null,
+                loanData.value.IsApproved = request.IsApproved !== null ? (request.IsApproved ? 'Aprobado' :
+                    "Rechazado") : 'Pendiente'
         } catch (error) {
             toast.add({
                 severity: 'error',
@@ -201,7 +206,6 @@
             });
         }
     };
-
 
     const submitData = async (event) => {
         event.preventDefault();
@@ -216,7 +220,7 @@
                 await storeLoan();
                 toast.add({
                     severity: 'success',
-                    detail: "Sus cambios han sido guardados.",
+                    detail: "El préstamo ha sido actualizado.",
                     life: 2000
                 });
                 await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -231,8 +235,8 @@
         }
     }
 
-
     onMounted(fetchLoanData);
+
 </script>
 
 <template>
@@ -253,7 +257,7 @@
                 <br>
                 <br>
                 <strong><label>Fecha de solicitud:</label></strong>
-                <label>&nbsp;{{ new Date(RequestedDate).toLocaleString("es-ES", dateFormat) }}</label>
+                <label>&nbsp;{{ new Date(loanData.RequestedDate).toLocaleString("es-ES", dateFormat) }}</label>
                 <br>
                 <br>
                 <strong><label>Monto solicitado:</label></strong>
@@ -274,7 +278,7 @@
                 <br>
                 <br>
                 <strong><label>Fecha de revisión:</label></strong>
-                <label>&nbsp;{{ new Date(loanData.ReviewRequiredDate).toLocaleString("es-ES", dateFormat) }}</label>
+                <label>&nbsp;{{ loanData.ReviewRequiredDate ? new Date(loanData.ReviewRequiredDate).toLocaleString("es-ES", dateFormat) : "N/A" }}</label>
                 <br>
                 <br>
                 <strong><label>Estado del revisión:</label></strong>
@@ -282,7 +286,7 @@
                 <br>
                 <br>
                 <div class="actions">
-                    <base-button :label="backLabel" small @click="loanList" :type="'button'" />
+                    <base-button :label="backLabel" small @click="loanList" :type="'button'" :class="{'single-button': singleButton() }" />
                     <base-button :label="approveLabel" class="green" small @click="submitData" :type="'submit'"
                         v-if="loanState.IsApproved === 'Pendiente' && adminButtonsVisible() " />
                     <base-button :label="rejectLabel" class="red"
@@ -345,9 +349,9 @@
         margin-top: 2rem;
         display: flex;
         flex-direction: row;
-        justify-content: flex-end;
-        align-self: flex-end;
-        width: 45rem
+        justify-content: flex-start;
+        align-self: flex-start;
+        width: 25rem
     }
 
     .actions button {
@@ -355,6 +359,12 @@
         margin-right: 1rem;
         padding: .60rem;
     }
+
+    .single-button base-button {
+    flex: 1;
+    margin-right: 10rem;
+    padding: 0.6rem;
+  }
 
     .green,
     .green:hover,

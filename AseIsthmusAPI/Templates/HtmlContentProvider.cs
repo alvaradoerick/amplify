@@ -40,5 +40,38 @@ namespace AseIsthmusAPI.Templates
 
             return content.ToString();
         }
+
+        public string PagareEmailContent(string associateName)
+        {
+
+            var content = new StringBuilder();
+
+            content.AppendLine("<div>");
+            content.AppendLine($"    <p>Hola {associateName}</p>");
+            content.AppendLine("    <p>Adjunto encontrará el documento del Pagaré, el cual requiere su atención y completar los campos correspondientes.</p>");
+            content.AppendLine("    <p>Le agradeceríamos que tomara unos minutos para llenar los datos necesarios en el documento adjunto y nos lo enviara de vuelta.</p>");
+            content.AppendLine("    <p>Si tiene alguna pregunta o necesita asistencia adicional, no dude en contactarnos. Estamos aquí para ayudarle.</p>");
+            content.AppendLine("    <p>Esperamos recibir el Pagaré completado a la brevedad posible</p>");
+            content.AppendLine("    <p>Saludos cordiales,</p>");
+            content.AppendLine("</div>");
+
+            return content.ToString();
+        }
+
+        public string LoanRejectedEmailContent(string associateName)
+        {
+
+            var content = new StringBuilder();
+
+            content.AppendLine("<div>");
+            content.AppendLine($"    <p>Hola {associateName}</p>");
+            content.AppendLine("    <p>Lamentamos informarle que su solicitud de préstamo no ha sido aprobada. Comprendemos que esto pueda generarle preocupación o dudas, por lo que estamos aquí para brindarle toda la información que necesite.</p>");
+            content.AppendLine("    <p>Queremos recordarle que la aprobación de un préstamo está sujeta a diversos factores, como historial crediticio, capacidad de pago y políticas internas de la institución financiera. Aunque su solicitud no haya sido aprobada en esta ocasión, le animamos a explorar otras alternativas o a mejorar su perfil crediticio para futuras oportunidades.</p>");
+            content.AppendLine("    <p>Si tiene alguna pregunta o necesita aclarar algún aspecto en particular, no dude en ponerse en contacto con nosotros.</p>");
+            content.AppendLine("    <p>Saludos cordiales,</p>");
+            content.AppendLine("</div>");
+
+            return content.ToString();
+        }
     }
 }

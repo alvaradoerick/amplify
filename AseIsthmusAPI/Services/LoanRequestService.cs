@@ -34,10 +34,10 @@ namespace AseIsthmusAPI.Services
                     IsActive = a.IsActive,
                     ApprovedDate = a.ApprovedDate,
                     IsApproved = a.IsApproved,
-                    IsReviewRequired=  a.IsReviewRequired,
+                    IsReviewRequired = a.IsReviewRequired,
                     IsReviewApproved = a.IsReviewApproved,
                     ReviewRequiredDate = a.ReviewRequiredDate
-    }).ToListAsync();
+                }).ToListAsync();
         }
         public async Task<LoanRequestOutDto?> GetById(int id)
         {
@@ -77,11 +77,11 @@ namespace AseIsthmusAPI.Services
 
         }
 
-        public async Task RespondLoanReview(int loanRequestId, bool response )
+        public async Task RespondLoanReview(int loanRequestId, bool response)
         {
             var loanIdParameter = new SqlParameter("@loanId", SqlDbType.Int)
             {
-  
+
                 Value = loanRequestId
             };
             var reviewResponseParameter = new SqlParameter("@reviewResponse", SqlDbType.Bit)
@@ -98,15 +98,26 @@ namespace AseIsthmusAPI.Services
         }
 
 
-        public async Task<LoanRequest> ApproveLoan(int id, LoanRequestInByAdminDto saving)
+        public async Task<(string?, string?)> ApproveLoan(int id, LoanRequestInByAdminDto loan)
         {
-            var existingLoan = await _context.LoanRequests.FindAsync(id);
+            var existingLoan = await _context.LoanRequests
+                .Include(l => l.Person)
+                .FirstOrDefaultAsync(l => l.LoanRequestId == id);
 
             if (existingLoan is not null)
             {
+                var personId = existingLoan.PersonId;
+                var associatedUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.PersonId == personId);
 
-                existingLoan.IsApproved = saving.IsApproved;
-                if (saving.IsApproved == false)
+                if (associatedUser == null)
+                {
+                    return (null, null);
+                }
+
+                existingLoan.IsApproved = loan.IsApproved;
+
+                if (loan.IsApproved == false)
                 {
                     existingLoan.ApprovedDate = null;
                     existingLoan.IsActive = false;
@@ -117,14 +128,19 @@ namespace AseIsthmusAPI.Services
                     existingLoan.IsActive = true;
                 }
 
-
-
+                var email = associatedUser.EmailAddress;
+                var name = $"{associatedUser.FirstName} {associatedUser.LastName1} {associatedUser.LastName2}";
 
                 await _context.SaveChangesAsync();
-                return existingLoan;
+
+                return (email, name);
             }
-            else return null;
+            else
+            {
+                return (null, null);
+            }
         }
+
 
         public async Task<LoanRequest> Create(string id, LoanRequestInDto loanRequest)
         {
@@ -239,14 +255,14 @@ namespace AseIsthmusAPI.Services
             dataTable.Columns.Add("Term", typeof(int));
             dataTable.Columns.Add("Amount", typeof(decimal));
 
-                DataRow row = dataTable.NewRow();
-                row["PersonId"] = loanCalculation.PersonId;
-                row["LoansTypeId"] = loanCalculation.LoansTypeId;
-                row["Term"] = loanCalculation.Term;
-                row["Amount"] = loanCalculation.Amount;
+            DataRow row = dataTable.NewRow();
+            row["PersonId"] = loanCalculation.PersonId;
+            row["LoansTypeId"] = loanCalculation.LoansTypeId;
+            row["Term"] = loanCalculation.Term;
+            row["Amount"] = loanCalculation.Amount;
 
-                dataTable.Rows.Add(row);
-  
+            dataTable.Rows.Add(row);
+
 
             return dataTable;
         }
