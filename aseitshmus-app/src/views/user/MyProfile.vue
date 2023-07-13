@@ -171,7 +171,6 @@
         event.preventDefault();
         const isValid = await validateForm();
         if (isValid) {
-            if (isValid) {
                 try {
                     await storeUser();
                     toast.add({
@@ -190,7 +189,6 @@
                         life: 2000
                     });
                 }
-            }
         }
     }
 

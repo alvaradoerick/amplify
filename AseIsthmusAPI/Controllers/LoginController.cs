@@ -64,7 +64,7 @@ namespace AseIsthmusAPI.Controllers
 
             var securityToken = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(60),
+                expires: DateTime.Now.AddMinutes(1),
                 signingCredentials: creds);  
 
             string token = new JwtSecurityTokenHandler().WriteToken(securityToken);

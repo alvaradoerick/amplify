@@ -15,14 +15,20 @@
     } from 'primevue/usetoast';
     import Stepper from '@/components/UI/Stepper.vue'
 import RegistrationConfirmation from '@/components/authentication/RegistrationConfirmation.vue';
+import {
+        required
+    } from '@vuelidate/validators'
+    import useVuelidate from '@vuelidate/core'
+
+
 const store = useStore()
 const toast = useToast();
     
     const personalInfo = ref({
         PersonId: null,
         NumberId: null,
-        firstName: null,
-        lastName1: null,
+        FirstName: null,
+        LastName1: null,
         LastName2: null,
         Nationality: null,
         DateBirth: null
@@ -55,6 +61,7 @@ const toast = useToast();
             ...personalInfo.value,
             ...value
         }
+        console.log( personalInfo.value)
     }
 
     const getDataFromWorkInfo = (value) => {
@@ -90,12 +97,42 @@ const toast = useToast();
     }
 
 
+const rules = {
+    PersonId: { required },
+    NumberId: { required },
+    FirstName: { required },
+    LastName1: { required },
+    Nationality: { required },
+    DateBirth: { required }
 
+};
+
+const v$ = useVuelidate(rules, personalInfo);
+
+
+const validateForm = async () => {
+        const result = await v$.value.$validate();
+        console.log(v$)
+        if (!result) {
+            if (v$.value.$errors[0].$validator === 'required') {
+                toast.add({
+                    severity: 'error',
+                    detail: 'Por favor revisar los campos en rojo.',
+                    life: 2000
+                });
+
+            }
+            return false
+        }
+        return true;
+    }
     const isValiData =  ref(false)
 
 const submitData = async (event) => {
     event.preventDefault();
-            try
+    const isValid = await validateForm();
+        if (isValid) {
+                try 
             {
         await storeUser();
         if (loginResponse.value !== null) {
@@ -116,7 +153,7 @@ const submitData = async (event) => {
         life: 2000
       });
         }
-
+}
 }
         
 
@@ -124,9 +161,23 @@ const submitData = async (event) => {
         activeIndex.value -= 1
     }
 
-    const nextStep = () => {
-        activeIndex.value += 1
+    const nextStep = async () => {
+        const isValid = await validateForm();
+        console.log(personalInfo.value)
+        if (isValid) {
+                try {
+    activeIndex.value += 1;
+                }
+
+  catch (error) {
+      toast.add({
+        severity: 'error',
+        detail: 'Ocurrió un error',
+        life: 2000
+      });
+        }
     }
+}
 
     const items = ref([{
             label: 'Información Personal',
@@ -160,8 +211,8 @@ const submitData = async (event) => {
             </div>
             <div class="body">
                 <keep-alive>
-                    <PersonalInformation v-if="activeIndex === 1" @personal-info="getDataFromPersonalInfo" 
-                     />
+                    <PersonalInformation v-if="activeIndex === 1"
+                    @personal-info="getDataFromPersonalInfo"  />
                 </keep-alive>
                 <keep-alive>
                     <WorkInformation v-if="activeIndex === 2" @work-info="getDataFromWorkInfo" />
@@ -214,7 +265,4 @@ const submitData = async (event) => {
         width: 100%;
     }
 
-    .hasError  {
-    border-color: red;        
-    }
 </style>

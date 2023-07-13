@@ -1,5 +1,4 @@
 <script setup>
-
     import {
         ref,
         onMounted,
@@ -22,7 +21,8 @@
         month: "numeric",
         year: "numeric"
     };
-    const fetchUsersData = async () => {
+
+      const fetchUsersData = async () => {
         await store.dispatch('users/getAll');
         const users = store.getters['users/getUsers'];
         usersData.value = users.map(users => {

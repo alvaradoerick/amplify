@@ -30,12 +30,11 @@
     const moreInfo = 'Me interesa';
     const tabs = ref([ALL]);
 
-    watch(activeTab, (value) => {
-        dispatch('agreements/setActiveCategory', tabs.value[value]);
+    watch(  activeTab, async  (value)  => {
+        await  dispatch('agreements/setActiveCategory', tabs.value[value]);
     }, {
         immediate: true
     })
-
     onMounted(async () => {
         await dispatch('agreements/getActiveAgreements');
         await dispatch('categories/getActiveCategories');
@@ -83,6 +82,7 @@
         justify-content: space-between;
         overflow: none;
         height: 100%;
+        min-width: 100%;
     }
     
     .button {

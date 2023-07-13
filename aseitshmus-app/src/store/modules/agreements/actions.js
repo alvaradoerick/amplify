@@ -41,7 +41,7 @@ export default {
     },
     
     //Set
-    setActiveCategory({ commit }, category) {
+   async setActiveCategory({ commit }, category) {
         commit('setActiveCategory', category);
     },
 

@@ -8,7 +8,6 @@ export default {
     },
 
     filteredAgreements(state){
-        console.log(state.activeCategory.id)
         if(state.activeCategory.id === null || state.activeCategory.id ===0){
             return state.agreements
         }

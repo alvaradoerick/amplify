@@ -1,19 +1,22 @@
 using AseIsthmusAPI.Data;
+//using AseIsthmusAPI.Middleware;
 using AseIsthmusAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args); 
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddCors(c => {
     c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 }); //allow origin
 
-//jSON Serializer
-builder.Services.AddControllersWithViews().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore).AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+// JSON Serializer
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+    .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -21,11 +24,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-//DB Context
+// DB Context
 builder.Services.AddSqlServer<AseItshmusContext>(builder.Configuration.GetConnectionString("AseIsthmusConn"));
 
 
-//Service Layer 
+// Service Layer 
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<BeneficiaryService>();
@@ -42,6 +45,7 @@ builder.Services.AddScoped<SavingsRequestService>();
 builder.Services.AddScoped<LoanRequestService>();
 builder.Services.AddScoped<DocumentsService>();
 
+// Authentication and Authorization
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -56,13 +60,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization(options =>
 {
-   options.AddPolicy("Administrator", policy => policy.RequireClaim("RoleType", "Administrador"));
+    options.AddPolicy("Administrator", policy => policy.RequireClaim("RoleType", "Administrador"));
     options.AddPolicy("Loan-Approvers", policy => policy.RequireClaim("RoleType", "Administrador", "Presidente", "Vice Presidente"));
 });
 
+
 var app = builder.Build();
 
-app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); //enable CORS
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); // enable CORS
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -72,9 +78,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+//app.UseMiddleware<TokenExpirationMiddleware>();
 
 app.MapControllers();
 

@@ -1,6 +1,5 @@
-<script setup="setup">
+<script setup>
     import countriesJson from '@/assets/countriesJson.json';
-   
 
     import {
         ref,
@@ -9,7 +8,6 @@
     } from 'vue';
 
 
-   
 
     const personalInfo = ref({
         PersonId: null,
@@ -60,9 +58,10 @@
                 <label for="type">Identificación</label>
             </div>
             <div class="p-float-label">
-                <input-text class="input-text" placeholder="Nombre" id="employee-name" type="text"
-                    v-model="personalInfo.FirstName" />
-                <label for="employee-name">Nombre</label>
+        <input-text class="input-text" placeholder="Nombre" id="employee-name" type="text"
+                    v-model="personalInfo.FirstName"
+                    />
+        <label for="employee-name">Nombre</label>
             </div>
         </div>
         <div class="form-row">
@@ -93,9 +92,7 @@
     </div>
 </template>
 <style scoped="scoped">
-  .hasError {
-        border-color: red;
-    }
+
     .container {
         display: flex;
         flex-direction: column;

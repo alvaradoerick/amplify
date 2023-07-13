@@ -5,7 +5,7 @@ import {
 import store from '@/store/'
 import RegistrationWizard from '@/views/authentication/RegistrationWizard.vue'
 import {roles} from "../constants/RolesConst.js";
-
+//import TokenService from '../api/TokenService.js';
 
 
 const routes = [{
@@ -372,18 +372,19 @@ const router = createRouter({
 })
 
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const isLoggedIn = store.getters['auth/isAuthenticated']
   const role = store.getters['auth/getRole']
-  if (to.meta.authentication && !isLoggedIn) {
+
+ if (to.meta.authentication && !isLoggedIn) {
     next({ name: 'login' })
   } else if (to.meta.role && !to.meta.role.some(metaRole => role.includes(metaRole))) {
       store.dispatch('auth/logout');
-  } else {
-    next();
-  }
-})
-
-
+      next({ name: 'login' })
+   } else {
+      next();
+    }
+});
 
 export default router
+
