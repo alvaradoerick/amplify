@@ -56,6 +56,7 @@
     const forwardLabel = 'Siguiente';
     const submitLabel = 'Enviar';
     const activeIndex = ref(1);
+    let beneficiaryInvalid = false;
 
     const getDataFromPersonalInfo = (value) => {
         personalInfo.value = {
@@ -154,80 +155,75 @@
     const vWork$ = useVuelidate(workRules, workInfo)
 
     const beneficiaryRules = {
-  BeneficiaryName: { required },
-  BeneficiaryNumberId: { required },
-  BeneficiaryRelation: { required },
-  BeneficiaryPercentage: { required }
-};
+        BeneficiaryName: {
+            required
+        },
+        BeneficiaryNumberId: {
+            required
+        },
+        BeneficiaryRelation: {
+            required
+        },
+        BeneficiaryPercentage: {
+            required
+        }
+    };
 
-const vBeneficiary$ = computed(() => {
-    console.log(vBeneficiary$);
- // return beneficiaryInfo.value.map(beneficiary => useVuelidate(beneficiaryRules, beneficiary));
- return beneficiaryInfo.value.map(beneficiary => useVuelidate(beneficiaryRules, beneficiary).value);
-});
+    const vBeneficiary$ = computed(() => {
+        return beneficiaryInfo.value.map(beneficiary => useVuelidate(beneficiaryRules, beneficiary).value);
+    });
 
-// Validate the beneficiary info
-const validateBeneficiaryInfo = async () => {
-    const results = await Promise.all(vBeneficiary$.value.map(validation => validation.$validate()));
-
-  console.log(results);
-  return results.every(result => result);
-};
-
-
-let beneficiaryInvalid = false;
+    const validateBeneficiaryInfo = async () => {
+        const results = await Promise.all(vBeneficiary$.value.map(validation => validation.$validate()));
+        return results.every(result => result);
+    };
 
     const validateForm = async () => {
         let result = false
-        if (activeIndex.value === 1) {         
-    result = await vpersonal$?.value?.$validate();
-  } else if (activeIndex.value === 2) {
-    result = await vWork$?.value?.$validate();
+        if (activeIndex.value === 1) {
+            result = await vpersonal$?.value?.$validate();
+        } else if (activeIndex.value === 2) {
+            result = await vWork$ ?.value?.$validate();
+            console.log(vWork$)
+        } else if (activeIndex.value === 3) {
+            result = await vAddress$?.value?.$validate();
+        } else if (activeIndex.value === 4) {
+            result = await validateBeneficiaryInfo();
+            beneficiaryInvalid = true;
+        }
 
-  } else if (activeIndex.value === 3) {
-    result = await vAddress$?.value?.$validate();
-  }
-  else if (activeIndex.value === 4) {
-    result = await validateBeneficiaryInfo();
-    beneficiaryInvalid = true;
-    console.log(vBeneficiary$);
-    console.log(result);
-  }
-        
-  if (!result) {
-    if (vpersonal$?.value?.$error) {
-      toast.add({
-        severity: 'error',
-        detail: 'Por favor revisar los campos de la información personal en rojo.',
-        life: 2000
-      });
-    } else if (vWork$?.value?.$error) {
-      toast.add({
-        severity: 'error',
-        detail: 'Por favor revisar los campos de los datos empresariales en rojo.',
-        life: 2000
-      });
-    }
-    else if (vAddress$?.value?.$error) {
-      toast.add({
-        severity: 'error',
-        detail: 'Por favor revisar los campos del domicilio en rojo.',
-        life: 2000
-      });
-    }
-    else if (beneficiaryInvalid) {
-      toast.add({
-        severity: 'error',
-        detail: 'Por favor revisar los campos de los beneficiarios en rojo.',
-        life: 2000
-      });
-    }
-    return false;
-  }
+        if (!result) {
+            if (vpersonal$?.value?.$error) {
+                toast.add({
+                    severity: 'error',
+                    detail: 'Por favor revisar los campos de la información personal en rojo.',
+                    life: 2000
+                });
+            } else if (vWork$?.value?.$error) {
+                toast.add({
+                    severity: 'error',
+                    detail: 'Por favor revisar los campos de los datos empresariales en rojo.',
+                    life: 2000
+                });
+            } 
+            else if (vAddress$?.value?.$error) {
+                toast.add({
+                    severity: 'error',
+                    detail: 'Por favor revisar los campos del domicilio en rojo.',
+                    life: 2000
+                });
+            } else if (beneficiaryInvalid) {
+                toast.add({
+                    severity: 'error',
+                    detail: 'Por favor revisar los campos de los beneficiarios en rojo.',
+                    life: 2000
+                });
+            }
+            return false;
+        }
 
         return true
     }
-
 
     const isValiData = ref(false)
 
@@ -251,7 +247,7 @@ let beneficiaryInvalid = false;
             } catch (error) {
                 toast.add({
                     severity: 'error',
-                    detail: 'Ocurrió un error',
+                    detail: 'Ocurrió un error.',
                     life: 2000
                 });
             }
