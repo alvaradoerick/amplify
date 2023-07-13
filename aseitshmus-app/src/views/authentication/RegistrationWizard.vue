@@ -13,17 +13,18 @@
     import {
         useToast
     } from 'primevue/usetoast';
-    import Stepper from '@/components/UI/Stepper.vue'
-import RegistrationConfirmation from '@/components/authentication/RegistrationConfirmation.vue';
-import {
-        required
+
+    import {
+        required,
+        email
     } from '@vuelidate/validators'
     import useVuelidate from '@vuelidate/core'
+    import Stepper from '@/components/UI/Stepper.vue'
+    import RegistrationConfirmation from '@/components/authentication/RegistrationConfirmation.vue';
 
+    const store = useStore()
+    const toast = useToast();
 
-const store = useStore()
-const toast = useToast();
-    
     const personalInfo = ref({
         PersonId: null,
         NumberId: null,
@@ -61,7 +62,6 @@ const toast = useToast();
             ...personalInfo.value,
             ...value
         }
-        console.log( personalInfo.value)
     }
 
     const getDataFromWorkInfo = (value) => {
@@ -86,9 +86,9 @@ const toast = useToast();
     const loginResponse = computed(() => {
         return store.getters["auth/getErrorResponse"];
     });
-    
-    const  storeUser = async () => {
-       await store.dispatch('auth/register', {
+
+    const storeUser = async () => {
+        await store.dispatch('auth/register', {
             personalInfo: personalInfo.value,
             workInfo: workInfo.value,
             addressInfo: addressInfo.value,
@@ -97,65 +97,167 @@ const toast = useToast();
     }
 
 
-const rules = {
-    PersonId: { required },
-    NumberId: { required },
-    FirstName: { required },
-    LastName1: { required },
-    Nationality: { required },
-    DateBirth: { required }
+    const personalRules = {
+        PersonId: {
+            required
+        },
+        NumberId: {
+            required
+        },
+        FirstName: {
+            required
+        },
+        LastName1: {
+            required
+        },
+        Nationality: {
+            required
+        },
+        DateBirth: {
+            required
+        }
 
+    };
+
+    const vpersonal$ = useVuelidate(personalRules, personalInfo);
+
+    const addressRules = {
+        Address1: {
+            required
+        },
+        DistrictId: {
+            required
+        },
+        PostalCode: {
+            required
+        }
+    }
+
+    const vAddress$ = useVuelidate(addressRules, addressInfo)
+
+    const workRules = {
+        WorkStartDate: {
+            required
+        },
+        PhoneNumber: {
+            required
+        },
+        EmailAddress: {
+            required,
+            email
+        },
+        BankAccount: {
+            required
+        }
+    }
+
+    const vWork$ = useVuelidate(workRules, workInfo)
+
+    const beneficiaryRules = {
+  BeneficiaryName: { required },
+  BeneficiaryNumberId: { required },
+  BeneficiaryRelation: { required },
+  BeneficiaryPercentage: { required }
 };
 
-const v$ = useVuelidate(rules, personalInfo);
+const vBeneficiary$ = computed(() => {
+    console.log(vBeneficiary$);
+ // return beneficiaryInfo.value.map(beneficiary => useVuelidate(beneficiaryRules, beneficiary));
+ return beneficiaryInfo.value.map(beneficiary => useVuelidate(beneficiaryRules, beneficiary).value);
+});
+
+// Validate the beneficiary info
+const validateBeneficiaryInfo = async () => {
+    const results = await Promise.all(vBeneficiary$.value.map(validation => validation.$validate()));
+
+  console.log(results);
+  return results.every(result => result);
+};
 
 
-const validateForm = async () => {
-        const result = await v$.value.$validate();
-        console.log(v$)
-        if (!result) {
-            if (v$.value.$errors[0].$validator === 'required') {
-                toast.add({
-                    severity: 'error',
-                    detail: 'Por favor revisar los campos en rojo.',
-                    life: 2000
-                });
+let beneficiaryInvalid = false;
 
-            }
-            return false
-        }
-        return true;
-    }
-    const isValiData =  ref(false)
+    const validateForm = async () => {
+        let result = false
+        if (activeIndex.value === 1) {         
+    result = await vpersonal$?.value?.$validate();
+  } else if (activeIndex.value === 2) {
+    result = await vWork$?.value?.$validate();
 
-const submitData = async (event) => {
-    event.preventDefault();
-    const isValid = await validateForm();
-        if (isValid) {
-                try 
-            {
-        await storeUser();
-        if (loginResponse.value !== null) {
-           isValiData.value = true
-            toast.add({
-                severity: 'error',
-                detail: loginResponse.value,
-                life: 2000
-            });
-            store.commit('auth/clearErrorResponse');
-        } else {
-            nextStep();
-        }
-    } catch (error) {
+  } else if (activeIndex.value === 3) {
+    result = await vAddress$?.value?.$validate();
+  }
+  else if (activeIndex.value === 4) {
+    result = await validateBeneficiaryInfo();
+    beneficiaryInvalid = true;
+    console.log(vBeneficiary$);
+    console.log(result);
+  }
+        
+  if (!result) {
+    if (vpersonal$?.value?.$error) {
       toast.add({
         severity: 'error',
-        detail: 'Ocurrió un error',
+        detail: 'Por favor revisar los campos de la información personal en rojo.',
         life: 2000
       });
+    } else if (vWork$?.value?.$error) {
+      toast.add({
+        severity: 'error',
+        detail: 'Por favor revisar los campos de los datos empresariales en rojo.',
+        life: 2000
+      });
+    }
+    else if (vAddress$?.value?.$error) {
+      toast.add({
+        severity: 'error',
+        detail: 'Por favor revisar los campos del domicilio en rojo.',
+        life: 2000
+      });
+    }
+    else if (beneficiaryInvalid) {
+      toast.add({
+        severity: 'error',
+        detail: 'Por favor revisar los campos de los beneficiarios en rojo.',
+        life: 2000
+      });
+    }
+    return false;
+  }
+
+        return true
+    }
+
+
+    const isValiData = ref(false)
+
+    const submitData = async (event) => {
+        event.preventDefault();
+        const isValid = await validateForm();
+        if (isValid) {
+            try {
+                await storeUser();
+                if (loginResponse.value !== null) {
+                    isValiData.value = true
+                    toast.add({
+                        severity: 'error',
+                        detail: loginResponse.value,
+                        life: 2000
+                    });
+                    store.commit('auth/clearErrorResponse');
+                } else {
+                    nextStep();
+                }
+            } catch (error) {
+                toast.add({
+                    severity: 'error',
+                    detail: 'Ocurrió un error',
+                    life: 2000
+                });
+            }
         }
-}
-}
-        
+    }
+
 
     const prevStep = () => {
         activeIndex.value -= 1
@@ -163,21 +265,18 @@ const submitData = async (event) => {
 
     const nextStep = async () => {
         const isValid = await validateForm();
-        console.log(personalInfo.value)
         if (isValid) {
-                try {
-    activeIndex.value += 1;
-                }
-
-  catch (error) {
-      toast.add({
-        severity: 'error',
-        detail: 'Ocurrió un error',
-        life: 2000
-      });
+            try {
+                activeIndex.value += 1;
+            } catch (error) {
+                toast.add({
+                    severity: 'error',
+                    detail: 'Ocurrió un error',
+                    life: 2000
+                });
+            }
         }
     }
-}
 
     const items = ref([{
             label: 'Información Personal',
@@ -211,8 +310,7 @@ const submitData = async (event) => {
             </div>
             <div class="body">
                 <keep-alive>
-                    <PersonalInformation v-if="activeIndex === 1"
-                    @personal-info="getDataFromPersonalInfo"  />
+                    <PersonalInformation v-if="activeIndex === 1" @personal-info="getDataFromPersonalInfo" />
                 </keep-alive>
                 <keep-alive>
                     <WorkInformation v-if="activeIndex === 2" @work-info="getDataFromWorkInfo" />
@@ -224,12 +322,13 @@ const submitData = async (event) => {
                     <BeneficiaryInformation v-if="activeIndex === 4" @beneficiary-info="getDataFromBeneficiaryInfo" />
                 </keep-alive>
                 <keep-alive>
-                    <RegistrationConfirmation v-if="activeIndex === 5"/>
+                    <RegistrationConfirmation v-if="activeIndex === 5" />
                 </keep-alive>
             </div>
         </div>
         <div class="actions">
-            <base-button :label="backLabel" v-if="activeIndex > 1 && activeIndex < 5" @click="prevStep" :type="'button'" />
+            <base-button :label="backLabel" v-if="activeIndex > 1 && activeIndex < 5" @click="prevStep"
+                :type="'button'" />
             <base-button :label="forwardLabel" v-if="activeIndex < 4" @click="nextStep" :type="'button'" />
             <base-button :label="submitLabel" v-if="activeIndex == 4" :type="'submit'" @click="submitData" />
         </div>
@@ -251,7 +350,7 @@ const submitData = async (event) => {
         flex-direction: column;
         align-items: center;
     }
-  
+
 
     .actions {
         display: flex;
@@ -264,5 +363,4 @@ const submitData = async (event) => {
         margin-bottom: 25px;
         width: 100%;
     }
-
 </style>

@@ -7,8 +7,6 @@
         watch
     } from 'vue';
 
-
-
     const personalInfo = ref({
         PersonId: null,
         NumberId: null,
